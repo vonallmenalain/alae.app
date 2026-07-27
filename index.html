@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>alae.app – Individuelle Web-App für deinen Alltag</title>
-<meta name="description" content="alae.app entwickelt schlanke Web-Apps und interne Tools, wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist. Persönlich, transparent, Hosting in der Schweiz möglich.">
+<meta name="description" content="alae.app entwickelt individuelle Web-Apps, genau nach deinen Bedürfnissen. Persönlich, transparent, Hosting in der Schweiz möglich.">
 <meta name="author" content="alae.app">
 <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
@@ -17,8 +17,8 @@
 <meta property="og:locale" content="de_CH">
 <meta property="og:url" content="https://alae.app/">
 <meta property="og:site_name" content="alae.app">
-<meta property="og:title" content="alae.app – Individuelle Apps, die genau zu deinem Alltag passen">
-<meta property="og:description" content="Schlanke Web-Apps für Abläufe, die heute über Excel, E-Mail, Papier oder WhatsApp laufen. Aus dem Emmental, für die Region Bern und die ganze Schweiz.">
+<meta property="og:title" content="alae.app – Individuelle Apps, die zu deinem Alltag passen">
+<meta property="og:description" content="Individuelle Web-Apps für Abläufe, die heute über Excel, E-Mail, Papier oder WhatsApp laufen.">
 <meta name="twitter:card" content="summary_large_image">
 
 <!-- Favicon: inline SVG, keine zusätzliche Datei nötig -->
@@ -284,15 +284,6 @@ section{padding-block:var(--section-y)}
 }
 .icon-btn:hover{border-color:var(--line-strong); background:var(--bg-2)}
 .icon-btn svg{width:1.05rem; height:1.05rem}
-.theme-btn .i-sun{display:none}
-:root[data-theme="dark"] .theme-btn .i-sun{display:block}
-:root[data-theme="dark"] .theme-btn .i-moon{display:none}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]) .theme-btn .i-sun{display:block}
-  :root:not([data-theme="light"]) .theme-btn .i-moon{display:none}
-}
-:root[data-theme="light"] .theme-btn .i-sun{display:none}
-:root[data-theme="light"] .theme-btn .i-moon{display:block}
 
 .burger{display:none}
 @media (max-width: 62rem){
@@ -330,13 +321,15 @@ section{padding-block:var(--section-y)}
   background:radial-gradient(60% 60% at 22% 40%, var(--accent-soft), transparent 70%);
   pointer-events:none;
 }
-.hero-grid{
+.hero-inner{
   position:relative;
-  display:grid; gap:clamp(2.5rem, 5vw, 4rem);
-  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
-  align-items:center;
+  max-width:52rem; margin-inline:auto; text-align:center;
 }
-@media (max-width: 56rem){ .hero-grid{grid-template-columns:1fr} }
+.hero-inner .eyebrow::before{display:none}
+.hero-inner .hero-lead{margin-inline:auto}
+.hero-inner .hero-cta{justify-content:center}
+.hero-inner .trust-row{justify-content:center}
+.hero-inner .trust-row li{padding-inline:.45rem}
 
 .hero h1 .hl{
   color:var(--accent);
@@ -358,133 +351,6 @@ section{padding-block:var(--section-y)}
   font-size:.83rem; color:var(--muted); padding-right:.9rem;
 }
 .trust-row li svg{width:.95rem; height:.95rem; color:var(--accent); flex:none}
-
-/* Hero-Visual: Vorher/Nachher */
-.shot{
-  position:relative; display:grid; gap:1rem;
-}
-.shot-label{
-  font-family:var(--mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--muted); display:flex; align-items:center; gap:.5rem;
-}
-.shot-label::after{content:""; flex:1; height:1px; background:var(--line)}
-
-.chaos{display:flex; flex-wrap:wrap; gap:.5rem}
-.chaos li{
-  padding:.45rem .75rem; border-radius:var(--r-sm);
-  background:var(--surface); border:1px dashed var(--line-strong);
-  font-size:.8rem; color:var(--muted); box-shadow:var(--shadow-sm);
-}
-.chaos li:nth-child(2n){transform:rotate(-1.4deg)}
-.chaos li:nth-child(3n){transform:rotate(1.1deg)}
-
-.arrow-down{display:grid; place-items:center; color:var(--accent); opacity:.75}
-.arrow-down svg{width:1.4rem; height:1.4rem}
-
-.mock{
-  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-xl);
-  box-shadow:var(--shadow-lg); overflow:hidden;
-}
-.mock-bar{
-  display:flex; align-items:center; gap:.4rem;
-  padding:.7rem .9rem; border-bottom:1px solid var(--line); background:var(--bg-2);
-}
-.mock-bar i{width:.55rem; height:.55rem; border-radius:50%; background:var(--line-strong); display:block}
-.mock-bar span{
-  margin-left:.5rem; font-family:var(--mono); font-size:.68rem; color:var(--muted);
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-.mock-body{padding:1.1rem}
-.mock-h{display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:1rem}
-.mock-h strong{font-size:1rem; letter-spacing:-.02em}
-.mock-h em{font-style:normal; font-size:.75rem; color:var(--muted); font-family:var(--mono)}
-.mock-rows{display:grid; gap:.5rem}
-.mock-row{
-  display:grid; grid-template-columns:1fr auto; align-items:center; gap:.75rem;
-  padding:.65rem .8rem; border:1px solid var(--line); border-radius:var(--r-md);
-  background:var(--bg); font-size:.86rem;
-}
-.mock-row b{font-weight:600; display:block}
-.mock-row small{color:var(--muted); font-size:.78em}
-.status{
-  font-size:.7rem; font-weight:700; padding:.2rem .55rem; border-radius:999px;
-  background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent-line);
-  white-space:nowrap;
-}
-.status--ok{
-  background:color-mix(in srgb, var(--ok) 12%, transparent);
-  color:var(--ok);
-  border-color:color-mix(in srgb, var(--ok) 34%, transparent);
-}
-.mock-foot{
-  margin-top:1rem; display:flex; align-items:center; justify-content:space-between; gap:.75rem;
-  font-size:.78rem; color:var(--muted);
-}
-.mock-btn{
-  padding:.45rem .85rem; border-radius:999px; background:var(--accent); color:var(--accent-fg);
-  font-size:.75rem; font-weight:650;
-}
-
-/* --- Probleme ----------------------------------------------------------- */
-.quote{
-  position:relative; background:var(--surface); border:1px solid var(--line);
-  border-radius:var(--r-lg); padding:1.6rem 1.4rem 1.3rem;
-  box-shadow:var(--shadow-sm);
-}
-.quote::before{
-  content:"»"; position:absolute; top:.4rem; left:1.1rem;
-  font-size:2.6rem; line-height:1; color:var(--accent); opacity:.28;
-}
-.quote p{margin:0; font-size:1.02em; padding-top:1.15rem}
-.quote footer{margin-top:.9rem; font-size:.78rem; color:var(--muted); font-family:var(--mono)}
-.after-quotes{
-  margin-top:clamp(1.75rem, 3vw, 2.5rem); padding:1.25rem 1.4rem;
-  border-left:3px solid var(--accent); background:var(--accent-soft);
-  border-radius:0 var(--r-md) var(--r-md) 0; max-width:70ch;
-}
-
-/* --- Ansatz ------------------------------------------------------------- */
-.approach{
-  display:grid; gap:clamp(2rem, 4vw, 3.5rem);
-  grid-template-columns:minmax(0,1fr) minmax(0,.85fr); align-items:start;
-}
-@media (max-width: 56rem){ .approach{grid-template-columns:1fr} }
-.approach-list{display:grid; gap:1.5rem; margin-top:2rem}
-.approach-list li{display:grid; grid-template-columns:auto 1fr; gap:1rem}
-.approach-list .num{
-  display:grid; place-items:center; width:2rem; height:2rem; border-radius:50%;
-  border:1px solid var(--accent-line); background:var(--accent-soft);
-}
-.approach-list h3{margin-bottom:.35rem}
-.approach-list p{color:var(--muted); font-size:.97em; margin:0}
-
-.included{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:clamp(1.4rem,2.5vw,1.9rem); box-shadow:var(--shadow-md)}
-.included h3{margin-bottom:1.1rem; font-size:1.05rem}
-
-/* --- Leistungen --------------------------------------------------------- */
-.svc{display:grid; gap:1rem}
-.svc-item{
-  display:grid; grid-template-columns:auto minmax(0,1fr) minmax(0,.85fr); gap:1.25rem 1.75rem;
-  align-items:start;
-  padding:clamp(1.25rem,2.4vw,1.9rem);
-  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
-  box-shadow:var(--shadow-sm);
-  transition:border-color .2s ease, box-shadow .2s ease;
-}
-.svc-item:hover{border-color:var(--line-strong); box-shadow:var(--shadow-md)}
-.svc-item > .num{padding-top:.35rem}
-.svc-item p{color:var(--muted); font-size:.97em; margin:.4rem 0 0}
-.svc-tags{display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.9rem}
-.svc-fit{
-  align-self:stretch; padding-left:1.5rem; border-left:1px solid var(--line);
-  font-size:.9rem; color:var(--muted);
-}
-.svc-fit strong{display:block; color:var(--text); font-size:.78rem; font-family:var(--mono);
-  letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem; font-weight:600}
-@media (max-width: 56rem){
-  .svc-item{grid-template-columns:auto 1fr}
-  .svc-fit{grid-column:1 / -1; padding-left:0; padding-top:1rem; border-left:0; border-top:1px solid var(--line)}
-}
 
 /* --- Projekte ----------------------------------------------------------- */
 .proj{
@@ -557,15 +423,6 @@ section{padding-block:var(--section-y)}
   margin-top:.6rem; font-size:.8rem; color:var(--muted);
 }
 
-/* Screenshot-Platzhalter – durch <img> ersetzen */
-.shot-slot{
-  grid-column:1/-1;
-  display:grid; place-items:center; gap:.4rem; min-height:9rem;
-  border:1px dashed var(--line-strong); border-radius:var(--r-md);
-  background:var(--bg-2); color:var(--muted); text-align:center; padding:1.25rem;
-  font-size:.8rem;
-}
-.shot-slot svg{width:1.5rem; height:1.5rem; opacity:.5}
 
 /* --- Ablauf ------------------------------------------------------------- */
 .steps{display:grid; gap:0}
@@ -768,22 +625,16 @@ form .btn{width:100%; justify-content:center}
     </a>
 
     <nav class="nav" id="nav" aria-label="Hauptnavigation">
-      <a href="#probleme">Ausgangslage</a>
-      <a href="#leistungen">Leistungen</a>
+      <a href="#ueber-mich">Über mich</a>
       <a href="#projekte">Projekte</a>
       <a href="#ablauf">Ablauf</a>
-      <a href="#ueber-mich">Über mich</a>
       <a href="#preise">Preise</a>
-      <a href="#faq">Fragen</a>
+      <a href="#faq">FAQ</a>
       <a href="#kontakt">Kontakt</a>
-      <a class="btn btn--primary nav-cta" href="#kontakt">Projekt unverbindlich besprechen</a>
+      <a class="btn btn--primary nav-cta" href="#kontakt">Projekt besprechen</a>
     </nav>
 
     <div class="header-actions">
-      <button class="icon-btn theme-btn" id="themeToggle" type="button" aria-label="Farbschema wechseln" title="Farbschema wechseln">
-        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      </button>
       <a class="btn btn--primary header-cta" href="#kontakt">Projekt besprechen</a>
       <button class="icon-btn burger" id="burger" type="button" aria-label="Navigation öffnen" aria-expanded="false" aria-controls="nav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -795,323 +646,76 @@ form .btn{width:100%; justify-content:center}
 <main id="main">
 <span id="top"></span>
 
-<!-- =====================================================================
-     HERO
-     ===================================================================== -->
 <section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <p class="eyebrow">Individuelle Software &middot; Burgdorf, Emmental &amp; Bern</p>
-      <h1>Individuelle Apps, die genau zu <span class="hl">deinem Alltag</span> passen</h1>
-      <p class="hero-lead">
-        Du hast einen Ablauf, der heute über Excel, E-Mail, Papier oder WhatsApp organisiert wird?
-        Ich entwickle eine einfache Web-App, die genau zu dir passt –
-        ohne unnötige Funktionen und ohne komplizierte Standardsoftware.
-      </p>
+  <div class="wrap hero-inner">
+    <p class="eyebrow">Individuelle Web-Apps</p>
+    <h1>Individuelle Apps, die zu <span class="hl">deinem Alltag</span> passen</h1>
+    <p class="hero-lead">
+      Du hast einen Ablauf, der heute über Excel, E-Mail, Papier oder WhatsApp organisiert wird?
+      Ich entwickle eine einfache Web-App, genau nach deinen Bedürfnissen.
+    </p>
 
-      <div class="hero-cta">
-        <a class="btn btn--primary" href="#kontakt">
-          Projekt unverbindlich besprechen
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-7 7 7-7 7"/></svg>
-        </a>
-        <a class="btn btn--ghost" href="#kontakt">App-Idee prüfen lassen</a>
-      </div>
-      <p class="hero-note">Erstgespräch kostenlos und ohne Verpflichtung</p>
-
-      <ul class="trust-row">
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-4.4 7-10V6l-7-3-7 3v5c0 5.6 7 10 7 10z"/></svg>
-          Standort Schweiz
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          Eine persönliche Ansprechperson
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          Festpreis oder klare Etappen
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-          Hosting in der Schweiz möglich
-        </li>
-      </ul>
+    <div class="hero-cta">
+      <a class="btn btn--primary" href="#kontakt">
+        Projekt besprechen
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-7 7 7-7 7"/></svg>
+      </a>
     </div>
+    <p class="hero-note">Erstgespräch kostenlos und unverbindlich</p>
 
-    <!-- Vorher/Nachher-Visual (rein dekorativ, CSS-Mock) -->
-    <div class="shot" aria-hidden="true">
-      <p class="shot-label">Heute</p>
-      <ul class="chaos">
-        <li>Anmeldungen_2026_final_v7.xlsx</li>
-        <li>WhatsApp-Gruppe</li>
-        <li>Papierformular</li>
-        <li>E-Mail-Anhänge</li>
-        <li>„Wer hat die neuste Liste?“</li>
-      </ul>
-
-      <div class="arrow-down">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-7-7 7 7 7-7"/></svg>
-      </div>
-
-      <p class="shot-label">Mit einer eigenen Web-App</p>
-      <div class="mock">
-        <div class="mock-bar">
-          <i></i><i></i><i></i>
-          <span>beispielname.alae.app</span>
-        </div>
-        <div class="mock-body">
-          <div class="mock-h">
-            <strong>Anmeldungen</strong>
-            <em>34 offen &middot; 128 total</em>
-          </div>
-          <div class="mock-rows">
-            <div class="mock-row"><span><b>M. Bieri</b><small>Kategorie B &middot; Zahlung erhalten</small></span><span class="status status--ok">bestätigt</span></div>
-            <div class="mock-row"><span><b>Verein Aareblick</b><small>4 Teams &middot; Rechnung versendet</small></span><span class="status">in Prüfung</span></div>
-            <div class="mock-row"><span><b>S. Kohler</b><small>Kategorie A &middot; Nachweis fehlt</small></span><span class="status">offen</span></div>
-          </div>
-          <div class="mock-foot">
-            <span>Automatisch aktualisiert &middot; für alle sichtbar</span>
-            <span class="mock-btn">Export</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ul class="trust-row">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-4.4 7-10V6l-7-3-7 3v5c0 5.6 7 10 7 10z"/></svg>
+        Standort Schweiz
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        Eine persönliche Ansprechperson
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Transparente Preise
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        Hosting in der Schweiz möglich
+      </li>
+    </ul>
   </div>
 </section>
 
 <!-- =====================================================================
-     TYPISCHE PROBLEME
+     ÜBER MICH
+     ---------------------------------------------------------------------
+     Fasst die früheren Abschnitte Ausgangslage, Ansatz, Leistungen und
+     Über mich zusammen.
      ===================================================================== -->
-<section id="probleme" class="band">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Ausgangslage</p>
-      <h2>Kommt dir eine dieser Situationen bekannt vor?</h2>
-      <p class="lead">
-        Die meisten Projekte beginnen nicht mit einer Technologiefrage, sondern mit einem Ablauf,
-        der jede Woche zu viel Zeit kostet.
-      </p>
-    </div>
+<section id="ueber-mich" class="band">
+  <div class="wrap about">
+    <figure class="portrait reveal">
+      <img src="assets/Alain.png" width="630" height="633" loading="lazy" alt="Porträt von Alain von Allmen">
+    </figure>
 
-    <div class="grid g-2">
-      <blockquote class="quote reveal">
-        <p>Ich möchte einfache Aufgaben digitalisieren, es gibt aber keine perfekte Webseite oder App für meine Bedürfnisse.</p>
-        <footer>Bestehende App ohne passenden Nutzen</footer>
-      </blockquote>
-      <blockquote class="quote reveal">
-        <p>Unsere Mitarbeitenden führen mehrere Excel-Listen – und niemand weiss sicher, welche die aktuelle ist.</p>
-        <footer>Doppelte Arbeit, veraltete Daten</footer>
-      </blockquote>
-      <blockquote class="quote reveal">
-        <p>Ich verarbeite immer wieder dieselben Informationen, und muss diese jedes Mal von Hand zusammenstellen.</p>
-        <footer>Zeitfresser im Tagesgeschäft</footer>
-      </blockquote>
-      <blockquote class="quote reveal">
-        <p>Wir möchten diesen Ablauf digitalisieren, wissen aber nicht, wo wir anfangen sollen.</p>
-        <footer>Fehlender erster Schritt</footer>
-      </blockquote>
-    </div>
-
-    <div class="after-quotes reveal">
-      <p>
-        <strong>Genau hier setze ich an.</strong> Statt eines Grossprojekts nehme ich einen konkreten Ablauf,
-        halte ihn in einem kurzen Konzept fest und baue dafür eine schlanke Anwendung –
-        etwas, das nach wenigen Wochen im Alltag benutzt wird und nicht nach Monaten in einer Präsentation steht.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- =====================================================================
-     ANSATZ / WARUM DAS FUNKTIONIERT
-     ===================================================================== -->
-<section id="ansatz">
-  <div class="wrap approach">
     <div class="reveal">
-      <p class="eyebrow">Der Ansatz</p>
-      <h2>Wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist</h2>
+      <p class="eyebrow">Über mich</p>
+      <h2>Angefangen hat es mit meinem eigenen Alltag</h2>
       <p class="lead" style="margin-top:1rem">
-        Ich entwickle schlanke digitale Lösungen. Kein Baukasten mit hundert Modulen,
-        die du nicht brauchst – sondern genau die Funktionen, die deinen Bedürfnissen entsprechen.
+        Ich bin Alain von Allmen und zu Web-Apps bin ich über ganz alltägliche Probleme gekommen:
+        eine Buchhaltung, die in Excel entstehen sollte. Dokumente, die niemand mehr fand. Fotos,
+        die ich mit der Familie teilen wollte, ohne sie einem Cloud-Anbieter zu überlassen.
       </p>
-
-      <ol class="approach-list">
-        <li>
-          <span class="num">01</span>
-          <div>
-            <h3>Moderne Entwicklungswerkzeuge</h3>
-            <p>
-              Durch moderne Entwicklungswerkzeuge kann ich individuelle Lösungen schneller und
-              kosteneffizienter umsetzen. Dadurch werden Projekte realistisch, die früher am Budget
-              gescheitert wären – bei gleichbleibender Sorgfalt bei Tests, Sicherheit und Betrieb.
-            </p>
-          </div>
-        </li>
-        <li>
-          <span class="num">02</span>
-          <div>
-            <h3>Klein anfangen, sauber wachsen</h3>
-            <p>
-              Ich starte mit dem Ablauf, der am meisten Zeit kostet. Du siehst früh einen klickbaren
-              Prototyp, entscheidest auf dieser Basis über den Umfang und erweiterst später Schritt für
-              Schritt – ohne alles neu zu bauen.
-            </p>
-          </div>
-        </li>
-        <li>
-          <span class="num">03</span>
-          <div>
-            <h3>Eine Ansprechperson, klare Verantwortung</h3>
-            <p>
-              Du sprichst von der ersten Idee bis zur Betreuung mit derselben Person. Kein
-              Projektbüro, keine Weitergabe an ein Team, das deinen Betrieb nicht kennt.
-            </p>
-          </div>
-        </li>
-      </ol>
-    </div>
-
-    <aside class="included reveal">
-      <h3>Bei jedem Projekt inbegriffen</h3>
-      <ul class="check">
-        <li><span><strong>Tests der wichtigsten Abläufe</strong> – bevor die Anwendung produktiv geht</span></li>
-        <li><span><strong>Datenschutz von Anfang an</strong> – nach schweizerischem Standard umsetzbar</span></li>
-        <li><span><strong>Automatische Backups</strong> und ein nachvollziehbarer Wiederherstellungsweg</span></li>
-        <li><span><strong>Einführung</strong> und eine kurze, verständliche Anleitung</span></li>
-        <li><span><strong>Klare Regelung zu Quellcode und Daten</strong> – schriftlich, vor Projektstart</span></li>
-        <li><span><strong>Betreuung nach dem Start</strong> – Anpassungen, Updates, Erreichbarkeit</span></li>
-      </ul>
-    </aside>
-  </div>
-</section>
-
-<!-- =====================================================================
-     LEISTUNGEN
-     ===================================================================== -->
-<section id="leistungen" class="band">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Leistungen</p>
-      <h2>Fünf Wege, wie ich dich unterstützen kann</h2>
       <p class="lead">
-        Von der einzelnen Automatisierung bis zur begleiteten Entwicklung eines eigenen Projekts.
+        Dabei habe ich gemerkt, wie stark eine einfache Web-App solche Abläufe verbessert – und wie
+        selten es dafür ein passendes Produkt gibt. Genau das biete ich heute an: für kleine
+        Betriebe, Privatpersonen, Schulen und Vereine.
       </p>
-    </div>
 
-    <div class="svc">
-      <article class="svc-item reveal">
-        <span class="num">01</span>
-        <div>
-          <h3>Individuelle Web-Apps</h3>
-          <p>
-            Eine Anwendung für deinen Ablauf: Erfassen, Prüfen, Freigeben, Auswerten – erreichbar im
-            Browser, auf dem Handy wie am Computer, ohne Installation. Mit Benutzerrollen, sodass jede
-            Person nur das sieht, was sie sehen soll.
-          </p>
-          <div class="svc-tags">
-            <span class="tag">Anmeldungen &amp; Formulare</span>
-            <span class="tag">Planung &amp; Kalender</span>
-            <span class="tag">Auswertungen</span>
-            <span class="tag">Rollen &amp; Rechte</span>
-          </div>
-        </div>
-        <div class="svc-fit">
-          <strong>Passt, wenn</strong>
-          ein wiederkehrender Ablauf heute über Excel, Papier oder Chat läuft und mehrere Personen
-          daran beteiligt sind.
-        </div>
-      </article>
-
-      <article class="svc-item reveal">
-        <span class="num">02</span>
-        <div>
-          <h3>Websites und Kundenportale</h3>
-          <p>
-            Eine schnelle, gut auffindbare Website – und wenn es mehr sein soll: ein geschützter
-            Bereich, in dem deine Kunden ihre Unterlagen, Termine, Bilder oder Bestellungen selbst
-            abrufen, statt sie bei dir anzufragen.
-          </p>
-          <div class="svc-tags">
-            <span class="tag">Website</span>
-            <span class="tag">Login-Bereich</span>
-            <span class="tag">Dokumente &amp; Downloads</span>
-            <span class="tag">Terminbuchung</span>
-          </div>
-        </div>
-        <div class="svc-fit">
-          <strong>Passt, wenn</strong>
-          dein Team viel Zeit mit dem Beantworten immer gleicher Kundenanfragen verbringt.
-        </div>
-      </article>
-
-      <article class="svc-item reveal">
-        <span class="num">03</span>
-        <div>
-          <h3>Automatisierungen und interne Tools</h3>
-          <p>
-            Kleine Lösungen mit grosser Wirkung: Daten aus einem System ins andere übertragen,
-            Erinnerungen und Bestätigungen automatisch versenden, Listen zusammenführen, Auswertungen
-            und PDF-Dokumente auf Knopfdruck erzeugen.
-          </p>
-          <div class="svc-tags">
-            <span class="tag">Schnittstellen</span>
-            <span class="tag">E-Mail-Automatisierung</span>
-            <span class="tag">PDF &amp; Export</span>
-            <span class="tag">Excel-Ersatz</span>
-          </div>
-        </div>
-        <div class="svc-fit">
-          <strong>Passt, wenn</strong>
-          eine Aufgabe jede Woche gleich abläuft und von Hand erledigt wird.
-        </div>
-      </article>
-
-      <article class="svc-item reveal">
-        <span class="num">04</span>
-        <div>
-          <h3>Coaching: mit KI-Werkzeugen selbst entwickeln</h3>
-          <p>
-            Für alle, die ihre Ideen selbst umsetzen möchten. Einzelcoaching an deinem eigenen Projekt:
-            Einführung in Cursor, Claude, Codex, GitHub und Deployment, Review eines bestehenden
-            KI-generierten Projekts und Begleitung von der Idee bis zur ersten veröffentlichten
-            Anwendung.
-          </p>
-          <div class="svc-tags">
-            <span class="tag">Einzelcoaching</span>
-            <span class="tag">Projektbegleitung</span>
-            <span class="tag">Code-Review</span>
-            <span class="tag">Deployment</span>
-          </div>
-        </div>
-        <div class="svc-fit">
-          <strong>Passt, wenn</strong>
-          du erste Erfahrungen mit KI-Werkzeugen gemacht hast und nun einen verlässlichen,
-          nachvollziehbaren Weg zur fertigen Anwendung suchst.
-        </div>
-      </article>
-
-      <article class="svc-item reveal">
-        <span class="num">05</span>
-        <div>
-          <h3>Weiterentwicklung und Betreuung bestehender Projekte</h3>
-          <p>
-            Du hast bereits eine Anwendung, aber niemanden, der sie weiterbringt? Ich übernehme
-            bestehende Projekte, bringe sie auf einen aktuellen Stand, schliesse Sicherheitslücken
-            und entwickle sie in kleinen, planbaren Etappen weiter.
-          </p>
-          <div class="svc-tags">
-            <span class="tag">Übernahme</span>
-            <span class="tag">Updates &amp; Sicherheit</span>
-            <span class="tag">Backups</span>
-            <span class="tag">Wartung</span>
-          </div>
-        </div>
-        <div class="svc-fit">
-          <strong>Passt, wenn</strong>
-          eine bestehende Lösung wichtig für deinen Betrieb ist, aber seit längerem niemand mehr
-          betreut.
-        </div>
-      </article>
+      <div class="trust-grid">
+        <div class="trust-card"><h4>Löst ein konkretes Problem</h4><p>Eine App für einen Ablauf, der heute Zeit kostet – nicht für alles auf einmal.</p></div>
+        <div class="trust-card"><h4>Individuell zugeschnitten</h4><p>Genau die Funktionen, die du brauchst. Keine, die du nie benutzt.</p></div>
+        <div class="trust-card"><h4>In der Schweiz</h4><p>Entwicklung und Betreuung von mir, Hosting auf Wunsch in der Schweiz.</p></div>
+        <div class="trust-card"><h4>Transparente Preise</h4><p>Pauschale oder Etappen, schriftlich vor Beginn – keine Überraschungen.</p></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1141,11 +745,6 @@ form .btn{width:100%; justify-content:center}
     <div class="sec-head reveal">
       <p class="eyebrow">Referenzprojekte</p>
       <h2>Apps, die heute im Einsatz sind</h2>
-      <p class="lead">
-        Keine Konzeptstudien: Jedes Projekt hier läuft im Alltag. Wo es möglich ist, kannst du die
-        App direkt öffnen und ausprobieren – wo Personendaten im Spiel sind, zeige ich Screenshots
-        statt einen offenen Zugang.
-      </p>
     </div>
 
     <!-- Projekt 1: WM 2026 DreamTeam ------------------------------------ -->
@@ -1597,11 +1196,6 @@ form .btn{width:100%; justify-content:center}
       </div>
     </details>
 
-    <p class="lead reveal" style="margin-top:1.75rem; font-size:.92em">
-      Du hast ein ähnliches Problem, aber in einer anderen Branche?
-      <a href="#kontakt">Schildere mir deinen Ablauf</a> – ich sage dir offen, ob sich eine eigene
-      Lösung lohnt oder ob ein bestehendes Produkt die bessere Wahl ist.
-    </p>
   </div>
 </section>
 
@@ -1612,10 +1206,7 @@ form .btn{width:100%; justify-content:center}
   <div class="wrap">
     <div class="sec-head reveal">
       <p class="eyebrow">Ablauf</p>
-      <h2>In sechs Schritten von der Idee zur laufenden Anwendung</h2>
-      <p class="lead">
-        Du weisst an jedem Punkt, was als Nächstes passiert, was es kostet und was du dafür erhältst.
-      </p>
+      <h2>Vier Schritte zur Web-App</h2>
     </div>
 
     <ol class="steps">
@@ -1623,90 +1214,38 @@ form .btn{width:100%; justify-content:center}
         <span class="step-dot">1</span>
         <div class="step-body">
           <h3>Kostenloses Erstgespräch</h3>
-          <p>Ich schaue mir deinen Ablauf gemeinsam mit dir an: Was läuft heute wie, wo geht Zeit verloren, was wäre der grösste Gewinn? Danach sage ich dir ehrlich, ob eine eigene Lösung sinnvoll ist.</p>
-          <span class="step-when">30–45 Minuten &middot; vor Ort, per Telefon oder Video &middot; kostenlos</span>
+          <p>Besprechung deiner Idee und deiner Bedürfnisse. Danach sage ich dir ehrlich, ob eine eigene Lösung sinnvoll ist.</p>
+          <span class="step-when">Vor Ort, per Telefon oder Video &middot; kostenlos und unverbindlich</span>
         </div>
       </li>
       <li class="step reveal">
         <span class="step-dot">2</span>
         <div class="step-body">
-          <h3>Anforderungen und Konzept</h3>
-          <p>Ich halte schriftlich fest, was die Anwendung können muss und was bewusst nicht dazugehört – in deiner Sprache, ohne Fachjargon. Diese Grundlage verhindert Missverständnisse und teure Umwege.</p>
-          <span class="step-when">Ergebnis: kurzes Konzeptdokument als Entscheidungsgrundlage</span>
+          <h3>Konzept und Angebot</h3>
+          <p>Offerte mit Preis und detaillierten Rahmenbedingungen.</p>
+          <span class="step-when">Schriftlich, bevor die Arbeit beginnt</span>
         </div>
       </li>
       <li class="step reveal">
         <span class="step-dot">3</span>
         <div class="step-body">
-          <h3>Festpreisangebot oder Entwicklungsetappen</h3>
-          <p>Kleinere Projekte erhalten einen Festpreis. Grössere teile ich in Etappen, die einzeln beauftragt werden – so bleibt das Risiko für dich überschaubar und du behältst die Kostenkontrolle.</p>
-          <span class="step-when">Transparent, ohne versteckte Positionen</span>
+          <h3>Entwicklung und Tests</h3>
+          <p>Klickbarer Prototyp, Besprechung von Details.</p>
+          <span class="step-when">Du siehst laufend Fortschritt und gibst Rückmeldung</span>
         </div>
       </li>
       <li class="step reveal">
         <span class="step-dot">4</span>
         <div class="step-body">
-          <h3>Klickbarer Prototyp</h3>
-          <p>Bevor die eigentliche Entwicklung beginnt, siehst und bedienst du die künftige Anwendung. Änderungen sind hier noch günstig – genau darum kommt dieser Schritt vor dem Programmieren.</p>
-          <span class="step-when">Du klickst dich durch und gibst Rückmeldung</span>
-        </div>
-      </li>
-      <li class="step reveal">
-        <span class="step-dot">5</span>
-        <div class="step-body">
-          <h3>Entwicklung und Tests</h3>
-          <p>Umsetzung in überprüfbaren Schritten, mit regelmässigen Zwischenständen zum Ausprobieren. Die wichtigsten Abläufe werden getestet, bevor die Anwendung produktiv geht.</p>
-          <span class="step-when">Du siehst laufend Fortschritt, keine monatelange Blackbox</span>
-        </div>
-      </li>
-      <li class="step reveal">
-        <span class="step-dot">6</span>
-        <div class="step-body">
-          <h3>Einführung und Betreuung</h3>
-          <p>Einführung deiner Mitarbeitenden, kurze Anleitung, Übergabe der Zugänge. Danach bleibe ich erreichbar: für Anpassungen, Updates, Backups und Erweiterungen.</p>
-          <span class="step-when">Betreuung monatlich oder nach Aufwand – du entscheidest</span>
+          <h3>Go-live und Betreuung</h3>
+          <p>Übergabe der Web-App, bei Bedarf weitere Wartung, Hosting und Support.</p>
+          <span class="step-when">Du entscheidest, wie viel Betreuung du möchtest</span>
         </div>
       </li>
     </ol>
   </div>
 </section>
 
-<!-- =====================================================================
-     ÜBER MICH / VERTRAUEN
-     ---------------------------------------------------------------------
-     ===================================================================== -->
-<section id="ueber-mich">
-  <div class="wrap about">
-    <figure class="portrait reveal">
-      <img src="assets/Alain.png" width="630" height="633" alt="Porträt von Alain von Allmen">
-    </figure>
-
-    <div class="reveal">
-      <p class="eyebrow">Über mich</p>
-      <h2>Du arbeitest direkt mit der Person, die entwickelt</h2>
-      <p class="lead" style="margin-top:1rem">
-        Ich bin Alain von Allmen, wohne in Oberburg, habe eine Familie mit drei Töchtern und
-        entwickle individuelle Web-Anwendungen für kleine Betriebe, Privatpersonen, Schulen und
-        Vereine. Kein Verkaufsteam, keine Zwischenstufen: Du schilderst mir deinen Ablauf, ich baue
-        die Lösung und betreue sie danach.
-      </p>
-      <p class="lead">
-        Was mich interessiert, sind nicht möglichst grosse Projekte, sondern Abläufe, bei denen eine
-        kleine Anwendung echte Zeit spart und das Leben vereinfacht. Wenn ich der Meinung bin, dass
-        ein bestehendes Produkt für dich günstiger ist, sage ich das.
-      </p>
-
-      <div class="trust-grid">
-        <div class="trust-card"><h4>Persönliche Ansprechperson</h4><p>Von der ersten Idee bis zur Betreuung immer dieselbe Person.</p></div>
-        <div class="trust-card"><h4>Standort Schweiz</h4><p>Region Bern und Emmental, Termine auch vor Ort möglich.</p></div>
-        <div class="trust-card"><h4>Transparente Preise</h4><p>Festpreis oder Etappen, schriftlich vor Beginn – keine Überraschungen.</p></div>
-        <div class="trust-card"><h4>Verständliche Kommunikation</h4><p>Erklärungen ohne Fachjargon, Entscheidungen bleiben bei dir.</p></div>
-        <div class="trust-card"><h4>Quellcode und Daten geregelt</h4><p>Wem was gehört und wer Zugriff hat, steht schriftlich fest.</p></div>
-        <div class="trust-card"><h4>Wartung und Backups</h4><p>Automatische Sicherungen, Updates und ein geprüfter Wiederherstellungsweg.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- =====================================================================
      PREISE
@@ -1753,11 +1292,7 @@ form .btn{width:100%; justify-content:center}
     </div>
 
     <div class="price-choice reveal">
-      <h3>Danach entscheidest du, wie viel du von mir brauchst</h3>
-      <p>
-        Beides ist möglich, und beides wirkt sich auf den Preis aus. Was du wählst, halten wir vor
-        Projektstart schriftlich fest.
-      </p>
+      <h3>Nach der Entwicklung der Web-App</h3>
       <div class="price-options">
         <div class="price-option">
           <h4>Übernehmen und selbst betreiben</h4>
@@ -1770,13 +1305,6 @@ form .btn{width:100%; justify-content:center}
       </div>
     </div>
 
-    <div class="after-quotes reveal">
-      <p>
-        <strong>Bedenken wegen der Kosten?</strong> Melde dich trotzdem. Im Erstgespräch siehst du,
-        was dein Anliegen ungefähr kostet – und wenn es sich für dich nicht lohnt, sage ich das
-        offen. Wir finden bestimmt eine Lösung.
-      </p>
-    </div>
   </div>
 </section>
 
@@ -1786,8 +1314,7 @@ form .btn{width:100%; justify-content:center}
 <section id="faq" class="band">
   <div class="wrap">
     <div class="sec-head reveal">
-      <p class="eyebrow">Häufige Fragen</p>
-      <h2>Was Kundinnen und Kunden zuerst fragen</h2>
+      <h2>FAQ</h2>
     </div>
 
     <div class="faq reveal">
@@ -1862,17 +1389,6 @@ form .btn{width:100%; justify-content:center}
           entstanden sind.
         </div>
       </details>
-      <details>
-        <summary>
-          Arbeitest du nur in der Region Bern?
-          <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-        </summary>
-        <div class="answer">
-          Der Schwerpunkt liegt in Burgdorf, im Emmental und in der Region Bern, weil persönliche
-          Termine viel vereinfachen. Zusammenarbeit in der übrigen Schweiz funktioniert per Video und
-          Telefon aber genauso gut.
-        </div>
-      </details>
     </div>
   </div>
 </section>
@@ -1892,14 +1408,7 @@ form .btn{width:100%; justify-content:center}
   <div class="wrap contact">
     <div class="reveal">
       <p class="eyebrow">Kontakt</p>
-      <h2>Erzähl mir von deinem Ablauf</h2>
-      <p class="lead" style="margin-top:1rem">
-        Die beste Frage zum Start ist nicht „brauche ich eine App?“, sondern:
-        <strong>Gibt es bei dir einen Ablauf mit Excel, Papier, E-Mail oder WhatsApp,
-        der regelmässig Zeit kostet oder Fehler verursacht?</strong>
-        Schildere mir diesen Ablauf in wenigen Sätzen – du erhältst eine ehrliche
-        Ersteinschätzung, ob und wie sich das lösen lässt.
-      </p>
+      <h2>Was ist deine Idee?</h2>
 
       <div class="contact-direct">
         <a href="mailto:kontakt@alae.app?subject=Anfrage%20%C3%BCber%20alae.app">
@@ -1911,21 +1420,8 @@ form .btn{width:100%; justify-content:center}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h3l2 5-2.5 1.5a12 12 0 0 0 5 5L14 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 3 5.2 2 2 0 0 1 5 3z"/></svg>
           <span><b>Telefon auf Anfrage</b><small>Nummer hier eintragen</small></span>
         </a>
-        <a href="#projekte">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-4.4 7-10a7 7 0 1 0-14 0c0 5.6 7 10 7 10z"/><circle cx="12" cy="11" r="2.5"/></svg>
-          <span><b>Burgdorf, Emmental &amp; Bern</b><small>Termine vor Ort möglich</small></span>
-        </a>
       </div>
 
-      <!-- Optional: Einführungsangebot für die ersten Referenzprojekte.
-           Block einfach löschen, wenn er nicht mehr passt. -->
-      <div class="after-quotes" style="margin-top:1.75rem">
-        <p style="font-size:.95em">
-          <strong>Für die nächsten zwei Referenzprojekte</strong> biete ich einen Einführungspreis –
-          im Gegenzug für ehrliche Rückmeldungen und die Erlaubnis, das Projekt anonymisiert oder
-          mit deinem Namen als Referenz zu zeigen.
-        </p>
-      </div>
     </div>
 
     <form class="reveal" id="contactForm" novalidate data-endpoint="/api/kontakt">
@@ -1988,26 +1484,16 @@ form .btn{width:100%; justify-content:center}
           </svg>
           <span>alae.app</span>
         </a>
-        <p>Schlanke digitale Lösungen, wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist.</p>
-      </div>
-      <div>
-        <h4>Leistungen</h4>
-        <ul>
-          <li><a href="#leistungen">Individuelle Web-Apps</a></li>
-          <li><a href="#leistungen">Websites &amp; Kundenportale</a></li>
-          <li><a href="#leistungen">Automatisierungen &amp; interne Tools</a></li>
-          <li><a href="#leistungen">Coaching mit KI-Werkzeugen</a></li>
-          <li><a href="#leistungen">Betreuung bestehender Projekte</a></li>
-        </ul>
+        <p>Individuelle Web-Apps, genau nach deinen Bedürfnissen.</p>
       </div>
       <div>
         <h4>Seite</h4>
         <ul>
-          <li><a href="#probleme">Ausgangslage</a></li>
+          <li><a href="#ueber-mich">Über mich</a></li>
           <li><a href="#projekte">Referenzprojekte</a></li>
           <li><a href="#ablauf">Ablauf</a></li>
           <li><a href="#preise">Preise</a></li>
-          <li><a href="#faq">Häufige Fragen</a></li>
+          <li><a href="#faq">FAQ</a></li>
           <li><a href="#kontakt">Kontakt</a></li>
         </ul>
       </div>
@@ -2017,7 +1503,7 @@ form .btn{width:100%; justify-content:center}
           <li><a href="mailto:kontakt@alae.app">kontakt@alae.app</a></li>
           <li><a href="#kontakt">Erstgespräch anfragen</a></li>
         </ul>
-        <p style="margin-top:.9rem">Burgdorf, Schweiz<br>Region Bern &amp; Emmental</p>
+        <p style="margin-top:.9rem">Schweiz</p>
       </div>
     </div>
 
@@ -2040,20 +1526,11 @@ form .btn{width:100%; justify-content:center}
   "name": "alae.app",
   "url": "https://alae.app/",
   "email": "kontakt@alae.app",
-  "description": "alae.app entwickelt schlanke individuelle Web-Apps, Kundenportale und Automatisierungen für KMU, Praxen, Schulen und Vereine – wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist.",
-  "areaServed": [
-    { "@type": "AdministrativeArea", "name": "Kanton Bern" },
-    { "@type": "Country", "name": "Schweiz" }
-  ],
-  "address": { "@type": "PostalAddress", "addressLocality": "Burgdorf", "addressRegion": "BE", "addressCountry": "CH" },
+  "description": "alae.app entwickelt individuelle Web-Apps für kleine Betriebe, Privatpersonen, Schulen und Vereine – genau nach deren Bedürfnissen statt Standardsoftware.",
+  "areaServed": { "@type": "Country", "name": "Schweiz" },
+  "address": { "@type": "PostalAddress", "addressCountry": "CH" },
   "knowsLanguage": ["de-CH", "de", "en"],
-  "makesOffer": [
-    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Individuelle Web-Apps" } },
-    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Websites und Kundenportale" } },
-    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automatisierungen und interne Tools" } },
-    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Coaching für Entwicklung mit KI-Werkzeugen" } },
-    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Weiterentwicklung und Betreuung bestehender Projekte" } }
-  ]
+  "makesOffer": { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Individuelle Web-Apps" } }
 }
 </script>
 
@@ -2063,26 +1540,6 @@ form .btn{width:100%; justify-content:center}
    ========================================================================= */
 (function () {
   'use strict';
-  var root = document.documentElement;
-
-  /* --- Farbschema: gespeicherte Wahl schlägt Systemeinstellung ---------- */
-  try {
-    var saved = localStorage.getItem('alae-theme');
-    if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
-  } catch (e) { /* Private Mode: einfach Systemeinstellung nutzen */ }
-
-  var themeBtn = document.getElementById('themeToggle');
-  if (themeBtn) {
-    themeBtn.addEventListener('click', function () {
-      var current = root.getAttribute('data-theme');
-      if (!current) {
-        current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
-      var next = current === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('alae-theme', next); } catch (e) {}
-    });
-  }
 
   /* --- Mobile Navigation ------------------------------------------------ */
   var burger = document.getElementById('burger');

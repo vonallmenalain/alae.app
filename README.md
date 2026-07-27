@@ -1,7 +1,7 @@
 # alae.app – Landingpage
 
-Einseitige Website für alae.app: individuelle Web-Apps, Kundenportale,
-Automatisierungen, Coaching und Betreuung bestehender Projekte.
+Einseitige Website für alae.app: individuelle Web-Apps, genau nach den
+Bedürfnissen der Kundschaft.
 
 Alles steckt in **`index.html`** – kein Build-Schritt, keine Abhängigkeiten,
 keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, fertig.
@@ -10,21 +10,17 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 
 | Abschnitt | Zweck |
 | --- | --- |
-| Hero | Nutzenversprechen + zwei Handlungsaufrufe |
-| Ausgangslage | Vier typische Situationen als Zitate, statt Technologie zuerst |
-| Der Ansatz | Warum das heute schneller und günstiger geht, plus „bei jedem Projekt inbegriffen“ |
-| Leistungen | Fünf Angebote, inkl. Coaching als eigenständige zweite Dienstleistung |
+| Hero | Nutzenversprechen, ein Handlungsaufruf, vier Vertrauenspunkte |
+| Über mich | Wie es angefangen hat, Porträt und vier Fixpunkte |
 | Referenzprojekte | Sechs echte Apps, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
-| Ablauf | Sechs Schritte vom Erstgespräch bis zur Betreuung |
-| Über mich | Persönliche Vorstellung mit Porträt und sechs Vertrauenspunkte |
-| Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl zwischen Übernahme und Betreuung |
-| Häufige Fragen | Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
-| Kontakt | Formular mit der qualifizierenden Einstiegsfrage |
+| Ablauf | Vier Schritte vom Erstgespräch bis zur Betreuung |
+| Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl nach der Entwicklung |
+| FAQ | Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
+| Kontakt | Formular unter der Frage „Was ist deine Idee?" |
 
-Positionierung bewusst so gewählt: „Vibe Coding“ steht **nicht** im Hauptversprechen.
-Im Hero geht es um moderne Entwicklungswerkzeuge, die individuelle Lösungen
-schneller und kosteneffizienter machen – Coaching zu KI-Werkzeugen ist Leistung
-Nummer 4.
+Die früheren Abschnitte Ausgangslage, Der Ansatz und Leistungen sind in
+„Über mich" aufgegangen. Damit ist auch die Aufzählung der fünf
+Dienstleistungen entfallen, unter anderem das Coaching zu KI-Werkzeugen.
 
 ## Vor der Veröffentlichung anpassen
 
@@ -36,8 +32,6 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [x] **Screenshots aller sechs Projekte und Porträt** – eingebunden; bei den drei
       geschützten Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
       (Details in `assets/README.md`)
-- [ ] **Ortsangabe vereinheitlichen** – „Über mich" nennt neu Oberburg, Footer und
-      strukturierte Daten nennen weiterhin Burgdorf. Je nach Geschäftsadresse angleichen
 - [ ] **Projekttexte prüfen** – bei allen sechs Apps stammen Ausgangslage und Problem
       von dir, Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und
       gegenzulesen
@@ -48,8 +42,6 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **Vorschaubild für Social Media** – `og:image`, 1200 × 630 px
 - [ ] **Richtwert CHF 200 prüfen** – steht im Abschnitt „Preise" und in der FAQ-Antwort
       „Was kostet eine individuelle App?". Bei einer Änderung beide Stellen anpassen
-- [ ] **Einführungspreis-Block** im Kontaktbereich entfernen, wenn die ersten
-      Referenzprojekte vergeben sind
 
 ## Kontaktformular
 
@@ -96,7 +88,7 @@ Statische Datei, funktioniert auf jedem Hosting:
 
 ## Technische Eigenschaften
 
-- Hell- und Dunkelmodus: folgt dem System, Umschalter im Header merkt die Wahl
+- Hell- und Dunkelmodus: folgt automatisch der Systemeinstellung
 - Responsiv ab 320 px, keine horizontale Scrollleiste
 - Tastaturbedienbar, „Direkt zum Inhalt“-Link, sichtbarer Fokus, `prefers-reduced-motion`
 - Semantisches HTML mit strukturierten Daten (`ProfessionalService`) für Suchmaschinen
