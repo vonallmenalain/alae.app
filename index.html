@@ -194,6 +194,20 @@ section{padding-block:var(--section-y)}
   color:var(--accent); font-size:.76rem; font-weight:600; letter-spacing:.01em;
   white-space:nowrap;
 }
+/* Badge für öffentlich erreichbare Apps */
+.pill--live{
+  background:color-mix(in srgb, var(--ok) 12%, transparent);
+  border-color:color-mix(in srgb, var(--ok) 34%, transparent);
+  color:var(--ok);
+}
+.pill--live::before{
+  content:""; width:.45rem; height:.45rem; border-radius:50%; background:currentColor;
+}
+/* Badge für geschützte Apps ohne öffentlichen Zugang */
+.pill--closed{
+  background:var(--bg-2); border-color:var(--line-strong); color:var(--muted);
+}
+
 .tag{
   display:inline-block; padding:.28rem .6rem; border-radius:var(--r-sm);
   background:var(--bg-2); border:1px solid var(--line);
@@ -500,6 +514,22 @@ section{padding-block:var(--section-y)}
   padding:0 clamp(1.25rem,2.4vw,1.65rem) clamp(1.4rem,2.4vw,1.75rem);
   border-top:1px solid var(--line); margin-top:.25rem; padding-top:1.4rem;
 }
+/* Link zur laufenden App – steht ganz oben im aufgeklappten Bereich */
+.proj-open{
+  display:flex; flex-wrap:wrap; align-items:center; gap:.75rem 1rem; margin-bottom:1.5rem;
+}
+.proj-open a{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.6rem 1.05rem; border-radius:999px;
+  background:var(--text); color:var(--bg); border:1px solid var(--text);
+  font-size:.88rem; font-weight:650; text-decoration:none;
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+.proj-open a:hover{transform:translateY(-1px); box-shadow:var(--shadow-md)}
+.proj-open a svg{flex:none}
+.proj-open small{color:var(--muted); font-size:.82rem}
+@media (prefers-reduced-motion: reduce){ .proj-open a:hover{transform:none} }
+
 .proj-cols{display:grid; gap:1.5rem 2rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))}
 .proj-block h4{
   font-family:var(--mono); font-size:.72rem; letter-spacing:.11em; text-transform:uppercase;
@@ -1034,37 +1064,46 @@ form .btn{width:100%; justify-content:center}
 <!-- =====================================================================
      REFERENZPROJEKTE
      ---------------------------------------------------------------------
-     TODO (wichtig): Die Projekttexte sind ein erster Entwurf auf Basis des
-     Konzepts. Bitte Zahlen, Namen und Details vor der Veröffentlichung
-     prüfen und die Screenshot-Platzhalter (.shot-slot) durch echte Bilder
-     ersetzen, z.B.:
-       <img src="assets/turnier-app-uebersicht.png" width="1200" height="750"
-            alt="Übersicht der Turnier-App mit Teamliste" loading="lazy">
-     Bei Kundenprojekten vorher Freigabe für Referenz und Screenshots einholen.
+     Hier stehen nur echte, laufende Apps. Zwei Arten von Nachweis:
+       a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
+       b) geschützt / mit Login  -> nur Screenshots + Badge "Geschützt"
+
+     TODO (wichtig): Die Beschreibungen sind ein Entwurf. Ich konnte die Apps
+     nicht selbst öffnen, deshalb bitte pro Projekt prüfen und korrigieren:
+       - Ausgangslage, Problem, Lösung und Ergebnis
+       - die Liste der wichtigsten Funktionen
+       - Angaben zu Datenschutz und Hosting
+
+     TODO: Screenshot-Platzhalter (.shot-slot) durch echte Bilder ersetzen:
+       <img src="assets/dt-uebersicht.png" width="1200" height="750"
+            alt="Übersicht des DreamTeam mit Rangliste" loading="lazy">
+     Bei Kundenprojekten (Fotografin) vorher die Freigabe für Referenz und
+     Screenshots einholen.
      ===================================================================== -->
 <section id="projekte">
   <div class="wrap">
     <div class="sec-head reveal">
       <p class="eyebrow">Referenzprojekte</p>
-      <h2>Projekte, die aus einem konkreten Problem entstanden sind</h2>
+      <h2>Apps, die heute im Einsatz sind</h2>
       <p class="lead">
-        Bei jedem Projekt zählt nicht die Technologie, sondern was sich im Alltag verändert hat.
-        Aufklappen für Ausgangslage, Lösung und Ergebnis.
+        Keine Konzeptstudien: Jedes Projekt hier läuft im Alltag. Wo es möglich ist, kannst du die
+        App direkt öffnen und ausprobieren – wo Personendaten im Spiel sind, zeige ich Screenshots
+        statt einen offenen Zugang.
       </p>
     </div>
 
-    <!-- Projekt 1 -->
+    <!-- Projekt 1: WM 2026 DreamTeam ------------------------------------ -->
     <details class="proj reveal">
       <summary>
         <div>
           <div class="proj-meta">
-            <span class="pill">Vereine &amp; Veranstalter</span>
-            <span class="tag">Web-App</span>
+            <span class="pill pill--live">Live</span>
+            <span class="tag">dt.alae.app</span>
           </div>
-          <p class="proj-title">Turnier- und DreamTeam-App</p>
+          <p class="proj-title">WM 2026 DreamTeam</p>
           <p class="proj-sum">
-            Anmeldungen, Teams, Spielplan und Rangliste an einem Ort – statt Excel-Listen,
-            die per E-Mail hin und her geschickt werden.
+            Eigenes Traumteam für die Fussball-WM 2026 zusammenstellen und im Freundes- oder
+            Arbeitskreis gegeneinander antreten – mit Rangliste, die sich selbst aktualisiert.
           </p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
@@ -1072,65 +1111,72 @@ form .btn{width:100%; justify-content:center}
         </span>
       </summary>
       <div class="proj-detail">
+        <div class="proj-open">
+          <a href="https://dt.alae.app" target="_blank" rel="noopener">
+            App öffnen
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
+          </a>
+          <small>dt.alae.app &middot; öffnet in einem neuen Tab</small>
+        </div>
         <div class="proj-cols">
           <div class="proj-block">
             <h4>Ausgangslage</h4>
-            <p>Ein Turnier mit vielen Teams wurde über Excel-Listen, E-Mails und eine WhatsApp-Gruppe organisiert. Mehrere Personen im Organisationsteam pflegten parallel eigene Versionen.</p>
+            <p>Tippspiele zu einer Fussball-WM entstehen meist in einer Excel-Tabelle und einer Chat-Gruppe. Eine Person sammelt die Teams ein und trägt nach jedem Spieltag die Punkte nach.</p>
           </div>
           <div class="proj-block">
             <h4>Problem</h4>
-            <p>Anmeldungen gingen unter, Änderungen erreichten nicht alle, und der Spielplan musste bei jeder Anpassung von Hand neu erstellt werden. Am Turniertag fehlte allen der aktuelle Stand.</p>
+            <p>Das Auswerten von Hand kostet an jedem Spieltag Zeit, schleicht sich mit Fehlern ein und der Zwischenstand ist immer veraltet. Diskussionen über die Punktzahl gehören dazu.</p>
           </div>
           <div class="proj-block">
             <h4>Umgesetzte Lösung</h4>
-            <p>Eine Web-App, in der sich Teams selbst anmelden, das Organisationsteam Anmeldungen freigibt und Spielplan sowie Rangliste automatisch aus den erfassten Resultaten entstehen – live sichtbar für alle Beteiligten.</p>
+            <p>Eine Web-App, in der jede Person ihr eigenes DreamTeam zusammenstellt. Die Punkte entstehen automatisch aus den Spielergebnissen, die Rangliste aktualisiert sich für alle gleichzeitig.</p>
           </div>
           <div class="proj-block">
             <h4>Wichtigste Funktionen</h4>
             <ul>
-              <li>Anmeldung mit Bestätigung per E-Mail</li>
-              <li>Teams, Kategorien und Zahlungsstatus</li>
-              <li>Automatischer Spielplan, Resultaterfassung am Handy</li>
-              <li>Live-Rangliste für Teilnehmende und Publikum</li>
-              <li>Rollen für Organisation, Schiedsrichter und Gäste</li>
+              <li>Eigenes Team zusammenstellen</li>
+              <li>Automatische Punkteberechnung</li>
+              <li>Rangliste, für alle gleichzeitig aktuell</li>
+              <li>Eigene Gruppe für Freunde oder Team</li>
+              <li>Auf dem Handy bedienbar, ohne App-Store</li>
             </ul>
           </div>
           <div class="proj-block">
             <h4>Datenschutz &amp; Hosting</h4>
-            <p>Nur die für die Durchführung nötigen Daten. Zugriff über persönliche Konten, öffentliche Ansicht ohne Personendaten. Hosting nach Wunsch in der Schweiz.</p>
+            <p>Nur die Daten, die für das Spiel nötig sind: Anzeigename und Teamauswahl. Keine Weitergabe an Dritte, keine Werbung. Hosting in der Schweiz.</p>
           </div>
           <div class="proj-block">
             <h4>Technik</h4>
-            <p>Web-App für Browser und Handy, ohne Installation. Zugriff über Link, Betrieb und Backups laufen automatisch.</p>
+            <p>Läuft im Browser auf Handy und Computer, ohne Installation. Zugriff über den Link, Betrieb und Backups laufen automatisch.</p>
           </div>
 
-          <!-- Screenshot-Platzhalter: durch <img> ersetzen -->
+          <!-- TODO: optional – Screenshot ergänzen oder diesen Block löschen,
+               die App ist ja öffentlich erreichbar. -->
           <div class="shot-slot">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
-            <span>Screenshot: Übersicht mit Anmeldungen und Spielplan</span>
+            <span>Screenshot: Teamaufstellung und Rangliste</span>
           </div>
 
           <p class="proj-result">
-            <strong>Ergebnis:</strong> Die Organisation arbeitet mit einem einzigen, immer aktuellen Stand.
-            Anmeldungen kommen strukturiert an, der Spielplan entsteht auf Knopfdruck, und Fragen zum
-            aktuellen Zwischenstand beantwortet die App selbst.
+            <strong>Ergebnis:</strong> Niemand muss mehr Punkte nachtragen. Alle sehen jederzeit
+            denselben Stand, und das Tippspiel läuft ohne Betreuung durch das ganze Turnier.
           </p>
         </div>
       </div>
     </details>
 
-    <!-- Projekt 2 -->
+    <!-- Projekt 2: Jass App --------------------------------------------- -->
     <details class="proj reveal">
       <summary>
         <div>
           <div class="proj-meta">
-            <span class="pill">Schulen &amp; Kindergärten</span>
-            <span class="tag">Web-App</span>
+            <span class="pill pill--live">Live</span>
+            <span class="tag">jass.alae.app</span>
           </div>
-          <p class="proj-title">Foto-App für Schulen und Eltern</p>
+          <p class="proj-title">Jass App</p>
           <p class="proj-sum">
-            Klassen- und Anlassfotos sicher an die richtigen Eltern verteilen – ohne Cloud-Abo,
-            ohne WhatsApp-Qualität, ohne Bilder, die überall landen.
+            Punkte einer Jassrunde digital schreiben: Stand jederzeit sichtbar, richtig gerechnet –
+            statt einem Zettel, den am Schluss niemand mehr entziffern kann.
           </p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
@@ -1138,64 +1184,71 @@ form .btn{width:100%; justify-content:center}
         </span>
       </summary>
       <div class="proj-detail">
+        <div class="proj-open">
+          <a href="https://jass.alae.app" target="_blank" rel="noopener">
+            App öffnen
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
+          </a>
+          <small>jass.alae.app &middot; öffnet in einem neuen Tab</small>
+        </div>
         <div class="proj-cols">
           <div class="proj-block">
             <h4>Ausgangslage</h4>
-            <p>Nach jedem Anlass entstehen hunderte Fotos. Verteilt wurden sie bisher über Chat-Gruppen, USB-Sticks und E-Mail-Anhänge.</p>
+            <p>Beim Jassen werden die Punkte traditionell mit Stift auf einen Zettel geschrieben und laufend zusammengezählt.</p>
           </div>
           <div class="proj-block">
             <h4>Problem</h4>
-            <p>Bilder wurden komprimiert und verloren an Qualität, Anhänge waren zu gross, und niemand konnte nachvollziehen, wer welche Fotos erhalten hat – bei Kinderbildern besonders heikel.</p>
+            <p>Zusammenzählen von Hand führt zu Rechenfehlern und Diskussionen, der Zettel ist schnell unleserlich oder verloren, und vom Spielverlauf bleibt nichts erhalten.</p>
           </div>
           <div class="proj-block">
             <h4>Umgesetzte Lösung</h4>
-            <p>Ein geschützter Bereich pro Klasse oder Anlass. Die Schule lädt Originalfotos hoch, Eltern erhalten einen persönlichen Zugang und laden nur die Bilder herunter, die für sie freigegeben sind – in Originalqualität.</p>
+            <p>Eine schlanke Web-App fürs Handy: Punkte pro Runde eintippen, die Summen entstehen automatisch, der Stand ist für alle am Tisch sichtbar und der Verlauf bleibt erhalten.</p>
           </div>
           <div class="proj-block">
             <h4>Wichtigste Funktionen</h4>
             <ul>
-              <li>Upload vieler Fotos auf einmal, ohne Qualitätsverlust</li>
-              <li>Zugang pro Klasse, Anlass oder Familie</li>
-              <li>Auswahl und Download als ZIP-Datei</li>
-              <li>Ablaufdatum für Freigaben</li>
-              <li>Übersicht, welche Alben aktiv sind</li>
+              <li>Spielende beziehungsweise Teams erfassen</li>
+              <li>Punkte pro Runde eintippen</li>
+              <li>Automatische Summen und Zwischenstand</li>
+              <li>Verlauf einer Partie einsehen</li>
+              <li>Ohne Installation, direkt im Browser</li>
             </ul>
           </div>
           <div class="proj-block">
             <h4>Datenschutz &amp; Hosting</h4>
-            <p>Kinderfotos sind besonders schützenswert: Zugriff nur mit persönlichem Konto, keine öffentlichen Links, Löschfristen einstellbar. Hosting in der Schweiz oder auf Infrastruktur der Schule.</p>
+            <p>Es werden nur die Angaben gespeichert, die für den Spielstand nötig sind. Keine Werbung, keine Weitergabe an Dritte. Hosting in der Schweiz.</p>
           </div>
           <div class="proj-block">
             <h4>Technik</h4>
-            <p>Läuft im Browser, auch auf dem Handy. Speicherung auf eigenem Server oder in einem Schweizer Rechenzentrum – kein zusätzliches Foto-Abonnement nötig.</p>
+            <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
           </div>
 
+          <!-- TODO: optional – Screenshot ergänzen oder diesen Block löschen. -->
           <div class="shot-slot">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
-            <span>Screenshot: Albumansicht mit Auswahl und Download</span>
+            <span>Screenshot: Punkteerfassung und Zwischenstand</span>
           </div>
 
           <p class="proj-result">
-            <strong>Ergebnis:</strong> Eltern erhalten Originalfotos ohne Cloud-Abonnement und ohne
-            Qualitätsverlust, die Schule behält die Kontrolle darüber, wer welche Bilder sieht –
-            und das Verteilen dauert Minuten statt Stunden.
+            <strong>Ergebnis:</strong> Kein Rechnen und kein Streit über den Stand mehr – ein gutes
+            Beispiel dafür, wie klein eine sinnvolle App sein darf.
           </p>
         </div>
       </div>
     </details>
 
-    <!-- Projekt 3 -->
+    <!-- Projekt 3: Volleyballturnier ------------------------------------ -->
     <details class="proj reveal">
       <summary>
         <div>
           <div class="proj-meta">
-            <span class="pill">Familien &amp; Gruppen</span>
-            <span class="tag">Web-App</span>
+            <span class="pill pill--live">Live</span>
+            <span class="tag">pvt.alae.app</span>
           </div>
-          <p class="proj-title">Familien- und Ferien-Sharing-App</p>
+          <p class="proj-title">Volleyballturnier</p>
           <p class="proj-sum">
-            Ferien gemeinsam planen: Termine, Aufgaben, Einkaufslisten, Fotos und Kosten
-            in einer App, die alle Beteiligten auch wirklich benutzen.
+            Anmeldungen, Spielplan, Resultate und Rangliste eines Turniers an einem Ort – erfasst
+            direkt am Spielfeld, sichtbar für alle Teams und Zuschauenden.
           </p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
@@ -1203,6 +1256,158 @@ form .btn{width:100%; justify-content:center}
         </span>
       </summary>
       <div class="proj-detail">
+        <div class="proj-open">
+          <a href="https://pvt.alae.app" target="_blank" rel="noopener">
+            App öffnen
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
+          </a>
+          <small>pvt.alae.app &middot; öffnet in einem neuen Tab</small>
+        </div>
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Ein Volleyballturnier mit mehreren Teams wurde über Excel-Listen, E-Mails und Papier organisiert. Mehrere Personen im Organisationsteam pflegten parallel eigene Versionen.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Der Spielplan musste bei jeder Änderung von Hand neu erstellt werden, Resultate lagen am Turniertag auf verschiedenen Blättern, und die Rangliste entstand mühsam am Schluss.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Eine Web-App mit Anmeldung der Teams, automatisch erzeugtem Spielplan und Resultaterfassung direkt auf dem Handy am Spielfeld. Rangliste und Spielplan sind live für alle sichtbar.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Anmeldung der Teams</li>
+              <li>Gruppen beziehungsweise Kategorien</li>
+              <li>Spielplan, ohne Handarbeit</li>
+              <li>Resultaterfassung am Handy</li>
+              <li>Live-Rangliste, öffentlich einsehbar</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Nur die für die Durchführung nötigen Daten. Die öffentliche Ansicht zeigt Teams und Resultate, keine Kontaktdaten. Hosting in der Schweiz.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Technik</h4>
+            <p>Läuft im Browser auf Handy und Computer. Der Zugriff erfolgt über einen Link, Rollen trennen Organisation und Publikum.</p>
+          </div>
+
+          <!-- TODO: optional – Screenshot ergänzen oder diesen Block löschen. -->
+          <div class="shot-slot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
+            <span>Screenshot: Spielplan und Live-Rangliste</span>
+          </div>
+
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Das Organisationsteam arbeitet mit einem einzigen, immer
+            aktuellen Stand. Fragen zum Zwischenstand beantwortet die App selbst.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Projekt 4: Fotoverkauf (geschützt) ------------------------------ -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <div class="proj-meta">
+            <span class="pill pill--closed">Geschützt</span>
+            <span class="tag">photographic.alae.app</span>
+          </div>
+          <p class="proj-title">Fotoverkauf für eine Fotografin</p>
+          <p class="proj-sum">
+            Eltern sehen die Fotos ihres Kindes in einem geschützten Bereich und bestellen direkt
+            dort – ohne Papierlisten und ohne dass Kinderbilder öffentlich im Netz stehen.
+          </p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-open">
+          <small>
+            <strong>Kein öffentlicher Link:</strong> Die App enthält Fotos von Kindern und ist nur
+            mit persönlichem Zugang erreichbar. Deshalb hier nur Screenshots.
+          </small>
+        </div>
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Eine Fotografin fotografiert Kinder und möchte die Bilder den Eltern zum Ansehen und Kaufen anbieten.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Der Weg über Musterabzüge, Papierlisten und E-Mail-Anhänge ist aufwendig: Bilder müssen den richtigen Familien zugeordnet, Bestellungen abgetippt und Rückfragen einzeln beantwortet werden. Gleichzeitig dürfen Kinderfotos nicht offen im Netz liegen.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Ein geschützter Bereich pro Familie: Eltern melden sich mit einem persönlichen Zugang an, sehen ausschliesslich die Bilder ihres Kindes, wählen aus und bestellen direkt in der App. Die Fotografin erhält alle Bestellungen gesammelt in einer Übersicht.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Persönlicher Zugang pro Familie</li>
+              <li>Galerie mit den eigenen Bildern</li>
+              <li>Auswahl und Bestellung in der App</li>
+              <li>Bestellübersicht für die Fotografin</li>
+              <li>Freigaben mit Ablaufdatum</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Kinderfotos sind besonders schützenswert: kein öffentlicher Zugriff, keine offenen Links, kein Auffinden über Suchmaschinen, Löschfristen einstellbar. Hosting in der Schweiz.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Technik</h4>
+            <p>Läuft im Browser auf Handy und Computer. Bilder werden in Originalqualität ausgeliefert, ohne zusätzliches Foto-Abonnement.</p>
+          </div>
+
+          <!-- TODO: Screenshots nachliefern (Galerie, Auswahl, Bestellübersicht).
+               Vorher die Freigabe der Fotografin einholen und darauf achten,
+               dass auf den Screenshots keine erkennbaren Kinder zu sehen sind –
+               am besten eine Demo-Galerie mit eigenen Bildern verwenden. -->
+          <div class="shot-slot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
+            <span>Screenshot: Galerie mit Auswahl und Bestellung</span>
+          </div>
+
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Eltern bestellen selbständig, die Fotografin hat alle
+            Bestellungen an einem Ort – und die Bilder bleiben trotzdem geschützt.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Projekt 5: Familien- und Ferien-Sharing (geschützt) ------------- -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <div class="proj-meta">
+            <span class="pill pill--closed">Geschützt</span>
+            <span class="tag">share.alae.app</span>
+          </div>
+          <p class="proj-title">Familien- und Ferien-Sharing</p>
+          <p class="proj-sum">
+            Ferien gemeinsam planen: Termine, Aufgaben, Einkaufslisten, Fotos und Kosten in einer
+            App, die alle Beteiligten auch wirklich benutzen.
+          </p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-open">
+          <small>
+            <strong>Kein öffentlicher Link:</strong> Die App enthält private Inhalte von Familien
+            und ist nur für eingeladene Mitglieder erreichbar. Deshalb hier nur Screenshots.
+          </small>
+        </div>
         <div class="proj-cols">
           <div class="proj-block">
             <h4>Ausgangslage</h4>
@@ -1228,13 +1433,16 @@ form .btn{width:100%; justify-content:center}
           </div>
           <div class="proj-block">
             <h4>Datenschutz &amp; Hosting</h4>
-            <p>Private Gruppen, Inhalte nur für eingeladene Mitglieder sichtbar, keine Weitergabe an Dritte, keine Werbung.</p>
+            <p>Private Gruppen, Inhalte nur für eingeladene Mitglieder sichtbar, keine Weitergabe an Dritte, keine Werbung. Hosting in der Schweiz.</p>
           </div>
           <div class="proj-block">
             <h4>Technik</h4>
             <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
           </div>
 
+          <!-- TODO: Screenshots nachliefern (Kalender, Listen, Kostenübersicht).
+               Vor der Veröffentlichung Namen und private Inhalte unkenntlich
+               machen oder eine Demo-Gruppe mit Beispieldaten verwenden. -->
           <div class="shot-slot">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
             <span>Screenshot: Kalender, Listen und Kostenübersicht</span>
@@ -1243,122 +1451,6 @@ form .btn{width:100%; justify-content:center}
           <p class="proj-result">
             <strong>Ergebnis:</strong> Ein Ort statt fünf Kanäle. Die Abrechnung am Schluss dauert
             Minuten, und niemand muss mehr im Chat nach oben scrollen, um etwas zu finden.
-          </p>
-        </div>
-      </div>
-    </details>
-
-    <!-- Projekt 4 -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <div class="proj-meta">
-            <span class="pill">Bausteine für dein Projekt</span>
-            <span class="tag">Module</span>
-          </div>
-          <p class="proj-title">Finanz-, Kalender- und Listenmodule</p>
-          <p class="proj-sum">
-            Wiederverwendbare Bausteine aus bestehenden Projekten – dadurch entstehen neue
-            Anwendungen schneller und günstiger.
-          </p>
-        </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Viele Projekte brauchen dieselben Grundfunktionen: etwas erfassen, planen, auswerten und exportieren.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Wenn diese Funktionen jedes Mal von Null entstehen, wird jedes Projekt unnötig teuer – und jeder Fehler zweimal gemacht.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Erprobte Module, die sich kombinieren und anpassen lassen: Budget- und Kostenübersichten, Kalender mit Terminen und Erinnerungen, Listen mit Zuständigkeiten und Status sowie Auswertungen als Excel- oder PDF-Export.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Budget, Ausgaben und Aufteilung</li>
-              <li>Kalender, Fristen und Erinnerungen</li>
-              <li>Listen mit Status und Verantwortlichkeiten</li>
-              <li>Export nach Excel und PDF</li>
-              <li>Benutzerkonten, Rollen und Rechte</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <h4>Datenschutz &amp; Hosting</h4>
-            <p>Jedes Projekt erhält eine eigene, getrennte Datenhaltung. Keine gemeinsame Datenbank über mehrere Kunden hinweg.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Nutzen für dich</h4>
-            <p>Dein Projekt startet nicht bei Null: Bewährte Teile sind vorhanden, individuell wird nur, was deinen Ablauf tatsächlich ausmacht.</p>
-          </div>
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Kürzere Entwicklungszeit, tiefere Kosten und weniger Kinderkrankheiten,
-            weil die Grundfunktionen bereits im Einsatz erprobt sind.
-          </p>
-        </div>
-      </div>
-    </details>
-
-    <!-- Projekt 5 -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <div class="proj-meta">
-            <span class="pill">Betrieb &amp; Hosting</span>
-            <span class="tag">Infrastruktur</span>
-          </div>
-          <p class="proj-title">Eigenes Hosting mit QNAP und Cloudflare</p>
-          <p class="proj-sum">
-            Betrieb auf eigener Infrastruktur mit gesicherter Erreichbarkeit – wenn Daten
-            das Haus nicht verlassen sollen.
-          </p>
-        </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Manche Daten – Personendaten, Fotos, interne Dokumente – sollen nicht bei einem grossen Anbieter im Ausland liegen.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Ein eigener Server ist schnell aufgestellt, aber schwierig sicher erreichbar zu machen: offene Ports, fehlende Verschlüsselung, unklare Backups.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Betrieb auf einem eigenen NAS beziehungsweise Server, sicher erreichbar über einen verschlüsselten Tunnel und Cloudflare – ohne offene Ports im Netzwerk, mit HTTPS, Zugriffsschutz und automatischen Backups.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Keine offenen Ports nach aussen</li>
-              <li>Verschlüsselte Verbindung, eigene Domain</li>
-              <li>Automatische Backups mit Wiederherstellungstest</li>
-              <li>Zugriffsschutz und Protokollierung</li>
-              <li>Alternativ: Hosting in einem Schweizer Rechenzentrum</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <h4>Datenschutz &amp; Hosting</h4>
-            <p>Die Daten bleiben dort, wo du es wünschst – im eigenen Haus oder in der Schweiz. Du behältst die Kontrolle über Zugriffe und Aufbewahrung.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Nutzen für dich</h4>
-            <p>Du kannst auch heikle Abläufe digitalisieren, ohne Daten aus der Hand zu geben – bei überschaubaren laufenden Kosten.</p>
-          </div>
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Volle Datenhoheit mit dem Bedienkomfort einer Cloud-Lösung:
-            Zugriff von überall über eine eigene Adresse, aber Speicherung dort, wo sie hingehört.
           </p>
         </div>
       </div>

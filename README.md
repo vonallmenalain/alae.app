@@ -14,7 +14,7 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 | Ausgangslage | Vier typische Situationen als Zitate, statt Technologie zuerst |
 | Der Ansatz | Warum das heute schneller und günstiger geht, plus „bei jedem Projekt inbegriffen“ |
 | Leistungen | Fünf Angebote, inkl. Coaching als eigenständige zweite Dienstleistung |
-| Referenzprojekte | Aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
+| Referenzprojekte | Fünf echte Apps, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
 | Ablauf | Sechs Schritte vom Erstgespräch bis zur Betreuung |
 | Über mich | Persönliche Vorstellung und sechs Vertrauenspunkte |
 | Häufige Fragen | Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
@@ -32,11 +32,14 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [ ] **Telefonnummer** – Platzhalter `+41000000000` ersetzen oder den Block löschen
-- [ ] **Projekttexte prüfen** – die fünf Referenzprojekte sind ein Entwurf auf Basis
-      des Konzepts. Zahlen, Namen und Details verifizieren; bei Kundenprojekten
-      vorher die Freigabe für Referenz und Screenshots einholen
+- [ ] **Projekttexte prüfen** – die fünf Referenzprojekte sind ein Entwurf. Ausgangslage,
+      Problem, Lösung, Funktionsliste und Ergebnis pro App verifizieren; beim
+      Kundenprojekt (Fotografin) vorher die Freigabe für Referenz und Screenshots einholen
 - [ ] **Screenshots** – Platzhalter `.shot-slot` durch echte Bilder ersetzen:
-      `<img src="assets/turnier-uebersicht.png" width="1200" height="750" alt="…" loading="lazy">`
+      `<img src="assets/dt-uebersicht.png" width="1200" height="750" alt="…" loading="lazy">`
+      Zwingend für die beiden geschützten Apps (`photographic`, `share`), optional für
+      die drei verlinkten. Bei privaten Inhalten vorher Namen unkenntlich machen oder
+      Demodaten verwenden
 - [ ] **Portrait** – `.portrait` durch `<img src="assets/portrait.jpg" alt="…">` ersetzen
 - [ ] **Impressum und Datenschutzerklärung** – eigene Seiten anlegen und die
       Footer-Links darauf zeigen lassen (in der Schweiz erwartet, für Werbung nötig)
