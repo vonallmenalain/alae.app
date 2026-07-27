@@ -10,6 +10,7 @@ Bilder für die Landingpage.
 | `jass-app.png` | Jass App – Startbildschirm mit beiden Betriebsarten | 965 × 375 px |
 | `pvt.png` | Volleyballturnier – Dashboard eines Teams | 1084 × 1246 px |
 | `foto-app.png` | Fotoverkauf – Galerie einer Familie | 929 × 1211 px |
+| `share.png` | Familien-Sharing – Fotobereich mit Bereiche-Menü | 1317 × 1136 px |
 
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
@@ -34,20 +35,26 @@ Screenshots werden als PNG schnell unnötig gross. Zwei Stufen:
 
 | Datei | Projekt | Nötig? |
 | --- | --- | --- |
-| `share-*.png` | Familien-Sharing | **ja**, App ist geschützt |
 | `portrait.jpg` | Über mich | empfohlen |
-
-Beim Familien-Sharing vor der Veröffentlichung private Inhalte unkenntlich
-machen oder eine Demo-Gruppe mit Beispieldaten verwenden.
 
 ## Unkenntlich gemachte Inhalte
 
-In `foto-app.png` sind unkenntlich gemacht:
+Zwei Screenshots stammen aus geschützten Apps mit echten privaten Inhalten.
+Darin sind unkenntlich gemacht:
+
+**`foto-app.png`**
 
 - die sechs Kinderfotos
 - die Zeile mit Name des Kindes, Kindergarten und Klasse
 
-Wird dieser Screenshot je ersetzt, muss beides erneut geschehen. Sauberer wäre
-langfristig eine Demo-Galerie mit unverfänglichen Bildern und erfundenen Namen.
-Für die Referenz selbst empfiehlt sich zusätzlich eine schriftliche Freigabe
-der Fotografin.
+**`share.png`**
+
+- alle geteilten Fotos, auf denen Personen zu sehen sind
+
+Scharf bleiben jeweils die Bedienelemente – bei `share.png` insbesondere das
+Menü mit den zuschaltbaren Bereichen, das die App ja gerade auszeichnet.
+
+**Wird einer dieser Screenshots ersetzt, muss die Weichzeichnung erneut
+angewendet werden.** Sauberer wäre langfristig eine Demo-Ansicht mit
+unverfänglichen Bildern und erfundenen Namen. Für den Fotoverkauf empfiehlt
+sich zusätzlich eine schriftliche Freigabe der Fotografin.
