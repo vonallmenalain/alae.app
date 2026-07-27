@@ -187,32 +187,6 @@ section{padding-block:var(--section-y)}
 .btn--ghost:hover{--btn-bd:var(--text)}
 .btn svg{flex:none}
 
-.pill{
-  display:inline-flex; align-items:center; gap:.4rem;
-  padding:.3rem .7rem; border-radius:999px;
-  background:var(--accent-soft); border:1px solid var(--accent-line);
-  color:var(--accent); font-size:.76rem; font-weight:600; letter-spacing:.01em;
-  white-space:nowrap;
-}
-/* Badge für öffentlich erreichbare Apps */
-.pill--live{
-  background:color-mix(in srgb, var(--ok) 12%, transparent);
-  border-color:color-mix(in srgb, var(--ok) 34%, transparent);
-  color:var(--ok);
-}
-.pill--live::before{
-  content:""; width:.45rem; height:.45rem; border-radius:50%; background:currentColor;
-}
-/* Badge für geschützte Apps ohne öffentlichen Zugang */
-.pill--closed{
-  background:var(--bg-2); border-color:var(--line-strong); color:var(--muted);
-}
-
-.tag{
-  display:inline-block; padding:.28rem .6rem; border-radius:var(--r-sm);
-  background:var(--bg-2); border:1px solid var(--line);
-  font-family:var(--mono); font-size:.72rem; color:var(--muted);
-}
 
 .num{
   font-family:var(--mono); font-size:.78rem; font-weight:700; color:var(--accent);
@@ -366,9 +340,8 @@ section{padding-block:var(--section-y)}
 }
 .proj summary::-webkit-details-marker{display:none}
 .proj summary:hover .proj-title{color:var(--accent)}
-.proj-meta{display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-bottom:.6rem}
 .proj-title{font-size:clamp(1.1rem,1rem + .5vw,1.3rem); font-weight:650; letter-spacing:-.02em; transition:color .15s ease}
-.proj-sum{color:var(--muted); font-size:.95em; margin-top:.5rem; max-width:62ch}
+.proj-sum{color:var(--muted); font-size:.95em; margin-top:.5rem}
 .proj-toggle{
   display:grid; place-items:center; width:2.25rem; height:2.25rem; border-radius:50%;
   border:1px solid var(--line); color:var(--muted); flex:none;
@@ -534,14 +507,11 @@ section{padding-block:var(--section-y)}
 .faq .answer{padding:0 3rem 1.35rem .25rem; color:var(--muted); font-size:.97em; max-width:66ch}
 
 /* --- Kontakt ----------------------------------------------------------- */
-.contact{
-  display:grid; gap:clamp(2rem,4vw,3.5rem);
-  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); align-items:start;
-}
-@media (max-width: 56rem){ .contact{grid-template-columns:1fr} }
-.contact-direct{display:grid; gap:.9rem; margin-top:2rem}
+.contact{display:grid; gap:clamp(1.75rem,3.5vw,2.5rem)}
+.contact-direct{display:flex; flex-wrap:wrap; gap:.9rem; margin-top:1.5rem}
 .contact-direct a{
-  display:flex; align-items:center; gap:.85rem; padding:.95rem 1.1rem;
+  flex:0 1 auto;
+  display:flex; align-items:center; gap:.85rem; padding:.95rem 1.15rem;
   border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface);
   text-decoration:none; transition:border-color .15s ease, transform .15s ease;
 }
@@ -621,7 +591,7 @@ form .btn{width:100%; justify-content:center}
         <path d="M3.5 23.5 10.5 10.5l2.8 5.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M16.8 23.5 23 11.2l5.7 12.3" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span>alae.app<small>Individuelle Web-Apps</small></span>
+      <span>alae.app</span>
     </a>
 
     <nav class="nav" id="nav" aria-label="Hauptnavigation">
@@ -649,10 +619,9 @@ form .btn{width:100%; justify-content:center}
 <section class="hero">
   <div class="wrap hero-inner">
     <p class="eyebrow">Individuelle Web-Apps</p>
-    <h1>Individuelle Apps, die zu <span class="hl">deinem Alltag</span> passen</h1>
+    <h1>Web-App für <span class="hl">deinen Alltag</span></h1>
     <p class="hero-lead">
-      Du hast einen Ablauf, der heute über Excel, E-Mail, Papier oder WhatsApp organisiert wird?
-      Ich entwickle eine einfache Web-App, genau nach deinen Bedürfnissen.
+      Ich entwickle eine Web-App, genau nach deinen Bedürfnissen.
     </p>
 
     <div class="hero-cta">
@@ -701,7 +670,7 @@ form .btn{width:100%; justify-content:center}
       <h2>Angefangen hat es mit meinem eigenen Alltag</h2>
       <p class="lead" style="margin-top:1rem">
         Ich bin Alain von Allmen und zu Web-Apps bin ich über ganz alltägliche Probleme gekommen:
-        eine Buchhaltung, die in Excel entstehen sollte. Dokumente, die niemand mehr fand. Fotos,
+        eine Buchhaltung in einer fehleranfälligen Excel-Datei. Die Organisation eines Sportturniers mit Plänen in Papierform. Dokumente, die niemand mehr fand. Fotos,
         die ich mit der Familie teilen wollte, ohne sie einem Cloud-Anbieter zu überlassen.
       </p>
       <p class="lead">
@@ -711,7 +680,7 @@ form .btn{width:100%; justify-content:center}
       </p>
 
       <div class="trust-grid">
-        <div class="trust-card"><h4>Löst ein konkretes Problem</h4><p>Eine App für einen Ablauf, der heute Zeit kostet – nicht für alles auf einmal.</p></div>
+        <div class="trust-card"><h4>Eine Web-App</h4><p>Löst ein konkretes Problem oder eine Aufgabe.</p></div>
         <div class="trust-card"><h4>Individuell zugeschnitten</h4><p>Genau die Funktionen, die du brauchst. Keine, die du nie benutzt.</p></div>
         <div class="trust-card"><h4>In der Schweiz</h4><p>Entwicklung und Betreuung von mir, Hosting auf Wunsch in der Schweiz.</p></div>
         <div class="trust-card"><h4>Transparente Preise</h4><p>Pauschale oder Etappen, schriftlich vor Beginn – keine Überraschungen.</p></div>
@@ -751,15 +720,8 @@ form .btn{width:100%; justify-content:center}
     <details class="proj reveal">
       <summary>
         <div>
-          <div class="proj-meta">
-            <span class="pill pill--live">Live</span>
-            <span class="tag">dt.alae.app</span>
-          </div>
           <p class="proj-title">WM 2026 DreamTeam</p>
-          <p class="proj-sum">
-            Ein Fantasy-Tippspiel zur Fussball-WM 2026: Statt Resultate zu tippen, stellst du ein
-            Team aus Turnierspielern zusammen und sammelst Punkte über deren Leistungen.
-          </p>
+          <p class="proj-sum">Fantasy-Tippspiel zur Fussball-WM: Team zusammenstellen statt Resultate tippen.</p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -827,15 +789,8 @@ form .btn{width:100%; justify-content:center}
     <details class="proj reveal">
       <summary>
         <div>
-          <div class="proj-meta">
-            <span class="pill pill--live">Live</span>
-            <span class="tag">jass.alae.app</span>
-          </div>
           <p class="proj-title">Jass App</p>
-          <p class="proj-sum">
-            Ein jährliches Familienturnier organisieren, Punkte zählen und die Rangliste automatisch
-            führen – und dieselbe App als Jass-Zähler für gewöhnliche Runden nutzen.
-          </p>
+          <p class="proj-sum">Familienturnier organisieren, Punkte zählen, Rangliste automatisch führen.</p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -900,15 +855,8 @@ form .btn{width:100%; justify-content:center}
     <details class="proj reveal">
       <summary>
         <div>
-          <div class="proj-meta">
-            <span class="pill pill--live">Live</span>
-            <span class="tag">pvt.alae.app</span>
-          </div>
           <p class="proj-title">Volleyballturnier</p>
-          <p class="proj-sum">
-            Spielplan, Resultate und Rangliste live auf dem Handy: Jedes Team sieht in einem eigenen
-            Dashboard, wann es spielt, wo es steht und wann es zählen muss.
-          </p>
+          <p class="proj-sum">Spielplan, Resultate und Rangliste live auf dem Handy – für jedes Team einzeln.</p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -975,15 +923,8 @@ form .btn{width:100%; justify-content:center}
     <details class="proj reveal">
       <summary>
         <div>
-          <div class="proj-meta">
-            <span class="pill pill--closed">Geschützt</span>
-            <span class="tag">photographic.alae.app</span>
-          </div>
           <p class="proj-title">Fotoverkauf für eine Fotografin</p>
-          <p class="proj-sum">
-            Ein Onlineshop für Schul- und Kindergartenfotos: Eltern sehen nur die Bilder ihres
-            eigenen Kindes, bezahlen direkt in der App und laden sofort herunter.
-          </p>
+          <p class="proj-sum">Onlineshop für Schulfotos: Eltern kaufen die Bilder ihres Kindes und laden sie sofort herunter.</p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -1050,15 +991,8 @@ form .btn{width:100%; justify-content:center}
     <details class="proj reveal">
       <summary>
         <div>
-          <div class="proj-meta">
-            <span class="pill pill--closed">Geschützt</span>
-            <span class="tag">share.alae.app</span>
-          </div>
           <p class="proj-title">Familien- und Ferien-Sharing</p>
-          <p class="proj-sum">
-            Das Gesamtpaket für gemeinsame Ferien: Fotos und Videos in Originalqualität teilen,
-            dazu bei Bedarf Finanzen, Einkauf, Notizen und Kalender – alles in einer App statt fünf.
-          </p>
+          <p class="proj-sum">Fotos in Originalqualität teilen, dazu Finanzen, Einkauf, Notizen und Kalender.</p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -1125,15 +1059,8 @@ form .btn{width:100%; justify-content:center}
     <details class="proj reveal">
       <summary>
         <div>
-          <div class="proj-meta">
-            <span class="pill pill--closed">Geschützt</span>
-            <span class="tag">Management Einzelfirma</span>
-          </div>
           <p class="proj-title">Buchhaltung und Verwaltung einer Einzelfirma</p>
-          <p class="proj-sum">
-            Buchhaltung, Verkäufe, Debitoren und Kundenadressen in einer App – mit
-            Erfolgsrechnung, Bilanz und automatischem Abschluss statt Excel-Kassenbuch.
-          </p>
+          <p class="proj-sum">Buchhaltung, Verkäufe und Debitoren einer Einzelfirma statt Excel-Kassenbuch.</p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -1300,7 +1227,7 @@ form .btn{width:100%; justify-content:center}
         </div>
         <div class="price-option">
           <h4>Rundum betreut lassen</h4>
-          <p>Ich übernehme das Ganze: Hosting, Wartung, Backups, Updates und spätere Anpassungen.</p>
+          <p>Ich übernehme nach dem Go-live weiterhin Teile oder das Ganze: Hosting, Wartung, Backups, Updates und spätere Anpassungen.</p>
         </div>
       </div>
     </div>
@@ -1415,11 +1342,6 @@ form .btn{width:100%; justify-content:center}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
           <span><b>kontakt@alae.app</b><small>Antwort in der Regel innerhalb von 24 Stunden</small></span>
         </a>
-        <!-- TODO: Telefonnummer eintragen oder diesen Block entfernen -->
-        <a href="tel:+41000000000">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h3l2 5-2.5 1.5a12 12 0 0 0 5 5L14 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 3 5.2 2 2 0 0 1 5 3z"/></svg>
-          <span><b>Telefon auf Anfrage</b><small>Nummer hier eintragen</small></span>
-        </a>
       </div>
 
     </div>
@@ -1451,7 +1373,7 @@ form .btn{width:100%; justify-content:center}
         </div>
       </div>
       <div class="field">
-        <label for="f-msg">Welcher Ablauf kostet heute Zeit?</label>
+        <label for="f-msg">Kurzbeschrieb Idee</label>
         <textarea id="f-msg" name="nachricht" required placeholder="Zum Beispiel: Wir erfassen Anmeldungen in Excel, bestätigen sie von Hand per E-Mail und führen die Zahlungen in einer zweiten Liste."></textarea>
       </div>
       <label class="consent">
@@ -1637,7 +1559,7 @@ form .btn{width:100%; justify-content:center}
         'E-Mail: ' + feld('email'),
         'Telefon: ' + (feld('telefon') || '–'),
         '',
-        'Welcher Ablauf kostet heute Zeit?',
+        'Kurzbeschrieb Idee:',
         feld('nachricht'),
         '',
         '— gesendet über alae.app'
