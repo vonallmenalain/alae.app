@@ -4,16 +4,22 @@ Bilder für die Landingpage.
 
 ## dt-top-manager.png
 
-Screenshot der Top-Manager-Rangliste aus dem WM 2026 DreamTeam.
+Screenshot der Top-Manager-Rangliste aus dem WM 2026 DreamTeam, 1101 × 831 px.
 
-**Aktuell liegt hier nur ein leerer Platzhalter** in der richtigen Grösse
-(1327 × 837 px), damit auf der Seite kein defektes Bild erscheint. Ersetze die
-Datei durch den echten Screenshot – gleicher Dateiname, dann muss im HTML
-nichts angepasst werden.
+Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
+`index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
+die Seite beim Laden springt.
 
-Weicht die Grösse des neuen Bildes ab, in `index.html` die Attribute `width`
-und `height` am `<img>` mitkorrigieren. Sie verhindern, dass die Seite beim
-Laden springt.
+### Bilder klein halten
+
+Screenshots mit Fotos werden als PNG schnell gross. Zwei Stufen:
+
+1. **Verlustfrei**: Screenshots enthalten praktisch nie Transparenz. Wird der
+   Alphakanal entfernt (RGBA → RGB), schrumpft die Datei deutlich, ohne dass
+   sich ein einziges Pixel ändert. Für dieses Bild: 714 KB → 544 KB.
+2. **Deutlich wirksamer**: als **WebP** exportieren statt als PNG. Für
+   fotolastige Screenshots sind damit rund 100–150 KB realistisch. Danach in
+   `index.html` nur die Dateiendung im `src` anpassen.
 
 ## Noch offen
 
