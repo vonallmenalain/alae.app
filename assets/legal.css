@@ -1,0 +1,143 @@
+/* =========================================================================
+   Gemeinsames Stylesheet für die Rechtsseiten (Impressum, Datenschutz).
+   Bewusst getrennt von index.html: Dort steckt das CSS inline, damit die
+   Startseite ohne zweite Anfrage auskommt. Für die Unterseiten wäre eine
+   dreifache Kopie desselben CSS unwartbar.
+
+   Wird das Farbschema in index.html geändert, müssen die Tokens hier
+   mitgeändert werden.
+   ========================================================================= */
+
+:root{
+  --bg:#FBFAF8;
+  --bg-2:#F3F1ED;
+  --surface:#FFFFFF;
+  --line:#E4E0D9;
+  --line-strong:#CFC9BF;
+  --text:#14171B;
+  --muted:#5C6470;
+  --accent:#C1272D;
+  --accent-fg:#FFFFFF;
+  --accent-soft:rgba(193,39,45,.07);
+  --accent-line:rgba(193,39,45,.22);
+  --font:-apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --r-sm:8px; --r-md:12px; --r-lg:18px;
+  --pad:clamp(1.25rem, 4vw, 2.5rem);
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0E1013; --bg-2:#14181D; --surface:#14181D;
+    --line:#262B32; --line-strong:#39404A;
+    --text:#EDEFF2; --muted:#9AA4B2;
+    --accent:#FF7A72; --accent-fg:#22100F;
+    --accent-soft:rgba(255,122,114,.10); --accent-line:rgba(255,122,114,.26);
+  }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:var(--font); font-size:clamp(1rem, .96rem + .18vw, 1.0625rem);
+  line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+
+h1,h2,h3{margin:0; line-height:1.15; letter-spacing:-.02em; font-weight:650; text-wrap:balance}
+h1{font-size:clamp(1.9rem, 1.4rem + 2vw, 2.75rem); letter-spacing:-.03em}
+h2{font-size:clamp(1.2rem, 1.05rem + .6vw, 1.45rem); margin-top:2.75rem; margin-bottom:.65rem}
+h3{font-size:1.02rem; margin-top:1.75rem; margin-bottom:.5rem}
+p,ul,ol,dl,table{margin:0 0 1em}
+p{text-wrap:pretty}
+:where(p,li){color:var(--muted)}
+strong{font-weight:650; color:var(--text)}
+a{color:var(--text); text-decoration-color:var(--accent-line); text-underline-offset:3px}
+a:hover{text-decoration-color:var(--accent)}
+:where(a,button):focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+
+.wrap{width:100%; max-width:48rem; margin-inline:auto; padding-inline:var(--pad)}
+
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:200;
+  background:var(--text); color:var(--bg); padding:.75rem 1.15rem;
+  border-radius:0 0 var(--r-sm) 0; font-weight:600;
+}
+.skip:focus{left:0}
+
+/* --- Kopfzeile ---------------------------------------------------------- */
+.site-header{border-bottom:1px solid var(--line); background:var(--bg)}
+.header-inner{
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  min-height:4.25rem;
+}
+.brand{
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-weight:700; letter-spacing:-.025em; font-size:1.1rem; text-decoration:none;
+}
+.brand svg{width:1.5rem; height:1.5rem; flex:none}
+.back{font-size:.93rem; color:var(--muted); text-decoration:none; white-space:nowrap}
+.back:hover{color:var(--text)}
+
+/* --- Inhalt ------------------------------------------------------------- */
+main{padding-block:clamp(2.5rem, 6vw, 4.5rem)}
+.eyebrow{
+  display:block; font-family:var(--mono); font-size:.72rem; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+  margin:0 0 1rem;
+}
+.stand{
+  margin-top:.75rem; font-family:var(--mono); font-size:.78rem; color:var(--muted);
+}
+.lead{font-size:1.06em; margin-top:1.5rem}
+
+/* Angaben als Definitionsliste */
+.angaben{
+  display:grid; grid-template-columns:auto 1fr; gap:.5rem 1.5rem;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:clamp(1.25rem, 2.5vw, 1.75rem); margin-bottom:1.5rem;
+}
+.angaben dt{font-size:.82rem; color:var(--muted); padding-top:.15rem}
+.angaben dd{margin:0; font-weight:600}
+@media (max-width: 30rem){
+  .angaben{grid-template-columns:1fr; gap:.15rem .75rem}
+  .angaben dd{margin-bottom:.75rem}
+}
+
+/* Aufzählungen */
+ul.liste{padding-left:1.15rem}
+ul.liste li{margin-bottom:.4rem}
+
+/* Tabelle der Dienstleister */
+.tabelle{width:100%; border-collapse:collapse; font-size:.93em}
+.tabelle th, .tabelle td{
+  text-align:left; vertical-align:top; padding:.7rem .9rem;
+  border-bottom:1px solid var(--line);
+}
+.tabelle th{
+  font-size:.75rem; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; background:var(--bg-2);
+}
+.tabelle td{color:var(--muted)}
+.tabelle td:first-child{color:var(--text); font-weight:600; white-space:nowrap}
+.tabelle-wrap{overflow-x:auto; margin-bottom:1em}
+
+/* Hinweiskasten */
+.hinweis{
+  padding:1.1rem 1.25rem; margin:1.5rem 0;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+  border-radius:var(--r-md);
+}
+.hinweis p{margin:0; color:var(--text); font-size:.97em}
+
+/* --- Fusszeile ---------------------------------------------------------- */
+.site-footer{
+  border-top:1px solid var(--line); background:var(--bg-2);
+  padding-block:2rem; margin-top:clamp(3rem, 7vw, 5rem);
+}
+.footer-inner{
+  display:flex; flex-wrap:wrap; gap:.75rem 1.5rem; justify-content:space-between;
+  font-size:.85rem; color:var(--muted);
+}
+.footer-inner a{color:var(--muted); text-decoration:none}
+.footer-inner a:hover{color:var(--text)}

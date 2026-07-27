@@ -36,8 +36,12 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
       gegenzulesen
 - [ ] **Freigaben einholen** – von der Fotografin für Nennung und Screenshot, ebenso
       von der Einzelfirma für den Screenshot der Buchhaltung
-- [ ] **Impressum und Datenschutzerklärung** – eigene Seiten anlegen und die
-      Footer-Links darauf zeigen lassen (in der Schweiz erwartet, für Werbung nötig)
+- [x] **Impressum und Datenschutzerklärung** – als `impressum.html` und
+      `datenschutz.html` angelegt, im Footer verlinkt
+- [ ] **Angaben in den Rechtsseiten ausfüllen** – Adresse, Telefonnummer und UID.
+      Die Platzhalter stehen in eckigen Klammern, siehe Abschnitt „Rechtsseiten"
+- [ ] **Rechtsseiten prüfen lassen** – die Texte sind ein Entwurf, keine
+      Rechtsberatung
 - [ ] **Vorschaubild für Social Media** – `og:image`, 1200 × 630 px
 - [ ] **Richtwert CHF 200 prüfen** – steht im Abschnitt „Preise" und in der FAQ-Antwort
       „Was kostet eine individuelle App?". Bei einer Änderung beide Stellen anpassen
@@ -75,6 +79,34 @@ Empfang und Versand sind zwei getrennte Dinge:
   Nachrichten an `kontakt@alae.app` an das private Postfach weiter.
 - **Versenden** übernimmt Resend – für das Kontaktformular über die Funktion
   oben, und für Antworten aus Gmail über Resends SMTP-Zugang.
+
+## Rechtsseiten
+
+`impressum.html` und `datenschutz.html` teilen sich das Stylesheet
+`assets/legal.css`. Die Startseite behält ihr CSS inline, damit sie ohne zweite
+Anfrage auskommt; für die zwei Unterseiten wäre eine dreifache Kopie unwartbar.
+**Wird das Farbschema in `index.html` geändert, müssen die Tokens am Anfang von
+`legal.css` mitgeändert werden.**
+
+Beide Seiten sind zusätzlich ohne Dateiendung erreichbar (`/impressum`,
+`/datenschutz`) – dafür sorgen Weiterleitungen in `netlify.toml`.
+
+### Noch auszufüllen
+
+| Platzhalter | Wo | Bemerkung |
+| --- | --- | --- |
+| `[Strasse und Hausnummer]`, `[PLZ]`, `[Ort]` | Impressum und Datenschutz | in beiden Dateien identisch halten |
+| `[Telefonnummer]` | Impressum | oder die ganze Zeile löschen |
+| `[CHE-xxx.xxx.xxx]` | Impressum | nur bei Eintrag im Handelsregister; sonst den Block „Handelsregister und Mehrwertsteuer" löschen |
+
+Die Platzhalter stehen bewusst sichtbar in eckigen Klammern: Eine erfundene
+Adresse in einem Impressum wäre schlimmer als eine offensichtliche Lücke.
+
+Die Datenschutzerklärung beschreibt den tatsächlichen Stand der Website: keine
+Cookies, kein Browser-Speicher, keine externen Anfragen, als Dienstleister nur
+Netlify, Resend, Cloudflare und Google. **Kommt ein weiterer Dienst dazu – etwa
+Terminbuchung, Newsletter oder Statistik –, muss die Tabelle in Ziffer 6 ergänzt
+und der Abschnitt „Keine Cookies, kein Tracking" überprüft werden.**
 
 ## Deployment
 

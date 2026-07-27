@@ -9,6 +9,17 @@
   publish = "."
   functions = "netlify/functions"
 
+# Rechtsseiten auch ohne Dateiendung erreichbar
+[[redirects]]
+  from = "/impressum"
+  to = "/impressum.html"
+  status = 200
+
+[[redirects]]
+  from = "/datenschutz"
+  to = "/datenschutz.html"
+  status = 200
+
 # Kurze, sprechende Adresse für das Kontaktformular
 [[redirects]]
   from = "/api/kontakt"
