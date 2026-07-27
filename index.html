@@ -715,6 +715,11 @@ form{
 .consent input{width:1.05rem; height:1.05rem; margin-top:.2rem; accent-color:var(--accent); flex:none}
 form .btn{width:100%; justify-content:center}
 .form-note{margin-top:.9rem; font-size:.78rem; color:var(--muted); text-align:center}
+.form-ok{
+  margin:0; padding:1.4rem 1.2rem; text-align:center;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+  border-radius:var(--r-md); font-size:.97em;
+}
 
 /* --- Footer ------------------------------------------------------------- */
 .site-footer{border-top:1px solid var(--line); background:var(--bg-2); padding-block:3rem 2rem}
@@ -1875,11 +1880,12 @@ form .btn{width:100%; justify-content:center}
 <!-- =====================================================================
      KONTAKT
      ---------------------------------------------------------------------
-     Das Formular öffnet standardmässig das E-Mail-Programm (mailto), damit die
-     Seite ohne Server funktioniert. Für einen echten Formularversand:
-       1. Dienst wählen (z.B. Formspree, Web3Forms, eigener Endpoint)
-       2. action="https://…" und method="post" am <form> setzen
-       3. data-mailto="off" am <form> ergänzen – dann greift das Script nicht ein
+     Das Formular sendet an die Netlify-Funktion netlify/functions/kontakt.mjs
+     (erreichbar unter /api/kontakt), die die Anfrage per Resend weiterleitet.
+     Nötig dafür: die Umgebungsvariable RESEND_API_KEY in Netlify.
+     Schlägt der Versand fehl, öffnet sich als Rückfall das E-Mail-Programm.
+     Soll das Formular ohne Server auskommen, genügt es, das Attribut
+     data-endpoint am <form> zu entfernen.
      TODO: E-Mail-Adresse und Telefonnummer unten ersetzen.
      ===================================================================== -->
 <section id="kontakt">
@@ -1922,7 +1928,12 @@ form .btn{width:100%; justify-content:center}
       </div>
     </div>
 
-    <form class="reveal" id="contactForm" novalidate>
+    <form class="reveal" id="contactForm" novalidate data-endpoint="/api/kontakt">
+      <!-- Spam-Falle: für Menschen unsichtbar, wird von Bots ausgefüllt -->
+      <div class="visually-hidden" aria-hidden="true">
+        <label for="f-website">Bitte dieses Feld leer lassen</label>
+        <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
       <div class="field-row">
         <div class="field">
           <label for="f-name">Name</label>
@@ -1951,11 +1962,11 @@ form .btn{width:100%; justify-content:center}
         <input type="checkbox" name="einverstanden" required>
         <span>Ich bin damit einverstanden, dass meine Angaben zur Bearbeitung meiner Anfrage verwendet werden. Es erfolgt keine Weitergabe an Dritte.</span>
       </label>
-      <button class="btn btn--primary" type="submit">
+      <button class="btn btn--primary" type="submit" id="formSubmit">
         Anfrage senden
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-7 7 7-7 7"/></svg>
       </button>
-      <p class="form-note" id="formNote">Unverbindlich &middot; Deine Angaben werden nur für diese Anfrage verwendet.</p>
+      <p class="form-note" id="formNote" role="status" aria-live="polite">Unverbindlich &middot; Deine Angaben werden nur für diese Anfrage verwendet.</p>
     </form>
   </div>
 </section>
@@ -2144,38 +2155,83 @@ form .btn{width:100%; justify-content:center}
     revealables.forEach(function (el) { io.observe(el); });
   }
 
-  /* --- Kontaktformular: ohne Server per E-Mail-Programm ----------------- */
-  var EMPFAENGER = 'kontakt@alae.app'; /* TODO: Zieladresse anpassen */
+  /* --- Kontaktformular --------------------------------------------------
+     Sendet an die Netlify-Funktion unter data-endpoint, die die Anfrage per
+     Resend weiterleitet. Klappt das nicht – etwa weil der Versand noch nicht
+     eingerichtet ist –, öffnet sich das E-Mail-Programm, damit die Anfrage
+     nicht verloren geht.
+     TODO: EMPFAENGER auf die Adresse setzen, die im Rückfall erscheinen soll.
+     ---------------------------------------------------------------------- */
+  var EMPFAENGER = 'kontakt@alae.app';
   var form = document.getElementById('contactForm');
   var note = document.getElementById('formNote');
-  if (form && form.getAttribute('data-mailto') !== 'off' && !form.getAttribute('action')) {
+  var submit = document.getElementById('formSubmit');
+
+  if (form) {
+    var feld = function (name) {
+      var el = form.elements[name];
+      return el && el.value ? el.value.trim() : '';
+    };
+
+    var mailtoOeffnen = function () {
+      var zeilen = [
+        'Name: ' + feld('name'),
+        'Firma: ' + (feld('organisation') || '–'),
+        'E-Mail: ' + feld('email'),
+        'Telefon: ' + (feld('telefon') || '–'),
+        '',
+        'Welcher Ablauf kostet heute Zeit?',
+        feld('nachricht'),
+        '',
+        '— gesendet über alae.app'
+      ];
+      var betreff = 'Anfrage über alae.app' + (feld('organisation') ? ' – ' + feld('organisation') : '');
+      window.location.href = 'mailto:' + EMPFAENGER +
+        '?subject=' + encodeURIComponent(betreff) +
+        '&body=' + encodeURIComponent(zeilen.join('\n'));
+    };
+
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
       if (!form.reportValidity()) return;
 
-      var get = function (name) {
-        var el = form.elements[name];
-        return el && el.value ? el.value.trim() : '';
-      };
-      var lines = [
-        'Name: ' + get('name'),
-        'Firma: ' + (get('organisation') || '–'),
-        'E-Mail: ' + get('email'),
-        'Telefon: ' + (get('telefon') || '–'),
-        '',
-        'Ablauf, der Zeit kostet:',
-        get('nachricht'),
-        '',
-        '— gesendet über alae.app'
-      ];
-      var subject = 'Anfrage über alae.app' + (get('organisation') ? ' – ' + get('organisation') : '');
-      window.location.href = 'mailto:' + EMPFAENGER +
-        '?subject=' + encodeURIComponent(subject) +
-        '&body=' + encodeURIComponent(lines.join('\n'));
-
-      if (note) {
-        note.textContent = 'Dein E-Mail-Programm wurde geöffnet. Falls nicht: schreib direkt an ' + EMPFAENGER + '.';
+      var endpoint = form.getAttribute('data-endpoint');
+      if (!endpoint) {
+        mailtoOeffnen();
+        if (note) note.textContent = 'Dein E-Mail-Programm wurde geöffnet. Falls nicht: schreib direkt an ' + EMPFAENGER + '.';
+        return;
       }
+
+      if (submit) { submit.disabled = true; submit.style.opacity = '.6'; }
+      if (note) note.textContent = 'Wird gesendet …';
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: feld('name'),
+          organisation: feld('organisation'),
+          email: feld('email'),
+          telefon: feld('telefon'),
+          nachricht: feld('nachricht'),
+          website: feld('website')
+        })
+      }).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (daten) {
+          if (!res.ok) throw new Error(daten.fehler || 'Fehler ' + res.status);
+          return daten;
+        });
+      }).then(function () {
+        form.innerHTML = '<p class="form-ok"><strong>Danke, deine Anfrage ist angekommen.</strong>' +
+          ' Ich melde mich in der Regel innerhalb von 24 Stunden.</p>';
+      }).catch(function (err) {
+        if (submit) { submit.disabled = false; submit.style.opacity = ''; }
+        if (note) {
+          note.textContent = 'Das Senden hat nicht geklappt (' + err.message +
+            '). Dein E-Mail-Programm wird geöffnet – oder schreib direkt an ' + EMPFAENGER + '.';
+        }
+        mailtoOeffnen();
+      });
     });
   }
 

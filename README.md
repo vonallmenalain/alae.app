@@ -53,12 +53,37 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 
 ## Kontaktformular
 
-Ohne Server öffnet das Formular das E-Mail-Programm des Besuchers (`mailto`),
-damit die Seite sofort funktioniert. Für echten Versand:
+Das Formular sendet an `/api/kontakt`. Dahinter steht die Netlify-Funktion
+`netlify/functions/kontakt.mjs`, die die Anfrage über **Resend** als E-Mail
+weiterleitet – mit `reply_to` auf die anfragende Person, damit „Antworten"
+direkt funktioniert.
 
-1. Dienst wählen (z. B. Formspree, Web3Forms oder einen eigenen Endpoint)
-2. Am `<form>` `action="https://…"` und `method="post"` setzen
-3. `data-mailto="off"` am `<form>` ergänzen – dann greift das Skript nicht ein
+Nötig ist eine Umgebungsvariable in Netlify:
+
+| Variable | Pflicht | Bedeutung |
+| --- | --- | --- |
+| `RESEND_API_KEY` | ja | API-Schlüssel aus dem Resend-Dashboard |
+| `KONTAKT_EMPFAENGER` | nein | Zieladresse, Standard `vonallmenalain@gmail.com` |
+| `KONTAKT_ABSENDER` | nein | Absender, Standard `formular@alae.app`, Domain muss in Resend verifiziert sein |
+
+Der Schlüssel darf **nie** in `index.html` stehen – dort wäre er für jeden
+Besucher lesbar. Genau deshalb der Umweg über die Funktion.
+
+Schlägt der Versand fehl, öffnet sich als Rückfall das E-Mail-Programm, damit
+keine Anfrage verloren geht. Ein verstecktes Feld (`website`) dient als
+Spam-Falle: Ist es ausgefüllt, verwirft die Funktion die Anfrage stillschweigend.
+
+Soll das Formular wieder ohne Server auskommen, genügt es, das Attribut
+`data-endpoint` am `<form>` zu entfernen.
+
+## E-Mail-Adresse kontakt@alae.app
+
+Empfang und Versand sind zwei getrennte Dinge:
+
+- **Empfangen** übernimmt Cloudflare Email Routing (kostenlos): Es leitet
+  Nachrichten an `kontakt@alae.app` an das private Postfach weiter.
+- **Versenden** übernimmt Resend – für das Kontaktformular über die Funktion
+  oben, und für Antworten aus Gmail über Resends SMTP-Zugang.
 
 ## Deployment
 
