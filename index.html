@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>alae.app – Individuelle Web-Apps für KMU, Vereine und Praxen | Region Bern &amp; Emmental</title>
+<meta name="description" content="alae.app entwickelt schlanke Web-Apps und interne Tools, wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist. Persönlich, transparent, Hosting in der Schweiz möglich.">
+<meta name="author" content="alae.app">
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://alae.app/">
+
+<!-- Open Graph / Social ------------------------------------------------------
+     TODO: og:image ergänzen (1200x630 px, z.B. /assets/og-alae.png), sobald ein
+     Vorschaubild vorhanden ist. Ohne Bild zeigen Social-Netzwerke nur Text. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_CH">
+<meta property="og:url" content="https://alae.app/">
+<meta property="og:site_name" content="alae.app">
+<meta property="og:title" content="alae.app – Individuelle Apps, die genau zu Ihrem Alltag passen">
+<meta property="og:description" content="Schlanke Web-Apps für Abläufe, die heute über Excel, E-Mail, Papier oder WhatsApp laufen. Aus dem Emmental, für die Region Bern und die ganze Schweiz.">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Favicon: inline SVG, keine zusätzliche Datei nötig -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314171B'/%3E%3Cpath d='M4.5 22.5 10.8 11l2.5 4.6' stroke='%23FBFAF8' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M16.5 22.5 22.3 11.5l5.2 11' stroke='%23C1272D' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+
+<style>
+/* =========================================================================
+   alae.app – Landingpage
+   Eine Datei, keine externen Abhängigkeiten, kein Build-Schritt.
+   Reihenfolge: Tokens → Basis → Layout → Komponenten → Sektionen → Utilities
+   ========================================================================= */
+
+/* --- Tokens ------------------------------------------------------------- */
+:root{
+  --bg:#FBFAF8;
+  --bg-2:#F3F1ED;
+  --surface:#FFFFFF;
+  --line:#E4E0D9;
+  --line-strong:#CFC9BF;
+  --text:#14171B;
+  --muted:#5C6470;
+  --accent:#C1272D;
+  --accent-hover:#A31E23;
+  --accent-fg:#FFFFFF;            /* Text auf Akzentflächen */
+  --accent-soft:rgba(193,39,45,.07);
+  --accent-line:rgba(193,39,45,.22);
+  --ok:#178055;
+  --shadow-sm:0 1px 2px rgba(20,23,27,.05), 0 1px 1px rgba(20,23,27,.04);
+  --shadow-md:0 10px 30px -12px rgba(20,23,27,.16), 0 2px 6px rgba(20,23,27,.05);
+  --shadow-lg:0 30px 60px -24px rgba(20,23,27,.24), 0 4px 12px rgba(20,23,27,.06);
+
+  --font:-apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --r-sm:8px; --r-md:12px; --r-lg:18px; --r-xl:26px;
+  --pad:clamp(1.25rem, 4vw, 2.5rem);
+  --maxw:1160px;
+  --section-y:clamp(4rem, 9vw, 7.5rem);
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0E1013;
+    --bg-2:#14181D;
+    --surface:#14181D;
+    --line:#262B32;
+    --line-strong:#39404A;
+    --text:#EDEFF2;
+    --muted:#9AA4B2;
+    --accent:#FF7A72;
+    --accent-hover:#FF9D96;
+    --accent-fg:#22100F;
+    --accent-soft:rgba(255,122,114,.10);
+    --accent-line:rgba(255,122,114,.26);
+    --ok:#57D6A0;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+    --shadow-md:0 10px 30px -12px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.3);
+    --shadow-lg:0 30px 60px -24px rgba(0,0,0,.7), 0 4px 12px rgba(0,0,0,.4);
+  }
+}
+/* Manuelle Umschaltung gewinnt in beide Richtungen */
+:root[data-theme="light"]{
+  --bg:#FBFAF8; --bg-2:#F3F1ED; --surface:#FFFFFF; --line:#E4E0D9; --line-strong:#CFC9BF;
+  --text:#14171B; --muted:#5C6470; --accent:#C1272D; --accent-hover:#A31E23;
+  --accent-fg:#FFFFFF; --ok:#178055;
+  --accent-soft:rgba(193,39,45,.07); --accent-line:rgba(193,39,45,.22);
+  --shadow-sm:0 1px 2px rgba(20,23,27,.05), 0 1px 1px rgba(20,23,27,.04);
+  --shadow-md:0 10px 30px -12px rgba(20,23,27,.16), 0 2px 6px rgba(20,23,27,.05);
+  --shadow-lg:0 30px 60px -24px rgba(20,23,27,.24), 0 4px 12px rgba(20,23,27,.06);
+}
+:root[data-theme="dark"]{
+  --bg:#0E1013; --bg-2:#14181D; --surface:#14181D; --line:#262B32; --line-strong:#39404A;
+  --text:#EDEFF2; --muted:#9AA4B2; --accent:#FF7A72; --accent-hover:#FF9D96;
+  --accent-fg:#22100F; --ok:#57D6A0;
+  --accent-soft:rgba(255,122,114,.10); --accent-line:rgba(255,122,114,.26);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  --shadow-md:0 10px 30px -12px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.3);
+  --shadow-lg:0 30px 60px -24px rgba(0,0,0,.7), 0 4px 12px rgba(0,0,0,.4);
+}
+
+/* --- Basis -------------------------------------------------------------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  font-size:clamp(1rem, .96rem + .18vw, 1.0625rem);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+h1,h2,h3,h4{margin:0; line-height:1.12; letter-spacing:-.02em; font-weight:650; text-wrap:balance}
+h1{font-size:clamp(2.1rem, 1.3rem + 3.6vw, 3.9rem); letter-spacing:-.03em}
+h2{font-size:clamp(1.65rem, 1.15rem + 1.9vw, 2.6rem)}
+h3{font-size:clamp(1.12rem, 1rem + .5vw, 1.35rem); letter-spacing:-.015em}
+h4{font-size:1rem; letter-spacing:0}
+p{margin:0 0 1em; text-wrap:pretty}
+p:last-child{margin-bottom:0}
+
+a{color:inherit; text-decoration-color:var(--accent-line); text-underline-offset:3px}
+a:hover{text-decoration-color:var(--accent)}
+
+ul,ol{margin:0; padding:0}
+li{list-style:none}
+
+img,svg{max-width:100%; height:auto; display:block}
+strong{font-weight:650}
+::selection{background:var(--accent); color:#fff}
+
+:where(a,button,summary,input,textarea,select):focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:200;
+  background:var(--text); color:var(--bg); padding:.75rem 1.15rem; border-radius:0 0 var(--r-sm) 0;
+  font-weight:600;
+}
+.skip:focus{left:0}
+
+/* --- Layout ------------------------------------------------------------- */
+.wrap{width:100%; max-width:var(--maxw); margin-inline:auto; padding-inline:var(--pad)}
+section{padding-block:var(--section-y)}
+.band{background:var(--bg-2); border-block:1px solid var(--line)}
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:.55rem;
+  font-family:var(--mono); font-size:.72rem; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+  margin:0 0 1.1rem;
+}
+.eyebrow::before{
+  content:""; width:1.75rem; height:1px; background:var(--accent); opacity:.6;
+}
+.sec-head{max-width:62ch; margin-bottom:clamp(2.25rem, 4vw, 3.5rem)}
+.sec-head .lead{color:var(--muted); font-size:1.07em; margin-top:1rem}
+.lead{color:var(--muted)}
+
+.grid{display:grid; gap:clamp(1rem, 2vw, 1.5rem)}
+.g-2{grid-template-columns:repeat(auto-fit, minmax(min(100%, 20rem), 1fr))}
+/* Vier Elemente sollen 2x2 stehen, nicht 3+1 */
+@media (min-width: 62rem){ .g-2{grid-template-columns:repeat(2, minmax(0, 1fr))} }
+
+/* --- Komponenten -------------------------------------------------------- */
+.btn{
+  --btn-bg:var(--text); --btn-fg:var(--bg); --btn-bd:var(--text);
+  display:inline-flex; align-items:center; gap:.6rem;
+  padding:.85rem 1.4rem; border-radius:999px;
+  background:var(--btn-bg); color:var(--btn-fg); border:1px solid var(--btn-bd);
+  font:inherit; font-weight:600; font-size:.97rem; letter-spacing:-.01em;
+  text-decoration:none; cursor:pointer; white-space:nowrap;
+  transition:transform .16s ease, box-shadow .16s ease, background .16s ease, border-color .16s ease, color .16s ease;
+}
+.btn:hover{transform:translateY(-1px); box-shadow:var(--shadow-md)}
+.btn:active{transform:translateY(0)}
+.btn--primary{--btn-bg:var(--accent); --btn-fg:var(--accent-fg); --btn-bd:var(--accent)}
+.btn--primary:hover{--btn-bg:var(--accent-hover); --btn-bd:var(--accent-hover)}
+.btn--ghost{--btn-bg:transparent; --btn-fg:var(--text); --btn-bd:var(--line-strong)}
+.btn--ghost:hover{--btn-bd:var(--text)}
+.btn svg{flex:none}
+
+.pill{
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.3rem .7rem; border-radius:999px;
+  background:var(--accent-soft); border:1px solid var(--accent-line);
+  color:var(--accent); font-size:.76rem; font-weight:600; letter-spacing:.01em;
+  white-space:nowrap;
+}
+.tag{
+  display:inline-block; padding:.28rem .6rem; border-radius:var(--r-sm);
+  background:var(--bg-2); border:1px solid var(--line);
+  font-family:var(--mono); font-size:.72rem; color:var(--muted);
+}
+
+.num{
+  font-family:var(--mono); font-size:.78rem; font-weight:700; color:var(--accent);
+  letter-spacing:.08em;
+}
+
+/* Checkliste: Häkchen als Maske, damit es die Akzentfarbe beider Themes erbt */
+.check{display:grid; gap:.7rem}
+.check li{display:flex; gap:.7rem; align-items:flex-start; color:var(--muted); font-size:.97em}
+.check li::before{
+  content:""; flex:none; margin-top:.34em; width:1.1em; height:1.1em;
+  background:var(--accent);
+  -webkit-mask:var(--check-mask) center / 100% no-repeat;
+          mask:var(--check-mask) center / 100% no-repeat;
+}
+:root{
+  --check-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='%23000' opacity='.18'/%3E%3Cpath d='M5.8 10.4 8.6 13.2 14.3 7' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.check li strong{color:var(--text)}
+
+/* --- Header ------------------------------------------------------------- */
+.site-header{
+  position:sticky; top:0; z-index:100;
+  background:color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter:saturate(1.6) blur(12px);
+  -webkit-backdrop-filter:saturate(1.6) blur(12px);
+  border-bottom:1px solid transparent;
+  transition:border-color .2s ease, background .2s ease;
+}
+@supports not (background: color-mix(in srgb, red, blue)){
+  .site-header{background:var(--bg)}
+}
+.site-header.is-stuck{border-bottom-color:var(--line)}
+.header-inner{
+  display:flex; align-items:center; gap:1rem;
+  min-height:4.25rem;
+}
+.brand{
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-weight:700; letter-spacing:-.025em; font-size:1.1rem;
+  text-decoration:none; margin-right:auto;
+}
+.brand-mark{width:1.5rem; height:1.5rem; flex:none}
+.brand span small{
+  display:block; font-family:var(--mono); font-size:.6rem; font-weight:500;
+  letter-spacing:.11em; text-transform:uppercase; color:var(--muted); line-height:1.4;
+  white-space:nowrap;
+}
+@media (max-width: 26rem){ .brand span small{display:none} }
+
+.nav{display:flex; align-items:center; gap:.25rem}
+.nav a{
+  padding:.5rem .7rem; border-radius:var(--r-sm); white-space:nowrap;
+  font-size:.93rem; font-weight:550; color:var(--muted); text-decoration:none;
+  transition:color .15s ease, background .15s ease;
+}
+.nav a:hover{color:var(--text); background:var(--bg-2)}
+.nav a.is-active{color:var(--text)}
+.nav a.is-active::after{
+  content:""; display:block; height:2px; margin-top:.28rem; border-radius:2px; background:var(--accent);
+}
+.header-actions{display:flex; align-items:center; gap:.5rem}
+.nav-cta{display:none} /* nur im mobilen Menü sichtbar */
+
+.icon-btn{
+  display:grid; place-items:center; width:2.35rem; height:2.35rem;
+  border-radius:999px; border:1px solid var(--line); background:transparent; color:var(--text);
+  cursor:pointer; transition:border-color .15s ease, background .15s ease;
+}
+.icon-btn:hover{border-color:var(--line-strong); background:var(--bg-2)}
+.icon-btn svg{width:1.05rem; height:1.05rem}
+.theme-btn .i-sun{display:none}
+:root[data-theme="dark"] .theme-btn .i-sun{display:block}
+:root[data-theme="dark"] .theme-btn .i-moon{display:none}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .theme-btn .i-sun{display:block}
+  :root:not([data-theme="light"]) .theme-btn .i-moon{display:none}
+}
+:root[data-theme="light"] .theme-btn .i-sun{display:none}
+:root[data-theme="light"] .theme-btn .i-moon{display:block}
+
+.burger{display:none}
+@media (max-width: 62rem){
+  .nav{
+    position:fixed; inset:4.25rem 0 auto; z-index:99;
+    flex-direction:column; align-items:stretch; gap:.15rem;
+    background:var(--bg); border-bottom:1px solid var(--line);
+    padding:.9rem var(--pad) 1.35rem;
+    box-shadow:var(--shadow-lg);
+    transform:translateY(-135%); opacity:0; pointer-events:none;
+    transition:transform .28s cubic-bezier(.4,0,.2,1), opacity .2s ease;
+  }
+  .nav[data-open="true"]{transform:translateY(0); opacity:1; pointer-events:auto}
+  .nav a{padding:.7rem .25rem; font-size:1.05rem; border-bottom:1px solid var(--line)}
+  .nav a.is-active::after{display:none}
+  .nav a.is-active{color:var(--accent)}
+  .nav .nav-cta{
+    display:inline-flex; justify-content:center; margin-top:1.1rem;
+    border-bottom:0; font-size:.97rem; color:var(--accent-fg);
+  }
+  .nav .nav-cta.is-active{color:var(--accent-fg)}
+  .burger{display:grid}
+  .header-cta{display:none}
+}
+@media (prefers-reduced-motion: reduce){ .nav{transition:none} }
+
+/* --- Hero --------------------------------------------------------------- */
+.hero{
+  position:relative;
+  padding-block:clamp(3rem, 7vw, 6rem) clamp(3.5rem, 7vw, 6rem);
+  overflow:hidden;
+}
+.hero::before{
+  content:""; position:absolute; inset:-40% -10% auto; height:80%;
+  background:radial-gradient(60% 60% at 22% 40%, var(--accent-soft), transparent 70%);
+  pointer-events:none;
+}
+.hero-grid{
+  position:relative;
+  display:grid; gap:clamp(2.5rem, 5vw, 4rem);
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  align-items:center;
+}
+@media (max-width: 56rem){ .hero-grid{grid-template-columns:1fr} }
+
+.hero h1 .hl{
+  color:var(--accent);
+  background:linear-gradient(transparent 62%, var(--accent-soft) 62%);
+}
+.hero-lead{
+  font-size:clamp(1.06rem, 1rem + .5vw, 1.25rem);
+  color:var(--muted); max-width:52ch; margin-top:1.4rem;
+}
+.hero-cta{display:flex; flex-wrap:wrap; gap:.75rem; margin-top:2rem}
+.hero-note{margin-top:1.1rem; font-size:.87rem; color:var(--muted)}
+
+.trust-row{
+  display:flex; flex-wrap:wrap; gap:.5rem .45rem; margin-top:2.25rem;
+  padding-top:1.6rem; border-top:1px solid var(--line);
+}
+.trust-row li{
+  display:inline-flex; align-items:center; gap:.45rem;
+  font-size:.83rem; color:var(--muted); padding-right:.9rem;
+}
+.trust-row li svg{width:.95rem; height:.95rem; color:var(--accent); flex:none}
+
+/* Hero-Visual: Vorher/Nachher */
+.shot{
+  position:relative; display:grid; gap:1rem;
+}
+.shot-label{
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); display:flex; align-items:center; gap:.5rem;
+}
+.shot-label::after{content:""; flex:1; height:1px; background:var(--line)}
+
+.chaos{display:flex; flex-wrap:wrap; gap:.5rem}
+.chaos li{
+  padding:.45rem .75rem; border-radius:var(--r-sm);
+  background:var(--surface); border:1px dashed var(--line-strong);
+  font-size:.8rem; color:var(--muted); box-shadow:var(--shadow-sm);
+}
+.chaos li:nth-child(2n){transform:rotate(-1.4deg)}
+.chaos li:nth-child(3n){transform:rotate(1.1deg)}
+
+.arrow-down{display:grid; place-items:center; color:var(--accent); opacity:.75}
+.arrow-down svg{width:1.4rem; height:1.4rem}
+
+.mock{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-xl);
+  box-shadow:var(--shadow-lg); overflow:hidden;
+}
+.mock-bar{
+  display:flex; align-items:center; gap:.4rem;
+  padding:.7rem .9rem; border-bottom:1px solid var(--line); background:var(--bg-2);
+}
+.mock-bar i{width:.55rem; height:.55rem; border-radius:50%; background:var(--line-strong); display:block}
+.mock-bar span{
+  margin-left:.5rem; font-family:var(--mono); font-size:.68rem; color:var(--muted);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.mock-body{padding:1.1rem}
+.mock-h{display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:1rem}
+.mock-h strong{font-size:1rem; letter-spacing:-.02em}
+.mock-h em{font-style:normal; font-size:.75rem; color:var(--muted); font-family:var(--mono)}
+.mock-rows{display:grid; gap:.5rem}
+.mock-row{
+  display:grid; grid-template-columns:1fr auto; align-items:center; gap:.75rem;
+  padding:.65rem .8rem; border:1px solid var(--line); border-radius:var(--r-md);
+  background:var(--bg); font-size:.86rem;
+}
+.mock-row b{font-weight:600; display:block}
+.mock-row small{color:var(--muted); font-size:.78em}
+.status{
+  font-size:.7rem; font-weight:700; padding:.2rem .55rem; border-radius:999px;
+  background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent-line);
+  white-space:nowrap;
+}
+.status--ok{
+  background:color-mix(in srgb, var(--ok) 12%, transparent);
+  color:var(--ok);
+  border-color:color-mix(in srgb, var(--ok) 34%, transparent);
+}
+.mock-foot{
+  margin-top:1rem; display:flex; align-items:center; justify-content:space-between; gap:.75rem;
+  font-size:.78rem; color:var(--muted);
+}
+.mock-btn{
+  padding:.45rem .85rem; border-radius:999px; background:var(--accent); color:var(--accent-fg);
+  font-size:.75rem; font-weight:650;
+}
+
+/* --- Probleme ----------------------------------------------------------- */
+.quote{
+  position:relative; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-lg); padding:1.6rem 1.4rem 1.3rem;
+  box-shadow:var(--shadow-sm);
+}
+.quote::before{
+  content:"»"; position:absolute; top:.4rem; left:1.1rem;
+  font-size:2.6rem; line-height:1; color:var(--accent); opacity:.28;
+}
+.quote p{margin:0; font-size:1.02em; padding-top:1.15rem}
+.quote footer{margin-top:.9rem; font-size:.78rem; color:var(--muted); font-family:var(--mono)}
+.after-quotes{
+  margin-top:clamp(1.75rem, 3vw, 2.5rem); padding:1.25rem 1.4rem;
+  border-left:3px solid var(--accent); background:var(--accent-soft);
+  border-radius:0 var(--r-md) var(--r-md) 0; max-width:70ch;
+}
+
+/* --- Ansatz ------------------------------------------------------------- */
+.approach{
+  display:grid; gap:clamp(2rem, 4vw, 3.5rem);
+  grid-template-columns:minmax(0,1fr) minmax(0,.85fr); align-items:start;
+}
+@media (max-width: 56rem){ .approach{grid-template-columns:1fr} }
+.approach-list{display:grid; gap:1.5rem; margin-top:2rem}
+.approach-list li{display:grid; grid-template-columns:auto 1fr; gap:1rem}
+.approach-list .num{
+  display:grid; place-items:center; width:2rem; height:2rem; border-radius:50%;
+  border:1px solid var(--accent-line); background:var(--accent-soft);
+}
+.approach-list h3{margin-bottom:.35rem}
+.approach-list p{color:var(--muted); font-size:.97em; margin:0}
+
+.included{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:clamp(1.4rem,2.5vw,1.9rem); box-shadow:var(--shadow-md)}
+.included h3{margin-bottom:1.1rem; font-size:1.05rem}
+
+/* --- Leistungen --------------------------------------------------------- */
+.svc{display:grid; gap:1rem}
+.svc-item{
+  display:grid; grid-template-columns:auto minmax(0,1fr) minmax(0,.85fr); gap:1.25rem 1.75rem;
+  align-items:start;
+  padding:clamp(1.25rem,2.4vw,1.9rem);
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.svc-item:hover{border-color:var(--line-strong); box-shadow:var(--shadow-md)}
+.svc-item > .num{padding-top:.35rem}
+.svc-item p{color:var(--muted); font-size:.97em; margin:.4rem 0 0}
+.svc-tags{display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.9rem}
+.svc-fit{
+  align-self:stretch; padding-left:1.5rem; border-left:1px solid var(--line);
+  font-size:.9rem; color:var(--muted);
+}
+.svc-fit strong{display:block; color:var(--text); font-size:.78rem; font-family:var(--mono);
+  letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem; font-weight:600}
+@media (max-width: 56rem){
+  .svc-item{grid-template-columns:auto 1fr}
+  .svc-fit{grid-column:1 / -1; padding-left:0; padding-top:1rem; border-left:0; border-top:1px solid var(--line)}
+}
+
+/* --- Projekte ----------------------------------------------------------- */
+.proj{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm); overflow:hidden;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.proj[open]{border-color:var(--line-strong); box-shadow:var(--shadow-md)}
+.proj + .proj{margin-top:1rem}
+.proj summary{
+  display:grid; grid-template-columns:1fr auto; gap:1rem 1.5rem; align-items:center;
+  padding:clamp(1.25rem,2.4vw,1.65rem); cursor:pointer; list-style:none;
+}
+.proj summary::-webkit-details-marker{display:none}
+.proj summary:hover .proj-title{color:var(--accent)}
+.proj-meta{display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; margin-bottom:.6rem}
+.proj-title{font-size:clamp(1.1rem,1rem + .5vw,1.3rem); font-weight:650; letter-spacing:-.02em; transition:color .15s ease}
+.proj-sum{color:var(--muted); font-size:.95em; margin-top:.5rem; max-width:62ch}
+.proj-toggle{
+  display:grid; place-items:center; width:2.25rem; height:2.25rem; border-radius:50%;
+  border:1px solid var(--line); color:var(--muted); flex:none;
+  transition:transform .22s ease, border-color .15s ease, color .15s ease;
+}
+.proj summary:hover .proj-toggle{border-color:var(--accent); color:var(--accent)}
+.proj[open] .proj-toggle{transform:rotate(45deg); border-color:var(--accent); color:var(--accent)}
+.proj-detail{
+  padding:0 clamp(1.25rem,2.4vw,1.65rem) clamp(1.4rem,2.4vw,1.75rem);
+  border-top:1px solid var(--line); margin-top:.25rem; padding-top:1.4rem;
+}
+.proj-cols{display:grid; gap:1.5rem 2rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))}
+.proj-block h4{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:.5rem; font-weight:600;
+}
+.proj-block p, .proj-block li{color:var(--muted); font-size:.93em}
+.proj-block ul{display:grid; gap:.35rem}
+.proj-block li{padding-left:1rem; position:relative}
+.proj-block li::before{content:"–"; position:absolute; left:0; color:var(--line-strong)}
+.proj-result{
+  grid-column:1/-1; margin-top:.25rem; padding:1rem 1.2rem;
+  background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:var(--r-md);
+  font-size:.95em;
+}
+.proj-result strong{color:var(--text)}
+
+/* Screenshot-Platzhalter – durch <img> ersetzen */
+.shot-slot{
+  grid-column:1/-1;
+  display:grid; place-items:center; gap:.4rem; min-height:9rem;
+  border:1px dashed var(--line-strong); border-radius:var(--r-md);
+  background:var(--bg-2); color:var(--muted); text-align:center; padding:1.25rem;
+  font-size:.8rem;
+}
+.shot-slot svg{width:1.5rem; height:1.5rem; opacity:.5}
+
+/* --- Ablauf ------------------------------------------------------------- */
+.steps{display:grid; gap:0}
+.step{
+  display:grid; grid-template-columns:2.5rem minmax(0,1fr); gap:1.25rem;
+  padding-bottom:2.25rem; position:relative;
+}
+.step:last-child{padding-bottom:0}
+/* Verbindungslinie zwischen den Schritten (einspaltige Ansicht) */
+.step:not(:last-child)::before{
+  content:""; position:absolute; z-index:0;
+  left:1.25rem; translate:-.5px 0; top:2.9rem; bottom:.4rem;
+  width:1px; background:var(--line);
+}
+.step-dot{
+  position:relative; z-index:1;
+  display:grid; place-items:center; width:2.5rem; height:2.5rem; border-radius:50%;
+  background:var(--surface); border:1px solid var(--line);
+  font-family:var(--mono); font-weight:700; font-size:.85rem; color:var(--accent);
+}
+.step-body{padding-top:.35rem}
+.step-body h3{margin-bottom:.35rem}
+.step-body p{color:var(--muted); font-size:.97em; margin:0; max-width:60ch}
+.step-when{
+  display:inline-block; margin-top:.5rem; font-family:var(--mono);
+  font-size:.72rem; color:var(--muted); letter-spacing:.04em;
+}
+@media (min-width: 62rem){
+  .steps{grid-template-columns:1fr 1fr; column-gap:3.5rem}
+  /* Zweispaltig würde die Linie eine falsche Reihenfolge suggerieren */
+  .step::before{display:none}
+  .step{padding-bottom:2.75rem}
+}
+
+/* --- Vertrauen / Über mich --------------------------------------------- */
+.about{
+  display:grid; gap:clamp(2rem,4vw,3.5rem);
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); align-items:start;
+}
+@media (max-width: 56rem){ .about{grid-template-columns:1fr} }
+.portrait{
+  aspect-ratio:4/5; max-width:20rem; border-radius:var(--r-xl); overflow:hidden;
+  border:1px solid var(--line); background:var(--bg-2);
+  display:grid; place-items:center; text-align:center; padding:1.5rem;
+  color:var(--muted); font-size:.82rem; box-shadow:var(--shadow-md);
+}
+.portrait img{width:100%; height:100%; object-fit:cover}
+.trust-grid{display:grid; gap:.9rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr)); margin-top:1.75rem}
+.trust-card{
+  padding:1rem 1.1rem; border:1px solid var(--line); border-radius:var(--r-md);
+  background:var(--surface);
+}
+.trust-card h4{margin-bottom:.3rem; font-size:.95rem}
+.trust-card p{margin:0; color:var(--muted); font-size:.87em}
+
+/* --- FAQ --------------------------------------------------------------- */
+.faq{max-width:52rem}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{
+  display:flex; align-items:flex-start; gap:1rem; justify-content:space-between;
+  padding:1.15rem .25rem; cursor:pointer; list-style:none;
+  font-weight:600; letter-spacing:-.01em;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover{color:var(--accent)}
+.faq summary .plus{
+  flex:none; width:1.15rem; height:1.15rem; margin-top:.2rem; color:var(--accent);
+  transition:transform .22s ease;
+}
+.faq details[open] .plus{transform:rotate(45deg)}
+.faq .answer{padding:0 3rem 1.35rem .25rem; color:var(--muted); font-size:.97em; max-width:66ch}
+
+/* --- Kontakt ----------------------------------------------------------- */
+.contact{
+  display:grid; gap:clamp(2rem,4vw,3.5rem);
+  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); align-items:start;
+}
+@media (max-width: 56rem){ .contact{grid-template-columns:1fr} }
+.contact-direct{display:grid; gap:.9rem; margin-top:2rem}
+.contact-direct a{
+  display:flex; align-items:center; gap:.85rem; padding:.95rem 1.1rem;
+  border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface);
+  text-decoration:none; transition:border-color .15s ease, transform .15s ease;
+}
+.contact-direct a:hover{border-color:var(--accent); transform:translateX(2px)}
+.contact-direct svg{width:1.1rem; height:1.1rem; color:var(--accent); flex:none}
+.contact-direct b{display:block; font-size:.95rem}
+.contact-direct small{color:var(--muted); font-size:.82em}
+
+form{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:clamp(1.4rem,2.6vw,2rem); box-shadow:var(--shadow-md);
+}
+.field{display:grid; gap:.4rem; margin-bottom:1rem}
+.field label{font-size:.85rem; font-weight:600}
+.field label .opt{font-weight:400; color:var(--muted)}
+.field input, .field textarea{
+  width:100%; padding:.75rem .9rem; font:inherit; font-size:.95rem; color:var(--text);
+  background:var(--bg); border:1px solid var(--line); border-radius:var(--r-md);
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.field input:focus, .field textarea:focus{
+  border-color:var(--accent); outline:none; box-shadow:0 0 0 3px var(--accent-soft);
+}
+.field textarea{min-height:7.5rem; resize:vertical}
+.field-row{display:grid; gap:1rem; grid-template-columns:1fr 1fr}
+@media (max-width: 30rem){ .field-row{grid-template-columns:1fr} }
+.consent{display:flex; gap:.65rem; align-items:flex-start; margin:1.25rem 0; font-size:.85rem; color:var(--muted)}
+.consent input{width:1.05rem; height:1.05rem; margin-top:.2rem; accent-color:var(--accent); flex:none}
+form .btn{width:100%; justify-content:center}
+.form-note{margin-top:.9rem; font-size:.78rem; color:var(--muted); text-align:center}
+
+/* --- Footer ------------------------------------------------------------- */
+.site-footer{border-top:1px solid var(--line); background:var(--bg-2); padding-block:3rem 2rem}
+.footer-grid{display:grid; gap:2rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr))}
+.footer-grid h4{
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:.85rem; font-weight:600;
+}
+.footer-grid li + li{margin-top:.45rem}
+.footer-grid a{font-size:.92rem; color:var(--muted); text-decoration:none}
+.footer-grid a:hover{color:var(--text)}
+.footer-grid p{font-size:.92rem; color:var(--muted)}
+.footer-bottom{
+  margin-top:2.5rem; padding-top:1.35rem; border-top:1px solid var(--line);
+  display:flex; flex-wrap:wrap; gap:.75rem 1.5rem; justify-content:space-between;
+  font-size:.82rem; color:var(--muted);
+}
+
+/* --- Utilities ---------------------------------------------------------- */
+.reveal{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.6,.2,1)}
+.reveal.is-in{opacity:1; transform:none}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1; transform:none; transition:none}
+  .btn:hover, .card--hover:hover, .contact-direct a:hover{transform:none}
+}
+.visually-hidden{
+  position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Direkt zum Inhalt</a>
+
+<!-- =====================================================================
+     HEADER
+     ===================================================================== -->
+<header class="site-header" id="siteHeader">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="alae.app – Startseite">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M3.5 23.5 10.5 10.5l2.8 5.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16.8 23.5 23 11.2l5.7 12.3" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>alae.app<small>Individuelle Web-Apps</small></span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Hauptnavigation">
+      <a href="#probleme">Ausgangslage</a>
+      <a href="#leistungen">Leistungen</a>
+      <a href="#projekte">Projekte</a>
+      <a href="#ablauf">Ablauf</a>
+      <a href="#ueber-mich">Über mich</a>
+      <a href="#faq">Fragen</a>
+      <a href="#kontakt">Kontakt</a>
+      <a class="btn btn--primary nav-cta" href="#kontakt">Projekt unverbindlich besprechen</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn theme-btn" id="themeToggle" type="button" aria-label="Farbschema wechseln" title="Farbschema wechseln">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a class="btn btn--primary header-cta" href="#kontakt">Projekt besprechen</a>
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Navigation öffnen" aria-expanded="false" aria-controls="nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<span id="top"></span>
+
+<!-- =====================================================================
+     HERO
+     ===================================================================== -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Individuelle Software &middot; Burgdorf, Emmental &amp; Bern</p>
+      <h1>Individuelle Apps, die genau zu <span class="hl">Ihrem Alltag</span> passen</h1>
+      <p class="hero-lead">
+        Sie haben einen Ablauf, der heute über Excel, E-Mail, Papier oder WhatsApp organisiert wird?
+        alae.app entwickelt eine einfache Web-App, die genau zu Ihrem Unternehmen passt –
+        ohne unnötige Funktionen und ohne komplizierte Standardsoftware.
+      </p>
+
+      <div class="hero-cta">
+        <a class="btn btn--primary" href="#kontakt">
+          Projekt unverbindlich besprechen
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-7 7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn--ghost" href="#kontakt">App-Idee prüfen lassen</a>
+      </div>
+      <p class="hero-note">Erstgespräch kostenlos und ohne Verpflichtung &middot; Antwort in der Regel innerhalb von 24&nbsp;Stunden</p>
+
+      <ul class="trust-row">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-4.4 7-10V6l-7-3-7 3v5c0 5.6 7 10 7 10z"/></svg>
+          Standort Schweiz
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Eine persönliche Ansprechperson
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Festpreis oder klare Etappen
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          Hosting in der Schweiz möglich
+        </li>
+      </ul>
+    </div>
+
+    <!-- Vorher/Nachher-Visual (rein dekorativ, CSS-Mock) -->
+    <div class="shot" aria-hidden="true">
+      <p class="shot-label">Heute</p>
+      <ul class="chaos">
+        <li>Anmeldungen_2026_final_v7.xlsx</li>
+        <li>WhatsApp-Gruppe</li>
+        <li>Papierformular</li>
+        <li>E-Mail-Anhänge</li>
+        <li>„Wer hat die neuste Liste?“</li>
+      </ul>
+
+      <div class="arrow-down">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-7-7 7 7 7-7"/></svg>
+      </div>
+
+      <p class="shot-label">Mit einer eigenen Web-App</p>
+      <div class="mock">
+        <div class="mock-bar">
+          <i></i><i></i><i></i>
+          <span>ihre-firma.alae.app</span>
+        </div>
+        <div class="mock-body">
+          <div class="mock-h">
+            <strong>Anmeldungen</strong>
+            <em>34 offen &middot; 128 total</em>
+          </div>
+          <div class="mock-rows">
+            <div class="mock-row"><span><b>M. Bieri</b><small>Kategorie B &middot; Zahlung erhalten</small></span><span class="status status--ok">bestätigt</span></div>
+            <div class="mock-row"><span><b>Verein Aareblick</b><small>4 Teams &middot; Rechnung versendet</small></span><span class="status">in Prüfung</span></div>
+            <div class="mock-row"><span><b>S. Kohler</b><small>Kategorie A &middot; Nachweis fehlt</small></span><span class="status">offen</span></div>
+          </div>
+          <div class="mock-foot">
+            <span>Automatisch aktualisiert &middot; für alle sichtbar</span>
+            <span class="mock-btn">Export</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     TYPISCHE PROBLEME
+     ===================================================================== -->
+<section id="probleme" class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Ausgangslage</p>
+      <h2>Kommt Ihnen eine dieser Situationen bekannt vor?</h2>
+      <p class="lead">
+        Die meisten Projekte beginnen nicht mit einer Technologiefrage, sondern mit einem Ablauf,
+        der jede Woche zu viel Zeit kostet.
+      </p>
+    </div>
+
+    <div class="grid g-2">
+      <blockquote class="quote reveal">
+        <p>Unsere Mitarbeitenden führen mehrere Excel-Listen – und niemand weiss sicher, welche die aktuelle ist.</p>
+        <footer>Doppelte Arbeit, veraltete Daten</footer>
+      </blockquote>
+      <blockquote class="quote reveal">
+        <p>Unsere Kunden fragen immer wieder dieselben Informationen an, die wir jedes Mal von Hand zusammenstellen.</p>
+        <footer>Zeitfresser im Tagesgeschäft</footer>
+      </blockquote>
+      <blockquote class="quote reveal">
+        <p>Unsere Standardsoftware kann sehr viel – aber genau das nicht, was wir wirklich brauchen.</p>
+        <footer>Lizenzkosten ohne passenden Nutzen</footer>
+      </blockquote>
+      <blockquote class="quote reveal">
+        <p>Wir möchten diesen Ablauf digitalisieren, wissen aber nicht, wo wir anfangen sollen.</p>
+        <footer>Fehlender erster Schritt</footer>
+      </blockquote>
+    </div>
+
+    <div class="after-quotes reveal">
+      <p>
+        <strong>Genau hier setzen wir an.</strong> Statt eines Grossprojekts nehmen wir einen konkreten Ablauf,
+        halten ihn in einem kurzen Konzept fest und bauen dafür eine schlanke Anwendung –
+        etwas, das nach wenigen Wochen im Alltag benutzt wird und nicht nach Monaten in einer Präsentation steht.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     ANSATZ / WARUM DAS FUNKTIONIERT
+     ===================================================================== -->
+<section id="ansatz">
+  <div class="wrap approach">
+    <div class="reveal">
+      <p class="eyebrow">Der Ansatz</p>
+      <h2>Wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist</h2>
+      <p class="lead" style="margin-top:1rem">
+        alae.app entwickelt schlanke digitale Lösungen. Kein Baukasten mit hundert Modulen,
+        die Sie nicht brauchen – sondern genau die Funktionen, die Ihren Ablauf abbilden.
+      </p>
+
+      <ol class="approach-list">
+        <li>
+          <span class="num">01</span>
+          <div>
+            <h3>Moderne Entwicklungswerkzeuge</h3>
+            <p>
+              Durch moderne Entwicklungswerkzeuge kann ich individuelle Lösungen schneller und
+              kosteneffizienter umsetzen. Dadurch werden Projekte realistisch, die früher am Budget
+              gescheitert wären – bei gleichbleibender Sorgfalt bei Tests, Sicherheit und Betrieb.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span class="num">02</span>
+          <div>
+            <h3>Klein anfangen, sauber wachsen</h3>
+            <p>
+              Wir starten mit dem Ablauf, der am meisten Zeit kostet. Sie sehen früh einen klickbaren
+              Prototyp, entscheiden auf dieser Basis über den Umfang und erweitern später Schritt für
+              Schritt – ohne alles neu zu bauen.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span class="num">03</span>
+          <div>
+            <h3>Eine Ansprechperson, klare Verantwortung</h3>
+            <p>
+              Sie sprechen von der ersten Idee bis zur Betreuung mit derselben Person. Kein
+              Projektbüro, keine Weitergabe an ein Team, das Ihren Betrieb nicht kennt.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <aside class="included reveal">
+      <h3>Bei jedem Projekt inbegriffen</h3>
+      <ul class="check">
+        <li><span><strong>Tests der wichtigsten Abläufe</strong> – bevor die Anwendung produktiv geht</span></li>
+        <li><span><strong>Datenschutz von Anfang an</strong> – nach schweizerischem DSG, DSGVO-konform umsetzbar</span></li>
+        <li><span><strong>Automatische Backups</strong> und ein nachvollziehbarer Wiederherstellungsweg</span></li>
+        <li><span><strong>Einführung Ihrer Mitarbeitenden</strong> und eine kurze, verständliche Anleitung</span></li>
+        <li><span><strong>Klare Regelung zu Quellcode und Daten</strong> – schriftlich, vor Projektstart</span></li>
+        <li><span><strong>Betreuung nach dem Start</strong> – Anpassungen, Updates, Erreichbarkeit</span></li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- =====================================================================
+     LEISTUNGEN
+     ===================================================================== -->
+<section id="leistungen" class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Leistungen</p>
+      <h2>Fünf Wege, wie wir zusammenarbeiten können</h2>
+      <p class="lead">
+        Von der einzelnen Automatisierung bis zur begleiteten Entwicklung eines eigenen Projekts.
+      </p>
+    </div>
+
+    <div class="svc">
+      <article class="svc-item reveal">
+        <span class="num">01</span>
+        <div>
+          <h3>Individuelle Web-Apps</h3>
+          <p>
+            Eine Anwendung für Ihren Ablauf: Erfassen, Prüfen, Freigeben, Auswerten – erreichbar im
+            Browser, auf dem Handy wie am Computer, ohne Installation. Mit Benutzerrollen, sodass jede
+            Person nur das sieht, was sie sehen soll.
+          </p>
+          <div class="svc-tags">
+            <span class="tag">Anmeldungen &amp; Formulare</span>
+            <span class="tag">Planung &amp; Kalender</span>
+            <span class="tag">Auswertungen</span>
+            <span class="tag">Rollen &amp; Rechte</span>
+          </div>
+        </div>
+        <div class="svc-fit">
+          <strong>Passt, wenn</strong>
+          ein wiederkehrender Ablauf heute über Excel, Papier oder Chat läuft und mehrere Personen
+          daran beteiligt sind.
+        </div>
+      </article>
+
+      <article class="svc-item reveal">
+        <span class="num">02</span>
+        <div>
+          <h3>Websites und Kundenportale</h3>
+          <p>
+            Eine schnelle, gut auffindbare Website – und wenn es mehr sein soll: ein geschützter
+            Bereich, in dem Ihre Kunden ihre Unterlagen, Termine, Bilder oder Bestellungen selbst
+            abrufen, statt sie bei Ihnen anzufragen.
+          </p>
+          <div class="svc-tags">
+            <span class="tag">Website</span>
+            <span class="tag">Login-Bereich</span>
+            <span class="tag">Dokumente &amp; Downloads</span>
+            <span class="tag">Terminbuchung</span>
+          </div>
+        </div>
+        <div class="svc-fit">
+          <strong>Passt, wenn</strong>
+          Ihr Team viel Zeit mit dem Beantworten immer gleicher Kundenanfragen verbringt.
+        </div>
+      </article>
+
+      <article class="svc-item reveal">
+        <span class="num">03</span>
+        <div>
+          <h3>Automatisierungen und interne Tools</h3>
+          <p>
+            Kleine Lösungen mit grosser Wirkung: Daten aus einem System ins andere übertragen,
+            Erinnerungen und Bestätigungen automatisch versenden, Listen zusammenführen, Auswertungen
+            und PDF-Dokumente auf Knopfdruck erzeugen.
+          </p>
+          <div class="svc-tags">
+            <span class="tag">Schnittstellen</span>
+            <span class="tag">E-Mail-Automatisierung</span>
+            <span class="tag">PDF &amp; Export</span>
+            <span class="tag">Excel-Ersatz</span>
+          </div>
+        </div>
+        <div class="svc-fit">
+          <strong>Passt, wenn</strong>
+          eine Aufgabe jede Woche gleich abläuft und von Hand erledigt wird.
+        </div>
+      </article>
+
+      <article class="svc-item reveal">
+        <span class="num">04</span>
+        <div>
+          <h3>Coaching: mit KI-Werkzeugen selbst entwickeln</h3>
+          <p>
+            Für alle, die ihre Ideen selbst umsetzen möchten. Einzelcoaching am eigenen Projekt:
+            Einführung in Cursor, Claude, Codex, GitHub und Deployment, Review eines bestehenden
+            KI-generierten Projekts und Begleitung von der Idee bis zur ersten veröffentlichten
+            Anwendung.
+          </p>
+          <div class="svc-tags">
+            <span class="tag">Einzelcoaching</span>
+            <span class="tag">Projektbegleitung</span>
+            <span class="tag">Code-Review</span>
+            <span class="tag">Deployment</span>
+          </div>
+        </div>
+        <div class="svc-fit">
+          <strong>Passt, wenn</strong>
+          Sie erste Erfahrungen mit KI-Werkzeugen gemacht haben und nun einen verlässlichen,
+          nachvollziehbaren Weg zur fertigen Anwendung suchen.
+        </div>
+      </article>
+
+      <article class="svc-item reveal">
+        <span class="num">05</span>
+        <div>
+          <h3>Weiterentwicklung und Betreuung bestehender Projekte</h3>
+          <p>
+            Sie haben bereits eine Anwendung, aber niemanden, der sie weiterbringt? Ich übernehme
+            bestehende Projekte, bringe sie auf einen aktuellen Stand, schliesse Sicherheitslücken
+            und entwickle sie in kleinen, planbaren Etappen weiter.
+          </p>
+          <div class="svc-tags">
+            <span class="tag">Übernahme</span>
+            <span class="tag">Updates &amp; Sicherheit</span>
+            <span class="tag">Backups</span>
+            <span class="tag">Wartung</span>
+          </div>
+        </div>
+        <div class="svc-fit">
+          <strong>Passt, wenn</strong>
+          eine bestehende Lösung wichtig für Ihren Betrieb ist, aber seit längerem niemand mehr
+          betreut.
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     REFERENZPROJEKTE
+     ---------------------------------------------------------------------
+     TODO (wichtig): Die Projekttexte sind ein erster Entwurf auf Basis des
+     Konzepts. Bitte Zahlen, Namen und Details vor der Veröffentlichung
+     prüfen und die Screenshot-Platzhalter (.shot-slot) durch echte Bilder
+     ersetzen, z.B.:
+       <img src="assets/turnier-app-uebersicht.png" width="1200" height="750"
+            alt="Übersicht der Turnier-App mit Teamliste" loading="lazy">
+     Bei Kundenprojekten vorher Freigabe für Referenz und Screenshots einholen.
+     ===================================================================== -->
+<section id="projekte">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Referenzprojekte</p>
+      <h2>Projekte, die aus einem konkreten Problem entstanden sind</h2>
+      <p class="lead">
+        Bei jedem Projekt zählt nicht die Technologie, sondern was sich im Alltag verändert hat.
+        Aufklappen für Ausgangslage, Lösung und Ergebnis.
+      </p>
+    </div>
+
+    <!-- Projekt 1 -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <div class="proj-meta">
+            <span class="pill">Vereine &amp; Veranstalter</span>
+            <span class="tag">Web-App</span>
+          </div>
+          <p class="proj-title">Turnier- und DreamTeam-App</p>
+          <p class="proj-sum">
+            Anmeldungen, Teams, Spielplan und Rangliste an einem Ort – statt Excel-Listen,
+            die per E-Mail hin und her geschickt werden.
+          </p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Ein Turnier mit vielen Teams wurde über Excel-Listen, E-Mails und eine WhatsApp-Gruppe organisiert. Mehrere Personen im Organisationsteam pflegten parallel eigene Versionen.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Anmeldungen gingen unter, Änderungen erreichten nicht alle, und der Spielplan musste bei jeder Anpassung von Hand neu erstellt werden. Am Turniertag fehlte allen der aktuelle Stand.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Eine Web-App, in der sich Teams selbst anmelden, das Organisationsteam Anmeldungen freigibt und Spielplan sowie Rangliste automatisch aus den erfassten Resultaten entstehen – live sichtbar für alle Beteiligten.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Anmeldung mit Bestätigung per E-Mail</li>
+              <li>Teams, Kategorien und Zahlungsstatus</li>
+              <li>Automatischer Spielplan, Resultaterfassung am Handy</li>
+              <li>Live-Rangliste für Teilnehmende und Publikum</li>
+              <li>Rollen für Organisation, Schiedsrichter und Gäste</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Nur die für die Durchführung nötigen Daten. Zugriff über persönliche Konten, öffentliche Ansicht ohne Personendaten. Hosting nach Wunsch in der Schweiz.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Technik</h4>
+            <p>Web-App für Browser und Handy, ohne Installation. Zugriff über Link, Betrieb und Backups laufen automatisch.</p>
+          </div>
+
+          <!-- Screenshot-Platzhalter: durch <img> ersetzen -->
+          <div class="shot-slot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
+            <span>Screenshot: Übersicht mit Anmeldungen und Spielplan</span>
+          </div>
+
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Die Organisation arbeitet mit einem einzigen, immer aktuellen Stand.
+            Anmeldungen kommen strukturiert an, der Spielplan entsteht auf Knopfdruck, und Fragen zum
+            aktuellen Zwischenstand beantwortet die App selbst.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Projekt 2 -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <div class="proj-meta">
+            <span class="pill">Schulen &amp; Kindergärten</span>
+            <span class="tag">Web-App</span>
+          </div>
+          <p class="proj-title">Foto-App für Schulen und Eltern</p>
+          <p class="proj-sum">
+            Klassen- und Anlassfotos sicher an die richtigen Eltern verteilen – ohne Cloud-Abo,
+            ohne WhatsApp-Qualität, ohne Bilder, die überall landen.
+          </p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Nach jedem Anlass entstehen hunderte Fotos. Verteilt wurden sie bisher über Chat-Gruppen, USB-Sticks und E-Mail-Anhänge.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Bilder wurden komprimiert und verloren an Qualität, Anhänge waren zu gross, und niemand konnte nachvollziehen, wer welche Fotos erhalten hat – bei Kinderbildern besonders heikel.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Ein geschützter Bereich pro Klasse oder Anlass. Die Schule lädt Originalfotos hoch, Eltern erhalten einen persönlichen Zugang und laden nur die Bilder herunter, die für sie freigegeben sind – in Originalqualität.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Upload vieler Fotos auf einmal, ohne Qualitätsverlust</li>
+              <li>Zugang pro Klasse, Anlass oder Familie</li>
+              <li>Auswahl und Download als ZIP-Datei</li>
+              <li>Ablaufdatum für Freigaben</li>
+              <li>Übersicht, welche Alben aktiv sind</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Kinderfotos sind besonders schützenswert: Zugriff nur mit persönlichem Konto, keine öffentlichen Links, Löschfristen einstellbar. Hosting in der Schweiz oder auf Infrastruktur der Schule.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Technik</h4>
+            <p>Läuft im Browser, auch auf dem Handy. Speicherung auf eigenem Server oder in einem Schweizer Rechenzentrum – kein zusätzliches Foto-Abonnement nötig.</p>
+          </div>
+
+          <div class="shot-slot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
+            <span>Screenshot: Albumansicht mit Auswahl und Download</span>
+          </div>
+
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Eltern erhalten Originalfotos ohne Cloud-Abonnement und ohne
+            Qualitätsverlust, die Schule behält die Kontrolle darüber, wer welche Bilder sieht –
+            und das Verteilen dauert Minuten statt Stunden.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Projekt 3 -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <div class="proj-meta">
+            <span class="pill">Familien &amp; Gruppen</span>
+            <span class="tag">Web-App</span>
+          </div>
+          <p class="proj-title">Familien- und Ferien-Sharing-App</p>
+          <p class="proj-sum">
+            Ferien gemeinsam planen: Termine, Aufgaben, Einkaufslisten, Fotos und Kosten
+            in einer App, die alle Beteiligten auch wirklich benutzen.
+          </p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Mehrere Haushalte organisieren gemeinsame Ferien und Anlässe: wer kommt wann, wer bringt was, wer hat was bezahlt.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Die Informationen verteilten sich über Chats, Notizen und einzelne Kalender. Am Ende rechnete eine Person alles von Hand ab – mit entsprechendem Aufwand und Rückfragen.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Eine gemeinsame App pro Gruppe oder Reise: geteilter Kalender, Aufgaben- und Einkaufslisten, Fotoalbum und eine einfache Kostenteilung, die zeigt, wer wem was schuldet.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Geteilter Kalender mit Zu- und Absagen</li>
+              <li>Listen für Aufgaben, Einkauf und Gepäck</li>
+              <li>Kostenteilung mit automatischem Ausgleich</li>
+              <li>Gemeinsames Fotoalbum</li>
+              <li>Einladung per Link, ohne komplizierte Registrierung</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Private Gruppen, Inhalte nur für eingeladene Mitglieder sichtbar, keine Weitergabe an Dritte, keine Werbung.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Technik</h4>
+            <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
+          </div>
+
+          <div class="shot-slot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
+            <span>Screenshot: Kalender, Listen und Kostenübersicht</span>
+          </div>
+
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Ein Ort statt fünf Kanäle. Die Abrechnung am Schluss dauert
+            Minuten, und niemand muss mehr im Chat nach oben scrollen, um etwas zu finden.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Projekt 4 -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <div class="proj-meta">
+            <span class="pill">Bausteine für Ihr Projekt</span>
+            <span class="tag">Module</span>
+          </div>
+          <p class="proj-title">Finanz-, Kalender- und Listenmodule</p>
+          <p class="proj-sum">
+            Wiederverwendbare Bausteine aus bestehenden Projekten – dadurch entstehen neue
+            Anwendungen schneller und günstiger.
+          </p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Viele Projekte brauchen dieselben Grundfunktionen: etwas erfassen, planen, auswerten und exportieren.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Wenn diese Funktionen jedes Mal von Null entstehen, wird jedes Projekt unnötig teuer – und jeder Fehler zweimal gemacht.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Erprobte Module, die sich kombinieren und anpassen lassen: Budget- und Kostenübersichten, Kalender mit Terminen und Erinnerungen, Listen mit Zuständigkeiten und Status sowie Auswertungen als Excel- oder PDF-Export.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Budget, Ausgaben und Aufteilung</li>
+              <li>Kalender, Fristen und Erinnerungen</li>
+              <li>Listen mit Status und Verantwortlichkeiten</li>
+              <li>Export nach Excel und PDF</li>
+              <li>Benutzerkonten, Rollen und Rechte</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Jedes Projekt erhält eine eigene, getrennte Datenhaltung. Keine gemeinsame Datenbank über mehrere Kunden hinweg.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Nutzen für Sie</h4>
+            <p>Ihr Projekt startet nicht bei Null: Bewährte Teile sind vorhanden, individuell wird nur, was Ihren Ablauf tatsächlich ausmacht.</p>
+          </div>
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Kürzere Entwicklungszeit, tiefere Kosten und weniger Kinderkrankheiten,
+            weil die Grundfunktionen bereits im Einsatz erprobt sind.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Projekt 5 -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <div class="proj-meta">
+            <span class="pill">Betrieb &amp; Hosting</span>
+            <span class="tag">Infrastruktur</span>
+          </div>
+          <p class="proj-title">Eigenes Hosting mit QNAP und Cloudflare</p>
+          <p class="proj-sum">
+            Betrieb auf eigener Infrastruktur mit gesicherter Erreichbarkeit – wenn Daten
+            das Haus nicht verlassen sollen.
+          </p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Manche Daten – Personendaten, Fotos, interne Dokumente – sollen nicht bei einem grossen Anbieter im Ausland liegen.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Ein eigener Server ist schnell aufgestellt, aber schwierig sicher erreichbar zu machen: offene Ports, fehlende Verschlüsselung, unklare Backups.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Betrieb auf einem eigenen NAS beziehungsweise Server, sicher erreichbar über einen verschlüsselten Tunnel und Cloudflare – ohne offene Ports im Netzwerk, mit HTTPS, Zugriffsschutz und automatischen Backups.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Keine offenen Ports nach aussen</li>
+              <li>Verschlüsselte Verbindung, eigene Domain</li>
+              <li>Automatische Backups mit Wiederherstellungstest</li>
+              <li>Zugriffsschutz und Protokollierung</li>
+              <li>Alternativ: Hosting in einem Schweizer Rechenzentrum</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Die Daten bleiben dort, wo Sie es wünschen – im eigenen Haus oder in der Schweiz. Sie behalten die Kontrolle über Zugriffe und Aufbewahrung.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Nutzen für Sie</h4>
+            <p>Sie können auch heikle Abläufe digitalisieren, ohne Daten aus der Hand zu geben – bei überschaubaren laufenden Kosten.</p>
+          </div>
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Volle Datenhoheit mit dem Bedienkomfort einer Cloud-Lösung:
+            Zugriff von überall über eine eigene Adresse, aber Speicherung dort, wo sie hingehört.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <p class="lead reveal" style="margin-top:1.75rem; font-size:.92em">
+      Sie haben ein ähnliches Problem, aber in einer anderen Branche?
+      <a href="#kontakt">Schildern Sie mir Ihren Ablauf</a> – ich sage Ihnen offen, ob sich eine eigene
+      Lösung lohnt oder ob ein bestehendes Produkt die bessere Wahl ist.
+    </p>
+  </div>
+</section>
+
+<!-- =====================================================================
+     ABLAUF
+     ===================================================================== -->
+<section id="ablauf" class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Ablauf</p>
+      <h2>In sechs Schritten von der Idee zur laufenden Anwendung</h2>
+      <p class="lead">
+        Sie wissen an jedem Punkt, was als Nächstes passiert, was es kostet und was Sie dafür erhalten.
+      </p>
+    </div>
+
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="step-dot">1</span>
+        <div class="step-body">
+          <h3>Kostenloses Erstgespräch</h3>
+          <p>Wir schauen Ihren Ablauf gemeinsam an: Was läuft heute wie, wo geht Zeit verloren, was wäre der grösste Gewinn? Danach sage ich Ihnen ehrlich, ob eine eigene Lösung sinnvoll ist.</p>
+          <span class="step-when">30–45 Minuten &middot; vor Ort, per Telefon oder Video &middot; kostenlos</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-dot">2</span>
+        <div class="step-body">
+          <h3>Anforderungen und Konzept</h3>
+          <p>Ich halte schriftlich fest, was die Anwendung können muss und was bewusst nicht dazugehört – in Ihrer Sprache, ohne Fachjargon. Diese Grundlage verhindert Missverständnisse und teure Umwege.</p>
+          <span class="step-when">Ergebnis: kurzes Konzeptdokument als Entscheidungsgrundlage</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-dot">3</span>
+        <div class="step-body">
+          <h3>Festpreisangebot oder Entwicklungsetappen</h3>
+          <p>Kleinere Projekte erhalten einen Festpreis. Grössere teilen wir in Etappen, die einzeln beauftragt werden – so bleibt das Risiko für Sie überschaubar und Sie behalten die Kostenkontrolle.</p>
+          <span class="step-when">Transparent, ohne versteckte Positionen</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-dot">4</span>
+        <div class="step-body">
+          <h3>Klickbarer Prototyp</h3>
+          <p>Bevor die eigentliche Entwicklung beginnt, sehen und bedienen Sie die künftige Anwendung. Änderungen sind hier noch günstig – genau darum kommt dieser Schritt vor dem Programmieren.</p>
+          <span class="step-when">Sie klicken sich durch und geben Rückmeldung</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-dot">5</span>
+        <div class="step-body">
+          <h3>Entwicklung und Tests</h3>
+          <p>Umsetzung in überprüfbaren Schritten, mit regelmässigen Zwischenständen zum Ausprobieren. Die wichtigsten Abläufe werden getestet, bevor die Anwendung produktiv geht.</p>
+          <span class="step-when">Sie sehen laufend Fortschritt, keine monatelange Blackbox</span>
+        </div>
+      </li>
+      <li class="step reveal">
+        <span class="step-dot">6</span>
+        <div class="step-body">
+          <h3>Einführung und Betreuung</h3>
+          <p>Einführung Ihrer Mitarbeitenden, kurze Anleitung, Übergabe der Zugänge. Danach bleibe ich erreichbar: für Anpassungen, Updates, Backups und Erweiterungen.</p>
+          <span class="step-when">Betreuung monatlich oder nach Aufwand – Sie entscheiden</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- =====================================================================
+     ÜBER MICH / VERTRAUEN
+     ---------------------------------------------------------------------
+     TODO: Name, Werdegang und Portrait anpassen. Portrait-Platzhalter durch
+     <img src="assets/portrait.jpg" alt="…"> ersetzen.
+     ===================================================================== -->
+<section id="ueber-mich">
+  <div class="wrap about">
+    <div class="portrait reveal">
+      <span>Platzhalter Portrait<br><small>assets/portrait.jpg</small></span>
+    </div>
+
+    <div class="reveal">
+      <p class="eyebrow">Über mich</p>
+      <h2>Sie arbeiten direkt mit der Person, die entwickelt</h2>
+      <p class="lead" style="margin-top:1rem">
+        Ich bin Alain von Allmen und entwickle von Burgdorf aus individuelle Web-Anwendungen für
+        kleine und mittlere Betriebe, Praxen, Schulen und Vereine. Kein Verkaufsteam, keine
+        Zwischenstufen: Sie schildern Ihren Ablauf, ich baue die Lösung und betreue sie danach.
+      </p>
+      <p class="lead">
+        Was mich interessiert, sind nicht möglichst grosse Projekte, sondern Abläufe, bei denen eine
+        kleine Anwendung jede Woche echte Zeit spart. Wenn ich der Meinung bin, dass ein bestehendes
+        Produkt für Sie günstiger ist, sage ich das.
+      </p>
+
+      <div class="trust-grid">
+        <div class="trust-card"><h4>Persönliche Ansprechperson</h4><p>Von der ersten Idee bis zur Betreuung immer dieselbe Person.</p></div>
+        <div class="trust-card"><h4>Standort Schweiz</h4><p>Region Bern und Emmental, Termine auch vor Ort möglich.</p></div>
+        <div class="trust-card"><h4>Transparente Preise</h4><p>Festpreis oder Etappen, schriftlich vor Beginn – keine Überraschungen.</p></div>
+        <div class="trust-card"><h4>Verständliche Kommunikation</h4><p>Erklärungen ohne Fachjargon, Entscheidungen bleiben bei Ihnen.</p></div>
+        <div class="trust-card"><h4>Quellcode und Daten geregelt</h4><p>Wem was gehört und wer Zugriff hat, steht schriftlich fest.</p></div>
+        <div class="trust-card"><h4>Wartung und Backups</h4><p>Automatische Sicherungen, Updates und ein geprüfter Wiederherstellungsweg.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     FAQ
+     ===================================================================== -->
+<section id="faq" class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Häufige Fragen</p>
+      <h2>Was Kundinnen und Kunden zuerst fragen</h2>
+    </div>
+
+    <div class="faq reveal">
+      <details>
+        <summary>
+          Was kostet eine individuelle App?
+          <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </summary>
+        <!-- TODO: Preisrahmen einsetzen, sobald Sie sich auf Zahlen festlegen möchten,
+             z.B. "Kleinere Lösungen bewegen sich typischerweise zwischen CHF X und Y." -->
+        <div class="answer">
+          Das hängt vom Umfang ab – deshalb nennen wir den Preis erst, wenn klar ist, was gebaut wird.
+          Nach dem kostenlosen Erstgespräch und dem kurzen Konzept erhalten Sie einen Festpreis oder
+          klar abgegrenzte Etappen. Eine erste Version, die einen einzelnen Ablauf abdeckt, ist meist
+          deutlich günstiger, als die meisten erwarten – und günstiger, als jahrelang Lizenzen für
+          Funktionen zu bezahlen, die Sie nicht brauchen.
+        </div>
+      </details>
+      <details>
+        <summary>
+          Wie lange dauert es, bis wir die Anwendung nutzen können?
+          <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </summary>
+        <div class="answer">
+          Bei klar umrissenen Projekten sprechen wir über Wochen, nicht über Monate. Sie sehen früh
+          einen klickbaren Prototyp und danach regelmässige Zwischenstände, die Sie ausprobieren
+          können. Erweiterungen folgen später in eigenen Etappen.
+        </div>
+      </details>
+      <details>
+        <summary>
+          Wem gehören der Quellcode und die Daten?
+          <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </summary>
+        <div class="answer">
+          Die Daten gehören immer Ihnen und können jederzeit exportiert werden. Wie es sich mit dem
+          Quellcode verhält, regeln wir schriftlich vor Projektstart – von der reinen Nutzung bis zur
+          vollständigen Übergabe des Codes ist alles möglich. Ich halte das bewusst früh und
+          unmissverständlich fest.
+        </div>
+      </details>
+      <details>
+        <summary>
+          Wie halten Sie es mit Datenschutz und Hosting?
+          <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </summary>
+        <div class="answer">
+          Es werden nur die Daten erhoben, die der Ablauf wirklich benötigt. Zugriffe laufen über
+          persönliche Konten mit Rollen. Auf Wunsch erfolgt das Hosting in der Schweiz oder auf Ihrer
+          eigenen Infrastruktur; die Umsetzung richtet sich nach dem schweizerischen
+          Datenschutzgesetz und kann DSGVO-konform erfolgen.
+        </div>
+      </details>
+      <details>
+        <summary>
+          Was passiert, wenn Sie einmal nicht verfügbar sind?
+          <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </summary>
+        <div class="answer">
+          Eine berechtigte Frage bei einem Einzelanbieter. Deshalb setze ich auf verbreitete,
+          dokumentierte Technologien statt auf Eigenkonstruktionen, halte den Quellcode und die
+          Zugänge nachvollziehbar fest und regle vertraglich, wie eine Übergabe abläuft. Ihre
+          Anwendung bleibt dadurch auch für Dritte wartbar.
+        </div>
+      </details>
+      <details>
+        <summary>
+          Können Sie eine bestehende Anwendung übernehmen oder erweitern?
+          <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </summary>
+        <div class="answer">
+          Ja. Ich schaue mir das Projekt zuerst an und melde mich mit einer ehrlichen Einschätzung:
+          was sich sinnvoll weiterentwickeln lässt, wo Sicherheits- oder Wartungslücken bestehen und
+          was ein Neuaufbau kosten würde. Das gilt auch für Projekte, die mit KI-Werkzeugen
+          entstanden sind.
+        </div>
+      </details>
+      <details>
+        <summary>
+          Arbeiten Sie nur in der Region Bern?
+          <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </summary>
+        <div class="answer">
+          Der Schwerpunkt liegt in Burgdorf, im Emmental und in der Region Bern, weil persönliche
+          Termine viel vereinfachen. Zusammenarbeit in der übrigen Schweiz funktioniert per Video und
+          Telefon aber genauso gut.
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     KONTAKT
+     ---------------------------------------------------------------------
+     Das Formular öffnet standardmässig das E-Mail-Programm (mailto), damit die
+     Seite ohne Server funktioniert. Für einen echten Formularversand:
+       1. Dienst wählen (z.B. Formspree, Web3Forms, eigener Endpoint)
+       2. action="https://…" und method="post" am <form> setzen
+       3. data-mailto="off" am <form> ergänzen – dann greift das Script nicht ein
+     TODO: E-Mail-Adresse und Telefonnummer unten ersetzen.
+     ===================================================================== -->
+<section id="kontakt">
+  <div class="wrap contact">
+    <div class="reveal">
+      <p class="eyebrow">Kontakt</p>
+      <h2>Erzählen Sie mir von Ihrem Ablauf</h2>
+      <p class="lead" style="margin-top:1rem">
+        Die beste Frage zum Start ist nicht „brauchen wir eine App?“, sondern:
+        <strong>Gibt es bei Ihnen einen Ablauf mit Excel, Papier, E-Mail oder WhatsApp,
+        der regelmässig Zeit kostet oder Fehler verursacht?</strong>
+        Schildern Sie mir diesen Ablauf in wenigen Sätzen – Sie erhalten eine ehrliche
+        Ersteinschätzung, ob und wie sich das lösen lässt.
+      </p>
+
+      <div class="contact-direct">
+        <a href="mailto:kontakt@alae.app?subject=Anfrage%20%C3%BCber%20alae.app">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span><b>kontakt@alae.app</b><small>Antwort in der Regel innerhalb von 24 Stunden</small></span>
+        </a>
+        <!-- TODO: Telefonnummer eintragen oder diesen Block entfernen -->
+        <a href="tel:+41000000000">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h3l2 5-2.5 1.5a12 12 0 0 0 5 5L14 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 3 5.2 2 2 0 0 1 5 3z"/></svg>
+          <span><b>Telefon auf Anfrage</b><small>Nummer hier eintragen</small></span>
+        </a>
+        <a href="#projekte">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-4.4 7-10a7 7 0 1 0-14 0c0 5.6 7 10 7 10z"/><circle cx="12" cy="11" r="2.5"/></svg>
+          <span><b>Burgdorf, Emmental &amp; Bern</b><small>Termine vor Ort möglich</small></span>
+        </a>
+      </div>
+
+      <!-- Optional: Einführungsangebot für die ersten Referenzprojekte.
+           Block einfach löschen, wenn er nicht mehr passt. -->
+      <div class="after-quotes" style="margin-top:1.75rem">
+        <p style="font-size:.95em">
+          <strong>Für die nächsten zwei Referenzprojekte</strong> biete ich einen Einführungspreis –
+          im Gegenzug für ehrliche Rückmeldungen und die Erlaubnis, das Projekt anonymisiert oder
+          mit Ihrem Namen als Referenz zu zeigen.
+        </p>
+      </div>
+    </div>
+
+    <form class="reveal" id="contactForm" novalidate>
+      <div class="field-row">
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="f-org">Firma / Organisation <span class="opt">(optional)</span></label>
+          <input id="f-org" name="organisation" type="text" autocomplete="organization">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f-mail">E-Mail</label>
+          <input id="f-mail" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="f-tel">Telefon <span class="opt">(optional)</span></label>
+          <input id="f-tel" name="telefon" type="tel" autocomplete="tel">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-msg">Welcher Ablauf kostet heute Zeit?</label>
+        <textarea id="f-msg" name="nachricht" required placeholder="Zum Beispiel: Wir erfassen Anmeldungen in Excel, bestätigen sie von Hand per E-Mail und führen die Zahlungen in einer zweiten Liste."></textarea>
+      </div>
+      <label class="consent">
+        <input type="checkbox" name="einverstanden" required>
+        <span>Ich bin damit einverstanden, dass meine Angaben zur Bearbeitung meiner Anfrage verwendet werden. Es erfolgt keine Weitergabe an Dritte.</span>
+      </label>
+      <button class="btn btn--primary" type="submit">
+        Anfrage senden
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-7 7 7-7 7"/></svg>
+      </button>
+      <p class="form-note" id="formNote">Unverbindlich &middot; Ihre Angaben werden nur für diese Anfrage verwendet.</p>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- =====================================================================
+     FOOTER
+     TODO: Impressum und Datenschutzerklärung ergänzen (eigene Seiten oder
+     Abschnitte) und die Links unten darauf zeigen lassen.
+     ===================================================================== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="#top" style="margin-bottom:.9rem">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M3.5 23.5 10.5 10.5l2.8 5.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16.8 23.5 23 11.2l5.7 12.3" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>alae.app</span>
+        </a>
+        <p>Schlanke digitale Lösungen, wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist.</p>
+      </div>
+      <div>
+        <h4>Leistungen</h4>
+        <ul>
+          <li><a href="#leistungen">Individuelle Web-Apps</a></li>
+          <li><a href="#leistungen">Websites &amp; Kundenportale</a></li>
+          <li><a href="#leistungen">Automatisierungen &amp; interne Tools</a></li>
+          <li><a href="#leistungen">Coaching mit KI-Werkzeugen</a></li>
+          <li><a href="#leistungen">Betreuung bestehender Projekte</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Seite</h4>
+        <ul>
+          <li><a href="#probleme">Ausgangslage</a></li>
+          <li><a href="#projekte">Referenzprojekte</a></li>
+          <li><a href="#ablauf">Ablauf</a></li>
+          <li><a href="#faq">Häufige Fragen</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="mailto:kontakt@alae.app">kontakt@alae.app</a></li>
+          <li><a href="#kontakt">Erstgespräch anfragen</a></li>
+        </ul>
+        <p style="margin-top:.9rem">Burgdorf, Schweiz<br>Region Bern &amp; Emmental</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2026</span> alae.app &middot; Alain von Allmen</span>
+      <span>
+        <a href="#kontakt">Impressum</a> &middot;
+        <a href="#kontakt">Datenschutz</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- Strukturierte Daten für Suchmaschinen.
+     TODO: Adresse, Telefon und Social-Profile ergänzen. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "alae.app",
+  "url": "https://alae.app/",
+  "email": "kontakt@alae.app",
+  "description": "alae.app entwickelt schlanke individuelle Web-Apps, Kundenportale und Automatisierungen für KMU, Praxen, Schulen und Vereine – wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist.",
+  "areaServed": [
+    { "@type": "AdministrativeArea", "name": "Kanton Bern" },
+    { "@type": "Country", "name": "Schweiz" }
+  ],
+  "address": { "@type": "PostalAddress", "addressLocality": "Burgdorf", "addressRegion": "BE", "addressCountry": "CH" },
+  "knowsLanguage": ["de-CH", "de", "en"],
+  "makesOffer": [
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Individuelle Web-Apps" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Websites und Kundenportale" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automatisierungen und interne Tools" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Coaching für Entwicklung mit KI-Werkzeugen" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Weiterentwicklung und Betreuung bestehender Projekte" } }
+  ]
+}
+</script>
+
+<script>
+/* =========================================================================
+   Kleine Helfer – kein Framework, kein Build-Schritt.
+   ========================================================================= */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+
+  /* --- Farbschema: gespeicherte Wahl schlägt Systemeinstellung ---------- */
+  try {
+    var saved = localStorage.getItem('alae-theme');
+    if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  } catch (e) { /* Private Mode: einfach Systemeinstellung nutzen */ }
+
+  var themeBtn = document.getElementById('themeToggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      var current = root.getAttribute('data-theme');
+      if (!current) {
+        current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      var next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('alae-theme', next); } catch (e) {}
+    });
+  }
+
+  /* --- Mobile Navigation ------------------------------------------------ */
+  var burger = document.getElementById('burger');
+  var nav = document.getElementById('nav');
+  function closeNav() {
+    if (!nav) return;
+    nav.setAttribute('data-open', 'false');
+    if (burger) {
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Navigation öffnen');
+    }
+  }
+  if (burger && nav) {
+    burger.addEventListener('click', function () {
+      var open = nav.getAttribute('data-open') === 'true';
+      nav.setAttribute('data-open', open ? 'false' : 'true');
+      burger.setAttribute('aria-expanded', open ? 'false' : 'true');
+      burger.setAttribute('aria-label', open ? 'Navigation öffnen' : 'Navigation schliessen');
+    });
+    nav.addEventListener('click', function (ev) {
+      if (ev.target.closest('a')) closeNav();
+    });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape') closeNav();
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 992) closeNav();
+    });
+  }
+
+  /* --- Header-Rahmen beim Scrollen -------------------------------------- */
+  var header = document.getElementById('siteHeader');
+  function onScroll() {
+    if (header) header.classList.toggle('is-stuck', window.scrollY > 8);
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* --- Aktiver Navigationspunkt ---------------------------------------- */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav a[href^="#"]:not(.nav-cta)'));
+  var sections = navLinks
+    .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+    .filter(Boolean);
+
+  if ('IntersectionObserver' in window && sections.length) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(function (a) {
+          a.classList.toggle('is-active', a.getAttribute('href') === '#' + entry.target.id);
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    sections.forEach(function (s) { spy.observe(s); });
+  }
+
+  /* --- Einblenden beim Scrollen ---------------------------------------- */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealables = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    revealables.forEach(function (el) { el.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        obs.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    revealables.forEach(function (el) { io.observe(el); });
+  }
+
+  /* --- Kontaktformular: ohne Server per E-Mail-Programm ----------------- */
+  var EMPFAENGER = 'kontakt@alae.app'; /* TODO: Zieladresse anpassen */
+  var form = document.getElementById('contactForm');
+  var note = document.getElementById('formNote');
+  if (form && form.getAttribute('data-mailto') !== 'off' && !form.getAttribute('action')) {
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      if (!form.reportValidity()) return;
+
+      var get = function (name) {
+        var el = form.elements[name];
+        return el && el.value ? el.value.trim() : '';
+      };
+      var lines = [
+        'Name: ' + get('name'),
+        'Firma: ' + (get('organisation') || '–'),
+        'E-Mail: ' + get('email'),
+        'Telefon: ' + (get('telefon') || '–'),
+        '',
+        'Ablauf, der Zeit kostet:',
+        get('nachricht'),
+        '',
+        '— gesendet über alae.app'
+      ];
+      var subject = 'Anfrage über alae.app' + (get('organisation') ? ' – ' + get('organisation') : '');
+      window.location.href = 'mailto:' + EMPFAENGER +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(lines.join('\n'));
+
+      if (note) {
+        note.textContent = 'Ihr E-Mail-Programm wurde geöffnet. Falls nicht: schreiben Sie direkt an ' + EMPFAENGER + '.';
+      }
+    });
+  }
+
+  /* --- Jahr im Footer -------------------------------------------------- */
+  var year = document.getElementById('year');
+  if (year) year.textContent = String(new Date().getFullYear());
+})();
+</script>
+</body>
+</html>
