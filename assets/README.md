@@ -11,6 +11,7 @@ Bilder für die Landingpage.
 | `pvt.png` | Volleyballturnier – Dashboard eines Teams | 1084 × 1246 px |
 | `foto-app.png` | Fotoverkauf – Galerie einer Familie | 929 × 1211 px |
 | `share.png` | Familien-Sharing – Fotobereich mit Bereiche-Menü | 1317 × 1136 px |
+| `buchhaltung.png` | Management Einzelfirma – Buchungserfassung und Journal | 1547 × 994 px |
 
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
@@ -50,6 +51,18 @@ Darin sind unkenntlich gemacht:
 **`share.png`**
 
 - alle geteilten Fotos, auf denen Personen zu sehen sind
+
+**`buchhaltung.png`**
+
+- die Objektauswahl im Erfassungsformular (enthielt den Firmennamen)
+- die Filterzeile „Zeige Objekte" mit den drei Objektnamen
+- im Journal die Spalten Objekt, Text / Bemerkung und Betrag
+
+Bewusst sichtbar geblieben sind dort Buchungsdaten sowie die Spalten Soll und
+Haben: Das sind Konten aus einem Standardkontenrahmen (1000 Kasse, 3200
+Verkaufserlöse und so weiter) und lassen keine Rückschlüsse auf die Firma zu.
+Ohne sie wäre nicht erkennbar, dass es sich um eine doppelte Buchhaltung
+handelt.
 
 Scharf bleiben jeweils die Bedienelemente – bei `share.png` insbesondere das
 Menü mit den zuschaltbaren Bereichen, das die App ja gerade auszeichnet.

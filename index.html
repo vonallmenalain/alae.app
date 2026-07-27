@@ -1079,12 +1079,12 @@ form .btn{width:100%; justify-content:center}
        a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
        b) geschützt / mit Login  -> nur Screenshots + Badge "Geschützt"
 
-     Alle fünf Karten haben einen echten Screenshot (figure.proj-shot). Bei
+     Alle sechs Karten haben einen echten Screenshot (figure.proj-shot). Bei
      einem Austausch daran denken: src, width, height und alt anpassen, und in
      den Bildern der geschützten Apps müssen Gesichter und Namen erneut
      unkenntlich gemacht werden – siehe assets/README.md.
 
-     TODO: Ausgangslage und Problem stammen bei allen fünf Apps vom Betreiber,
+     TODO: Ausgangslage und Problem stammen bei allen sechs Apps vom Betreiber,
      Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet – bitte
      gegenlesen, ebenso die Angaben zu Datenschutz und Hosting.
 
@@ -1473,6 +1473,81 @@ form .btn{width:100%; justify-content:center}
             <strong>Ergebnis:</strong> Ein Ort statt fünf Apps – mit Bildern in Originalqualität
             statt in Chat-Qualität. Die Abrechnung am Ende der Ferien dauert Minuten, und niemand
             muss mehr im Chat nach oben scrollen, um etwas zu finden.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Projekt 6: Management Einzelfirma (geschützt) ------------------- -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <div class="proj-meta">
+            <span class="pill pill--closed">Geschützt</span>
+            <span class="tag">Management Einzelfirma</span>
+          </div>
+          <p class="proj-title">Buchhaltung und Verwaltung einer Einzelfirma</p>
+          <p class="proj-sum">
+            Buchhaltung, Verkäufe, Debitoren und Kundenadressen in einer App – mit
+            Erfolgsrechnung, Bilanz und automatischem Abschluss statt Excel-Kassenbuch.
+          </p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-open">
+          <small>
+            <strong>Kein öffentlicher Link:</strong> Die App enthält die Geschäftszahlen einer
+            Firma und ist nur mit persönlichem Login erreichbar. Deshalb hier nur ein Screenshot.
+          </small>
+        </div>
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Eine Einzelfirma führte ihr Kassenbuch in einer Excel-Datei. Verkäufe, Debitorenlisten und die Kostenkontrolle entstanden daneben von Hand in weiteren Dokumenten.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Jeder Bereich lag für sich: Dieselben Angaben mussten mehrfach erfasst werden, Debitorenlisten wurden manuell nachgeführt, und für einen Abschluss war jedes Mal Handarbeit nötig.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Eine App für die gesamte Firma statt einzelner Dateien: doppelte Buchhaltung mit Erfolgsrechnung, Bilanz und automatischem Abschluss. Verkäufe und Vermietungen werden ebenfalls dort organisiert, dazu die Debitorenbuchhaltung und eine Adressliste der Kundschaft.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Buchungen erfassen, Journal mit Filtern</li>
+              <li>Erfolgsrechnung, Bilanz und Kontenplan</li>
+              <li>Automatischer Abschluss</li>
+              <li>Verkäufe und Vermietungen verwalten</li>
+              <li>Debitorenbuchhaltung und Kundenadressen</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Geschäftszahlen gehören nicht in fremde Hände: Alle Daten liegen auf einem Server in der Schweiz, ohne Anbindung an eine Cloud. Zugang nur mit persönlichem Login.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Technik</h4>
+            <p>Läuft im Browser auf Computer und Handy, ohne Installation. Betrieb und Backups laufen automatisch.</p>
+          </div>
+
+          <!-- Im Bild sind Firmenname, Objektnamen, Buchungstexte und Beträge
+               unkenntlich gemacht. Wird der Screenshot ersetzt, muss das erneut
+               geschehen – siehe assets/README.md. -->
+          <figure class="proj-shot">
+            <img src="assets/buchhaltung.png" width="1547" height="994" loading="lazy"
+                 alt="Buchhaltungsansicht mit Reitern für Erfassen und Journal, Erfolgsrechnung, Bilanz und Kontenplan, einem Formular für neue Buchungen und dem Journal darunter. Firmenbezug, Buchungstexte und Beträge sind unkenntlich gemacht.">
+            <figcaption>Buchungserfassung und Journal – Firmenbezug, Texte und Beträge unkenntlich gemacht.</figcaption>
+          </figure>
+
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Ein System, das genau auf diese Firma zugeschnitten ist –
+            ohne Funktionen, die nie gebraucht werden. Der Abschluss entsteht auf Knopfdruck statt
+            in Handarbeit, und die Zahlen stehen nicht mehr über mehrere Dateien verteilt.
           </p>
         </div>
       </div>
