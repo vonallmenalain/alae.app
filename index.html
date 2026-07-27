@@ -1267,8 +1267,8 @@ form .btn{width:100%; justify-content:center}
           </div>
           <p class="proj-title">Volleyballturnier</p>
           <p class="proj-sum">
-            Anmeldungen, Spielplan, Resultate und Rangliste eines Turniers an einem Ort – erfasst
-            direkt am Spielfeld, sichtbar für alle Teams und Zuschauenden.
+            Spielplan, Resultate und Rangliste live auf dem Handy: Jedes Team sieht in einem eigenen
+            Dashboard, wann es spielt, wo es steht und wann es zählen muss.
           </p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
@@ -1286,24 +1286,24 @@ form .btn{width:100%; justify-content:center}
         <div class="proj-cols">
           <div class="proj-block">
             <h4>Ausgangslage</h4>
-            <p>Ein Volleyballturnier mit mehreren Teams wurde über Excel-Listen, E-Mails und Papier organisiert. Mehrere Personen im Organisationsteam pflegten parallel eigene Versionen.</p>
+            <p>Das Volleyballturnier wurde bisher mit einer Excel-Datei und auf Papier organisiert. Die Spielpläne wurden ausgedruckt und in der Halle aufgehängt – wer etwas wissen wollte, musste hingehen und ablesen.</p>
           </div>
           <div class="proj-block">
             <h4>Problem</h4>
-            <p>Der Spielplan musste bei jeder Änderung von Hand neu erstellt werden, Resultate lagen am Turniertag auf verschiedenen Blättern, und die Rangliste entstand mühsam am Schluss.</p>
+            <p>Teams wussten dadurch oft nicht genau, wann sie als Nächstes spielen oder auf welchem Zwischenrang sie stehen. Der Informationsstand hing davon ab, wann jemand zuletzt beim Aushang war.</p>
           </div>
           <div class="proj-block">
             <h4>Umgesetzte Lösung</h4>
-            <p>Eine Web-App mit Anmeldung der Teams, automatisch erzeugtem Spielplan und Resultaterfassung direkt auf dem Handy am Spielfeld. Rangliste und Spielplan sind live für alle sichtbar.</p>
+            <p>Eine Web-App, die den Turnierstand live abbildet. Jedes Team wählt sich im Dashboard aus und sieht dort alles, was es betrifft: die eigene Gruppentabelle, die nächsten Spiele mit Uhrzeit und Feld, bereits gespielte Resultate, die Finalrunde – und die Spiele, bei denen es zählen muss.</p>
           </div>
           <div class="proj-block">
             <h4>Wichtigste Funktionen</h4>
             <ul>
-              <li>Anmeldung der Teams</li>
-              <li>Gruppen beziehungsweise Kategorien</li>
-              <li>Spielplan, ohne Handarbeit</li>
-              <li>Resultaterfassung am Handy</li>
-              <li>Live-Rangliste, öffentlich einsehbar</li>
+              <li>Dashboard mit den Spielen des eigenen Teams</li>
+              <li>Gruppentabelle mit Punkten und Verhältnis</li>
+              <li>Spielplan mit Uhrzeit, Feld und Turnierphase</li>
+              <li>Zuteilung der Spiele, bei denen ein Team zählt</li>
+              <li>Resultate und Schlussrangliste live für alle</li>
             </ul>
           </div>
           <div class="proj-block">
@@ -1315,15 +1315,18 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Handy und Computer. Der Zugriff erfolgt über einen Link, Rollen trennen Organisation und Publikum.</p>
           </div>
 
-          <!-- TODO: optional – Screenshot ergänzen oder diesen Block löschen. -->
-          <div class="shot-slot">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
-            <span>Screenshot: Spielplan und Live-Rangliste</span>
-          </div>
+          <!-- Screenshot: Datei muss unter assets/pvt-dashboard.png liegen.
+               Bei anderem Dateinamen oder Zuschnitt src, width und height anpassen. -->
+          <figure class="proj-shot">
+            <img src="assets/pvt-dashboard.png" width="1084" height="1246" loading="lazy"
+                 alt="Dashboard des Pfahlvolleyballturniers für ein einzelnes Team: Tabelle der Gruppenphase, darunter die eigenen Spiele mit Uhrzeit, Feld, Turnierphase und Resultat sowie die Spiele, bei denen das Team zählen muss.">
+            <figcaption>Dashboard eines Teams: Gruppentabelle, eigene Spiele und Zähldienste.</figcaption>
+          </figure>
 
           <p class="proj-result">
-            <strong>Ergebnis:</strong> Das Organisationsteam arbeitet mit einem einzigen, immer
-            aktuellen Stand. Fragen zum Zwischenstand beantwortet die App selbst.
+            <strong>Ergebnis:</strong> Alle Beteiligten haben denselben, aktuellen Stand auf dem
+            eigenen Handy statt am Aushang in der Halle. Als nächster Schritt soll auch die
+            Anmeldung zum Turnier direkt über die App laufen.
           </p>
         </div>
       </div>

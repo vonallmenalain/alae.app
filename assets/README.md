@@ -8,6 +8,7 @@ Bilder für die Landingpage.
 | --- | --- | --- |
 | `dt-top-manager.png` | WM 2026 DreamTeam – Rangliste der Top Manager | 1101 × 831 px |
 | `jass-app.png` | Jass App – Startbildschirm mit beiden Betriebsarten | 965 × 375 px |
+| `pvt-dashboard.png` | Volleyballturnier – Dashboard eines Teams | 1084 × 1246 px, **Platzhalter** |
 
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
@@ -30,11 +31,14 @@ Screenshots werden als PNG schnell unnötig gross. Zwei Stufen:
 
 ## Noch offen
 
+`pvt-dashboard.png` ist bereits im HTML eingebunden, enthält aber noch ein
+leeres Platzhalterbild – durch den echten Screenshot ersetzen, gleicher
+Dateiname genügt.
+
 Für diese Projekte stehen weiterhin Platzhalter-Rahmen (`.shot-slot`) im HTML:
 
 | Datei | Projekt | Nötig? |
 | --- | --- | --- |
-| `pvt-*.png` | Volleyballturnier | optional, App ist öffentlich |
 | `photographic-*.png` | Fotoverkauf | **ja**, App ist geschützt |
 | `share-*.png` | Familien-Sharing | **ja**, App ist geschützt |
 | `portrait.jpg` | Über mich | empfohlen |
