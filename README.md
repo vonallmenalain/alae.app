@@ -16,7 +16,8 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 | Leistungen | Fünf Angebote, inkl. Coaching als eigenständige zweite Dienstleistung |
 | Referenzprojekte | Sechs echte Apps, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
 | Ablauf | Sechs Schritte vom Erstgespräch bis zur Betreuung |
-| Über mich | Persönliche Vorstellung und sechs Vertrauenspunkte |
+| Über mich | Persönliche Vorstellung mit Porträt und sechs Vertrauenspunkte |
+| Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl zwischen Übernahme und Betreuung |
 | Häufige Fragen | Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
 | Kontakt | Formular mit der qualifizierenden Einstiegsfrage |
 
@@ -32,19 +33,21 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [ ] **Telefonnummer** – Platzhalter `+41000000000` ersetzen oder den Block löschen
-- [x] **Screenshots aller sechs Projekte** – eingebunden; bei den drei geschützten
-      Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
+- [x] **Screenshots aller sechs Projekte und Porträt** – eingebunden; bei den drei
+      geschützten Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
       (Details in `assets/README.md`)
+- [ ] **Ortsangabe vereinheitlichen** – „Über mich" nennt neu Oberburg, Footer und
+      strukturierte Daten nennen weiterhin Burgdorf. Je nach Geschäftsadresse angleichen
 - [ ] **Projekttexte prüfen** – bei allen sechs Apps stammen Ausgangslage und Problem
       von dir, Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und
       gegenzulesen
 - [ ] **Freigaben einholen** – von der Fotografin für Nennung und Screenshot, ebenso
       von der Einzelfirma für den Screenshot der Buchhaltung
-- [ ] **Portrait** – `.portrait` durch `<img src="assets/portrait.jpg" alt="…">` ersetzen
 - [ ] **Impressum und Datenschutzerklärung** – eigene Seiten anlegen und die
       Footer-Links darauf zeigen lassen (in der Schweiz erwartet, für Werbung nötig)
 - [ ] **Vorschaubild für Social Media** – `og:image`, 1200 × 630 px
-- [ ] **Preisrahmen in der FAQ** – optional, sobald du dich auf Zahlen festlegst
+- [ ] **Richtwert CHF 200 prüfen** – steht im Abschnitt „Preise" und in der FAQ-Antwort
+      „Was kostet eine individuelle App?". Bei einer Änderung beide Stellen anpassen
 - [ ] **Einführungspreis-Block** im Kontaktbereich entfernen, wenn die ersten
       Referenzprojekte vergeben sind
 

@@ -12,6 +12,7 @@ Bilder für die Landingpage.
 | `foto-app.png` | Fotoverkauf – Galerie einer Familie | 929 × 1211 px |
 | `share.png` | Familien-Sharing – Fotobereich mit Bereiche-Menü | 1317 × 1136 px |
 | `buchhaltung.png` | Management Einzelfirma – Buchungserfassung und Journal | 1547 × 994 px |
+| `Alain.png` | Porträt für den Abschnitt „Über mich" | 630 × 633 px |
 
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
@@ -31,12 +32,6 @@ Screenshots werden als PNG schnell unnötig gross. Zwei Stufen:
    100–150 KB realistisch. Danach in `index.html` nur die Dateiendung im `src`
    anpassen. Reine Oberflächen-Screenshots mit flächigen Farben – wie
    `jass-app.png` – sind als PNG dagegen gut aufgehoben.
-
-## Noch offen
-
-| Datei | Projekt | Nötig? |
-| --- | --- | --- |
-| `portrait.jpg` | Über mich | empfohlen |
 
 ## Unkenntlich gemachte Inhalte
 
