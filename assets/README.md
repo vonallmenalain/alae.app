@@ -8,7 +8,8 @@ Bilder für die Landingpage.
 | --- | --- | --- |
 | `dt-top-manager.png` | WM 2026 DreamTeam – Rangliste der Top Manager | 1101 × 831 px |
 | `jass-app.png` | Jass App – Startbildschirm mit beiden Betriebsarten | 965 × 375 px |
-| `pvt-dashboard.png` | Volleyballturnier – Dashboard eines Teams | 1084 × 1246 px, **Platzhalter** |
+| `pvt.png` | Volleyballturnier – Dashboard eines Teams | 1084 × 1246 px |
+| `foto-app.png` | Fotoverkauf – Galerie einer Familie | 929 × 1211 px |
 
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
@@ -31,18 +32,22 @@ Screenshots werden als PNG schnell unnötig gross. Zwei Stufen:
 
 ## Noch offen
 
-`pvt-dashboard.png` ist bereits im HTML eingebunden, enthält aber noch ein
-leeres Platzhalterbild – durch den echten Screenshot ersetzen, gleicher
-Dateiname genügt.
-
-Für diese Projekte stehen weiterhin Platzhalter-Rahmen (`.shot-slot`) im HTML:
-
 | Datei | Projekt | Nötig? |
 | --- | --- | --- |
-| `photographic-*.png` | Fotoverkauf | **ja**, App ist geschützt |
 | `share-*.png` | Familien-Sharing | **ja**, App ist geschützt |
 | `portrait.jpg` | Über mich | empfohlen |
 
-Bei den geschützten Apps vor der Veröffentlichung private Inhalte unkenntlich
-machen oder Demodaten verwenden. Beim Fotoverkauf zusätzlich die Freigabe der
-Fotografin einholen und keine erkennbaren Kinder zeigen.
+Beim Familien-Sharing vor der Veröffentlichung private Inhalte unkenntlich
+machen oder eine Demo-Gruppe mit Beispieldaten verwenden.
+
+## Unkenntlich gemachte Inhalte
+
+In `foto-app.png` sind unkenntlich gemacht:
+
+- die sechs Kinderfotos
+- die Zeile mit Name des Kindes, Kindergarten und Klasse
+
+Wird dieser Screenshot je ersetzt, muss beides erneut geschehen. Sauberer wäre
+langfristig eine Demo-Galerie mit unverfänglichen Bildern und erfundenen Namen.
+Für die Referenz selbst empfiehlt sich zusätzlich eine schriftliche Freigabe
+der Fotografin.

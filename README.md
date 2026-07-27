@@ -32,18 +32,16 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [ ] **Telefonnummer** – Platzhalter `+41000000000` ersetzen oder den Block löschen
-- [x] **Screenshots DreamTeam, Jass und Volleyball** – eingebunden; bei Volleyball
-      liegt noch ein leerer Platzhalter, echte Datei als `assets/pvt-dashboard.png`
+- [x] **Screenshots DreamTeam, Jass, Volleyball und Fotoverkauf** – eingebunden
       (Hinweise zu Bild- und Dateigrösse in `assets/README.md`)
-- [ ] **Projekttexte prüfen** – bei DreamTeam, Jass und Volleyball stammen Ausgangslage
-      und Problem von dir, Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet
-      und gegenzulesen. Bei Fotoverkauf und Familien-Sharing sind alle Texte noch ein
-      Entwurf; beim Kundenprojekt (Fotografin) vorher die Freigabe für Referenz und
-      Screenshots einholen
+- [ ] **Projekttexte prüfen** – bei DreamTeam, Jass, Volleyball und Fotoverkauf stammen
+      Ausgangslage und Problem von dir, Lösung, Funktionsliste und Ergebnis sind daraus
+      abgeleitet und gegenzulesen. Beim Familien-Sharing sind alle Texte noch ein Entwurf
+- [ ] **Freigabe der Fotografin** für die Nennung als Referenz und den Screenshot einholen
 - [ ] **Weitere Screenshots** – restliche `.shot-slot`-Platzhalter durch `figure.proj-shot`
-      ersetzen, Muster siehe DreamTeam- oder Jass-Karte. Zwingend für die beiden
-      geschützten Apps (`photographic`, `share`). Bei privaten Inhalten vorher Namen
-      unkenntlich machen oder Demodaten verwenden
+      ersetzen, Muster siehe DreamTeam- oder Jass-Karte. Offen ist noch das
+      Familien-Sharing; private Inhalte vorher unkenntlich machen oder Demodaten
+      verwenden
 - [ ] **Portrait** – `.portrait` durch `<img src="assets/portrait.jpg" alt="…">` ersetzen
 - [ ] **Impressum und Datenschutzerklärung** – eigene Seiten anlegen und die
       Footer-Links darauf zeigen lassen (in der Schweiz erwartet, für Werbung nötig)
