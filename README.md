@@ -14,7 +14,7 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 | Ausgangslage | Vier typische Situationen als Zitate, statt Technologie zuerst |
 | Der Ansatz | Warum das heute schneller und günstiger geht, plus „bei jedem Projekt inbegriffen“ |
 | Leistungen | Fünf Angebote, inkl. Coaching als eigenständige zweite Dienstleistung |
-| Referenzprojekte | Fünf echte Apps, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
+| Referenzprojekte | Sechs echte Apps, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
 | Ablauf | Sechs Schritte vom Erstgespräch bis zur Betreuung |
 | Über mich | Persönliche Vorstellung und sechs Vertrauenspunkte |
 | Häufige Fragen | Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
@@ -32,12 +32,14 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [ ] **Telefonnummer** – Platzhalter `+41000000000` ersetzen oder den Block löschen
-- [x] **Screenshots aller fünf Projekte** – eingebunden; bei den beiden geschützten
-      Apps sind Gesichter und Namen unkenntlich gemacht (Details in `assets/README.md`)
-- [ ] **Projekttexte prüfen** – bei allen fünf Apps stammen Ausgangslage und Problem
+- [x] **Screenshots aller sechs Projekte** – eingebunden; bei den drei geschützten
+      Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
+      (Details in `assets/README.md`)
+- [ ] **Projekttexte prüfen** – bei allen sechs Apps stammen Ausgangslage und Problem
       von dir, Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und
       gegenzulesen
-- [ ] **Freigabe der Fotografin** für die Nennung als Referenz und den Screenshot einholen
+- [ ] **Freigaben einholen** – von der Fotografin für Nennung und Screenshot, ebenso
+      von der Einzelfirma für den Screenshot der Buchhaltung
 - [ ] **Portrait** – `.portrait` durch `<img src="assets/portrait.jpg" alt="…">` ersetzen
 - [ ] **Impressum und Datenschutzerklärung** – eigene Seiten anlegen und die
       Footer-Links darauf zeigen lassen (in der Schweiz erwartet, für Werbung nötig)
