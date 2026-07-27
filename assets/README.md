@@ -2,33 +2,38 @@
 
 Bilder für die Landingpage.
 
-## dt-top-manager.png
+## Vorhandene Bilder
 
-Screenshot der Top-Manager-Rangliste aus dem WM 2026 DreamTeam, 1101 × 831 px.
+| Datei | Projekt | Grösse |
+| --- | --- | --- |
+| `dt-top-manager.png` | WM 2026 DreamTeam – Rangliste der Top Manager | 1101 × 831 px |
+| `jass-app.png` | Jass App – Startbildschirm mit beiden Betriebsarten | 965 × 375 px |
 
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
 die Seite beim Laden springt.
 
-### Bilder klein halten
+## Bilder klein halten
 
-Screenshots mit Fotos werden als PNG schnell gross. Zwei Stufen:
+Screenshots werden als PNG schnell unnötig gross. Zwei Stufen:
 
 1. **Verlustfrei**: Screenshots enthalten praktisch nie Transparenz. Wird der
-   Alphakanal entfernt (RGBA → RGB), schrumpft die Datei deutlich, ohne dass
-   sich ein einziges Pixel ändert. Für dieses Bild: 714 KB → 544 KB.
-2. **Deutlich wirksamer**: als **WebP** exportieren statt als PNG. Für
-   fotolastige Screenshots sind damit rund 100–150 KB realistisch. Danach in
-   `index.html` nur die Dateiendung im `src` anpassen.
+   Alphakanal entfernt (RGBA → RGB) und ein passender Zeilenfilter gewählt,
+   schrumpft die Datei deutlich, ohne dass sich ein einziges Pixel ändert.
+   Bisher erreicht: `dt-top-manager.png` 714 → 544 KB, `jass-app.png`
+   130 → 53 KB.
+2. **Bei fotolastigen Bildern deutlich wirksamer**: als **WebP** exportieren
+   statt als PNG. Für einen Screenshot wie `dt-top-manager.png` sind damit rund
+   100–150 KB realistisch. Danach in `index.html` nur die Dateiendung im `src`
+   anpassen. Reine Oberflächen-Screenshots mit flächigen Farben – wie
+   `jass-app.png` – sind als PNG dagegen gut aufgehoben.
 
 ## Noch offen
 
-Screenshots für die übrigen Projekte, dort stehen weiterhin
-Platzhalter-Rahmen (`.shot-slot`) im HTML:
+Für diese Projekte stehen weiterhin Platzhalter-Rahmen (`.shot-slot`) im HTML:
 
 | Datei | Projekt | Nötig? |
 | --- | --- | --- |
-| `jass-*.png` | Jass App | optional, App ist öffentlich |
 | `pvt-*.png` | Volleyballturnier | optional, App ist öffentlich |
 | `photographic-*.png` | Fotoverkauf | **ja**, App ist geschützt |
 | `share-*.png` | Familien-Sharing | **ja**, App ist geschützt |
