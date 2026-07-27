@@ -229,7 +229,7 @@ section{padding-block:var(--section-y)}
   font-weight:700; letter-spacing:-.025em; font-size:1.1rem;
   text-decoration:none; margin-right:auto;
 }
-.brand-mark{width:1.5rem; height:1.5rem; flex:none}
+.brand-mark{ width:2.1rem; height:1.5rem; flex:none }
 .brand span small{
   display:block; font-family:var(--mono); font-size:.6rem; font-weight:500;
   letter-spacing:.11em; text-transform:uppercase; color:var(--muted); line-height:1.4;
@@ -576,6 +576,32 @@ form .btn{width:100%; justify-content:center}
   position:absolute; width:1px; height:1px; margin:-1px; padding:0;
   overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
 }
+
+/* --- Marke: Signet zeichnet sich, Text steigt nach ---------------------- */
+.brand-mark path{
+  stroke-dasharray:1;
+  animation:brand-draw .69s cubic-bezier(.65,0,.15,1) both;
+}
+.brand-mark path:nth-child(2){ animation-duration:.81s; animation-delay:.35s }
+.brand-name{ display:block; animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .53s both }
+.brand span small{ animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .68s both }
+
+/* Wiederholung beim Hover / Tastaturfokus */
+.brand:hover .brand-mark path,
+.brand:focus-visible .brand-mark path{ animation-name:brand-draw-2 }
+.brand:hover .brand-name,
+.brand:focus-visible .brand-name,
+.brand:hover span small,
+.brand:focus-visible span small{ animation-name:brand-rise-2 }
+
+@keyframes brand-draw   { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
+@keyframes brand-draw-2 { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
+@keyframes brand-rise   { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
+@keyframes brand-rise-2 { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
+
+@media (prefers-reduced-motion: reduce){
+  .brand-mark path, .brand-name, .brand span small{ animation:none; stroke-dashoffset:0 }
+}
 </style>
 </head>
 <body>
@@ -587,11 +613,16 @@ form .btn{width:100%; justify-content:center}
 <header class="site-header" id="siteHeader">
   <div class="wrap header-inner">
     <a class="brand" href="#top" aria-label="alae.app – Startseite">
-      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M3.5 23.5 10.5 10.5l2.8 5.2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M16.8 23.5 23 11.2l5.7 12.3" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg class="brand-mark" viewBox="0 0 44 32" aria-hidden="true">
+        <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="currentColor"
+              stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--accent)"
+              stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span>alae.app</span>
+      <span>
+        <span class="brand-name">alae.app</span>
+        <small>Individuelle Web-Apps</small>
+      </span>
     </a>
 
     <nav class="nav" id="nav" aria-label="Hauptnavigation">
