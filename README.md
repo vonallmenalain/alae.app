@@ -12,11 +12,11 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 | --- | --- |
 | Hero | Nutzenversprechen, ein Handlungsaufruf, vier Vertrauenspunkte |
 | Über mich | Wie es angefangen hat, Porträt und vier Fixpunkte |
-| Referenzprojekte | Sechs echte Apps, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
+| Referenzprojekte | Sechs echte Apps, einzeiliger Kurzbeschrieb, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
 | Ablauf | Vier Schritte vom Erstgespräch bis zur Betreuung |
 | Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl nach der Entwicklung |
 | FAQ | Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
-| Kontakt | Formular unter der Frage „Was ist deine Idee?" |
+| Kontakt | Formular über die volle Breite, unter der Frage „Was ist deine Idee?" |
 
 Die früheren Abschnitte Ausgangslage, Der Ansatz und Leistungen sind in
 „Über mich" aufgegangen. Damit ist auch die Aufzählung der fünf
@@ -28,7 +28,6 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
-- [ ] **Telefonnummer** – Platzhalter `+41000000000` ersetzen oder den Block löschen
 - [x] **Screenshots aller sechs Projekte und Porträt** – eingebunden; bei den drei
       geschützten Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
       (Details in `assets/README.md`)

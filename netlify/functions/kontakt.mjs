@@ -72,7 +72,7 @@ export default async (request) => {
         </tr>`).join('')}
     </table>
     <p style="font-family:system-ui,sans-serif;font-size:15px;margin-top:20px">
-      <strong>Welcher Ablauf kostet heute Zeit?</strong><br>
+      <strong>Kurzbeschrieb Idee</strong><br>
       ${escape(nachricht).replace(/\n/g, '<br>')}
     </p>
     <p style="font-family:system-ui,sans-serif;font-size:13px;color:#5C6470;margin-top:24px">
@@ -83,7 +83,7 @@ export default async (request) => {
   const nurText = [
     ...zeilen.map(([k, v]) => `${k}: ${v}`),
     '',
-    'Welcher Ablauf kostet heute Zeit?',
+    'Kurzbeschrieb Idee:',
     nachricht,
     '',
     '— gesendet über das Kontaktformular auf alae.app',
