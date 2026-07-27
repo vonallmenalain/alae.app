@@ -32,9 +32,8 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [ ] **Telefonnummer** – Platzhalter `+41000000000` ersetzen oder den Block löschen
-- [x] **Screenshot DreamTeam** – `assets/dt-top-manager.png` ist im HTML eingebunden.
-      Dort liegt vorerst ein leerer Platzhalter in der richtigen Grösse – durch den
-      echten Screenshot ersetzen, gleicher Dateiname (siehe `assets/README.md`)
+- [x] **Screenshot DreamTeam** – `assets/dt-top-manager.png` ist eingebunden
+      (Hinweise zu Bildgrösse und Dateigrösse in `assets/README.md`)
 - [ ] **Projekttexte prüfen** – beim DreamTeam stammen Ausgangslage und Problem von dir,
       Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und gegenzulesen.
       Bei den vier übrigen Apps sind alle Texte ein Entwurf; beim Kundenprojekt
