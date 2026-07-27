@@ -607,12 +607,11 @@ section{padding-block:var(--section-y)}
 }
 @media (max-width: 56rem){ .about{grid-template-columns:1fr} }
 .portrait{
-  aspect-ratio:4/5; max-width:20rem; border-radius:var(--r-xl); overflow:hidden;
+  aspect-ratio:1/1; max-width:20rem; margin:0; border-radius:var(--r-xl); overflow:hidden;
   border:1px solid var(--line); background:var(--bg-2);
-  display:grid; place-items:center; text-align:center; padding:1.5rem;
-  color:var(--muted); font-size:.82rem; box-shadow:var(--shadow-md);
+  box-shadow:var(--shadow-md);
 }
-.portrait img{width:100%; height:100%; object-fit:cover}
+.portrait img{width:100%; height:100%; object-fit:cover; display:block}
 .trust-grid{display:grid; gap:.9rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr)); margin-top:1.75rem}
 .trust-card{
   padding:1rem 1.1rem; border:1px solid var(--line); border-radius:var(--r-md);
@@ -620,6 +619,45 @@ section{padding-block:var(--section-y)}
 }
 .trust-card h4{margin-bottom:.3rem; font-size:.95rem}
 .trust-card p{margin:0; color:var(--muted); font-size:.87em}
+
+/* --- Preise ------------------------------------------------------------ */
+.price-card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:clamp(1.4rem, 2.5vw, 1.9rem); box-shadow:var(--shadow-sm);
+  display:flex; flex-direction:column; gap:.6rem;
+}
+.price-kicker{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--accent); font-weight:600; margin:0;
+}
+.price-amount{
+  margin:0; font-size:clamp(1.3rem, 1.1rem + .9vw, 1.75rem);
+  letter-spacing:-.02em; line-height:1.15;
+}
+.price-amount strong{font-weight:680}
+.price-card p:last-child{color:var(--muted); font-size:.97em; margin:0}
+.price-note{
+  display:block; margin-top:.5rem; font-size:.78rem; color:var(--muted);
+  font-family:var(--mono); letter-spacing:.02em; line-height:1.5;
+}
+
+.price-choice{
+  margin-top:clamp(1rem, 2vw, 1.5rem);
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  padding:clamp(1.4rem, 2.5vw, 1.9rem); box-shadow:var(--shadow-sm);
+}
+.price-choice > h3{margin-bottom:.5rem}
+.price-choice > p{color:var(--muted); font-size:.97em; max-width:70ch}
+.price-options{
+  display:grid; gap:1rem; margin-top:1.4rem;
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+.price-option{
+  padding:1.1rem 1.2rem; border:1px solid var(--line); border-radius:var(--r-md);
+  background:var(--bg-2);
+}
+.price-option h4{margin-bottom:.35rem; font-size:.98rem}
+.price-option p{margin:0; color:var(--muted); font-size:.9em}
 
 /* --- FAQ --------------------------------------------------------------- */
 .faq{max-width:52rem}
@@ -730,6 +768,7 @@ form .btn{width:100%; justify-content:center}
       <a href="#projekte">Projekte</a>
       <a href="#ablauf">Ablauf</a>
       <a href="#ueber-mich">Über mich</a>
+      <a href="#preise">Preise</a>
       <a href="#faq">Fragen</a>
       <a href="#kontakt">Kontakt</a>
       <a class="btn btn--primary nav-cta" href="#kontakt">Projekt unverbindlich besprechen</a>
@@ -1630,27 +1669,26 @@ form .btn{width:100%; justify-content:center}
 <!-- =====================================================================
      ÜBER MICH / VERTRAUEN
      ---------------------------------------------------------------------
-     TODO: Name, Werdegang und Portrait anpassen. Portrait-Platzhalter durch
-     <img src="assets/portrait.jpg" alt="…"> ersetzen.
      ===================================================================== -->
 <section id="ueber-mich">
   <div class="wrap about">
-    <div class="portrait reveal">
-      <span>Platzhalter Portrait<br><small>assets/portrait.jpg</small></span>
-    </div>
+    <figure class="portrait reveal">
+      <img src="assets/Alain.png" width="630" height="633" alt="Porträt von Alain von Allmen">
+    </figure>
 
     <div class="reveal">
       <p class="eyebrow">Über mich</p>
       <h2>Du arbeitest direkt mit der Person, die entwickelt</h2>
       <p class="lead" style="margin-top:1rem">
-        Ich bin Alain von Allmen und entwickle von Burgdorf aus individuelle Web-Anwendungen für
-        kleine und mittlere Betriebe, Praxen, Schulen und Vereine. Kein Verkaufsteam, keine
-        Zwischenstufen: Du schilderst mir deinen Ablauf, ich baue die Lösung und betreue sie danach.
+        Ich bin Alain von Allmen, wohne in Oberburg, habe eine Familie mit drei Töchtern und
+        entwickle individuelle Web-Anwendungen für kleine Betriebe, Privatpersonen, Schulen und
+        Vereine. Kein Verkaufsteam, keine Zwischenstufen: Du schilderst mir deinen Ablauf, ich baue
+        die Lösung und betreue sie danach.
       </p>
       <p class="lead">
         Was mich interessiert, sind nicht möglichst grosse Projekte, sondern Abläufe, bei denen eine
-        kleine Anwendung jede Woche echte Zeit spart. Wenn ich der Meinung bin, dass ein bestehendes
-        Produkt für dich günstiger ist, sage ich das.
+        kleine Anwendung echte Zeit spart und das Leben vereinfacht. Wenn ich der Meinung bin, dass
+        ein bestehendes Produkt für dich günstiger ist, sage ich das.
       </p>
 
       <div class="trust-grid">
@@ -1661,6 +1699,78 @@ form .btn{width:100%; justify-content:center}
         <div class="trust-card"><h4>Quellcode und Daten geregelt</h4><p>Wem was gehört und wer Zugriff hat, steht schriftlich fest.</p></div>
         <div class="trust-card"><h4>Wartung und Backups</h4><p>Automatische Sicherungen, Updates und ein geprüfter Wiederherstellungsweg.</p></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PREISE
+     ---------------------------------------------------------------------
+     TODO: Der Richtwert von CHF 200 steht bewusst als Einstiegsgrösse da.
+     Wenn er sich in der Praxis als zu tief oder zu hoch erweist, hier und
+     in der FAQ-Antwort "Was kostet eine individuelle App?" anpassen.
+     ===================================================================== -->
+<section id="preise">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Preise</p>
+      <h2>Was kostet das?</h2>
+      <p class="lead">
+        Das hängt vom Umfang ab – deshalb nenne ich den Preis erst, wenn klar ist, was gebaut wird.
+        Wir besprechen deine Idee, ich halte sie in einem kurzen Konzept fest und offeriere dann die
+        Kosten für genau diese Leistung. Das Erstgespräch ist kostenlos.
+      </p>
+    </div>
+
+    <div class="grid g-2">
+      <article class="price-card reveal">
+        <p class="price-kicker">Kleinere Projekte</p>
+        <p class="price-amount">Pauschale ab rund <strong>CHF 200</strong>
+          <span class="price-note">Richtwert für eine kleine, fixfertige App</span>
+        </p>
+        <p>
+          Der Betrag wird vorher vereinbart, damit du weisst, woran du bist. Mit dem Aufwand steigt
+          er – ebenso, wenn Hosting, Support oder spätere Anpassungen dazugehören sollen.
+        </p>
+      </article>
+
+      <article class="price-card reveal">
+        <p class="price-kicker">Grössere Projekte</p>
+        <p class="price-amount">In <strong>klaren Etappen</strong>
+          <span class="price-note">Verrechnung nach Fortschritt</span>
+        </p>
+        <p>
+          Die Umsetzung wird in abgegrenzte Etappen geteilt, die einzeln beauftragt und nach
+          Fortschritt verrechnet werden. So bleibt der Betrag überschaubar und du entscheidest nach
+          jeder Etappe neu, wie es weitergeht.
+        </p>
+      </article>
+    </div>
+
+    <div class="price-choice reveal">
+      <h3>Danach entscheidest du, wie viel du von mir brauchst</h3>
+      <p>
+        Beides ist möglich, und beides wirkt sich auf den Preis aus. Was du wählst, halten wir vor
+        Projektstart schriftlich fest.
+      </p>
+      <div class="price-options">
+        <div class="price-option">
+          <h4>Übernehmen und selbst betreiben</h4>
+          <p>Du erhältst die fertige Anwendung samt Quellcode und brauchst danach nichts mehr von mir.</p>
+        </div>
+        <div class="price-option">
+          <h4>Rundum betreut lassen</h4>
+          <p>Ich übernehme das Ganze: Hosting, Wartung, Backups, Updates und spätere Anpassungen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="after-quotes reveal">
+      <p>
+        <strong>Bedenken wegen der Kosten?</strong> Melde dich trotzdem. Im Erstgespräch siehst du,
+        was dein Anliegen ungefähr kostet – und wenn es sich für dich nicht lohnt, sage ich das
+        offen. Wir finden bestimmt eine Lösung.
+      </p>
     </div>
   </div>
 </section>
@@ -1681,14 +1791,11 @@ form .btn{width:100%; justify-content:center}
           Was kostet eine individuelle App?
           <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         </summary>
-        <!-- TODO: Preisrahmen einsetzen, sobald du dich auf Zahlen festlegen möchtest,
-             z.B. "Kleinere Lösungen bewegen sich typischerweise zwischen CHF X und Y." -->
         <div class="answer">
-          Das hängt vom Umfang ab – deshalb nenne ich den Preis erst, wenn klar ist, was gebaut wird.
-          Nach dem kostenlosen Erstgespräch und dem kurzen Konzept erhältst du einen Festpreis oder
-          klar abgegrenzte Etappen. Eine erste Version, die einen einzelnen Ablauf abdeckt, ist meist
-          deutlich günstiger, als die meisten erwarten – und günstiger, als jahrelang Lizenzen für
-          Funktionen zu bezahlen, die du nicht brauchst.
+          Das hängt vom Umfang ab. Eine kleine, fixfertige App beginnt bei rund CHF 200; grössere
+          Projekte teile ich in Etappen, die einzeln beauftragt werden. Wie sich der Preis
+          zusammensetzt und was du danach selbst übernehmen kannst, steht im Abschnitt
+          <a href="#preise">Preise</a>.
         </div>
       </details>
       <details>
@@ -1888,6 +1995,7 @@ form .btn{width:100%; justify-content:center}
           <li><a href="#probleme">Ausgangslage</a></li>
           <li><a href="#projekte">Referenzprojekte</a></li>
           <li><a href="#ablauf">Ablauf</a></li>
+          <li><a href="#preise">Preise</a></li>
           <li><a href="#faq">Häufige Fragen</a></li>
           <li><a href="#kontakt">Kontakt</a></li>
         </ul>
