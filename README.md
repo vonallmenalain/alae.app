@@ -32,16 +32,16 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [ ] **Telefonnummer** – Platzhalter `+41000000000` ersetzen oder den Block löschen
-- [x] **Screenshot DreamTeam** – `assets/dt-top-manager.png` ist eingebunden
-      (Hinweise zu Bildgrösse und Dateigrösse in `assets/README.md`)
-- [ ] **Projekttexte prüfen** – beim DreamTeam stammen Ausgangslage und Problem von dir,
-      Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und gegenzulesen.
-      Bei den vier übrigen Apps sind alle Texte ein Entwurf; beim Kundenprojekt
-      (Fotografin) vorher die Freigabe für Referenz und Screenshots einholen
+- [x] **Screenshots DreamTeam und Jass** – eingebunden
+      (Hinweise zu Bild- und Dateigrösse in `assets/README.md`)
+- [ ] **Projekttexte prüfen** – bei DreamTeam und Jass stammen Ausgangslage und Problem
+      von dir, Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und
+      gegenzulesen. Bei den drei übrigen Apps sind alle Texte ein Entwurf; beim
+      Kundenprojekt (Fotografin) vorher die Freigabe für Referenz und Screenshots einholen
 - [ ] **Weitere Screenshots** – restliche `.shot-slot`-Platzhalter durch `figure.proj-shot`
-      ersetzen, Muster siehe DreamTeam-Karte. Zwingend für die beiden geschützten Apps
-      (`photographic`, `share`), optional für die verlinkten. Bei privaten Inhalten vorher
-      Namen unkenntlich machen oder Demodaten verwenden
+      ersetzen, Muster siehe DreamTeam- oder Jass-Karte. Zwingend für die beiden
+      geschützten Apps (`photographic`, `share`), optional für das Volleyballturnier.
+      Bei privaten Inhalten vorher Namen unkenntlich machen oder Demodaten verwenden
 - [ ] **Portrait** – `.portrait` durch `<img src="assets/portrait.jpg" alt="…">` ersetzen
 - [ ] **Impressum und Datenschutzerklärung** – eigene Seiten anlegen und die
       Footer-Links darauf zeigen lassen (in der Schweiz erwartet, für Werbung nötig)

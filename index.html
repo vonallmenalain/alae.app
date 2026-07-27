@@ -1089,7 +1089,7 @@ form .btn{width:100%; justify-content:center}
      TODO: Screenshot-Platzhalter (.shot-slot) durch echte Bilder ersetzen,
      nach dem Muster der Karte "WM 2026 DreamTeam" (figure.proj-shot):
        <figure class="proj-shot">
-         <img src="assets/jass-punkte.png" width="1200" height="750" loading="lazy"
+         <img src="assets/pvt-spielplan.png" width="1200" height="750" loading="lazy"
               alt="Beschreibung dessen, was auf dem Bild zu sehen ist">
          <figcaption>Kurze Bildunterschrift.</figcaption>
        </figure>
@@ -1194,8 +1194,8 @@ form .btn{width:100%; justify-content:center}
           </div>
           <p class="proj-title">Jass App</p>
           <p class="proj-sum">
-            Punkte einer Jassrunde digital schreiben: Stand jederzeit sichtbar, richtig gerechnet –
-            statt einem Zettel, den am Schluss niemand mehr entziffern kann.
+            Ein jährliches Familienturnier organisieren, Punkte zählen und die Rangliste automatisch
+            führen – und dieselbe App als Jass-Zähler für gewöhnliche Runden nutzen.
           </p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
@@ -1213,24 +1213,24 @@ form .btn{width:100%; justify-content:center}
         <div class="proj-cols">
           <div class="proj-block">
             <h4>Ausgangslage</h4>
-            <p>Beim Jassen werden die Punkte traditionell mit Stift auf einen Zettel geschrieben und laufend zusammengezählt.</p>
+            <p>Eine Familie trägt jedes Jahr ein Jassturnier aus. Organisiert wurde es bisher mit einer Excel-Tabelle, in der Spiele, Punkte und Rangliste zusammenliefen.</p>
           </div>
           <div class="proj-block">
             <h4>Problem</h4>
-            <p>Zusammenzählen von Hand führt zu Rechenfehlern und Diskussionen, der Zettel ist schnell unleserlich oder verloren, und vom Spielverlauf bleibt nichts erhalten.</p>
+            <p>Die Tabelle war fehleranfällig: Während des Turniers musste immer wieder nachkorrigiert werden – mitten im Spielbetrieb, wo eigentlich niemand Zeit dafür hat.</p>
           </div>
           <div class="proj-block">
             <h4>Umgesetzte Lösung</h4>
-            <p>Eine schlanke Web-App fürs Handy: Punkte pro Runde eintippen, die Summen entstehen automatisch, der Stand ist für alle am Tisch sichtbar und der Verlauf bleibt erhalten.</p>
+            <p>Eine Web-App mit zwei Betriebsarten. Im Turniermodus organisiert sie das Familienturnier: Die Spielenden tragen ihre Punkte nach jedem Spiel selbst ein, Zwischenstand und Rangliste entstehen daraus automatisch. Daneben lässt sie sich als reiner Jass-Zähler für gewöhnliche Runden ausserhalb des Turniers verwenden.</p>
           </div>
           <div class="proj-block">
             <h4>Wichtigste Funktionen</h4>
             <ul>
-              <li>Spielende beziehungsweise Teams erfassen</li>
-              <li>Punkte pro Runde eintippen</li>
-              <li>Automatische Summen und Zwischenstand</li>
-              <li>Verlauf einer Partie einsehen</li>
-              <li>Ohne Installation, direkt im Browser</li>
+              <li>Turnier anlegen und Spielende verwalten</li>
+              <li>Punkte nach jedem Spiel selbst eintragen</li>
+              <li>Rangliste, die sich automatisch aktualisiert</li>
+              <li>Zähler-Modus für Runden ohne Turnier</li>
+              <li>Auf dem Handy bedienbar, ohne Installation</li>
             </ul>
           </div>
           <div class="proj-block">
@@ -1242,15 +1242,16 @@ form .btn{width:100%; justify-content:center}
             <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
           </div>
 
-          <!-- TODO: optional – Screenshot ergänzen oder diesen Block löschen. -->
-          <div class="shot-slot">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
-            <span>Screenshot: Punkteerfassung und Zwischenstand</span>
-          </div>
+          <figure class="proj-shot">
+            <img src="assets/jass-app.png" width="965" height="375" loading="lazy"
+                 alt="Startbildschirm der Jass App mit einer Willkommen-Zeile und drei Schaltflächen: Turnier, Zähler auswählen und von Allmen Jass.">
+            <figcaption>Startbildschirm mit den beiden Betriebsarten: Turnier und Jass-Zähler.</figcaption>
+          </figure>
 
           <p class="proj-result">
-            <strong>Ergebnis:</strong> Kein Rechnen und kein Streit über den Stand mehr – ein gutes
-            Beispiel dafür, wie klein eine sinnvolle App sein darf.
+            <strong>Ergebnis:</strong> Das Familienturnier läuft ohne Excel und ohne Korrekturrunden
+            mitten im Spielbetrieb. Jede Person trägt ihre Punkte selbst ein, die Rangliste stimmt
+            jederzeit – und ausserhalb des Turniers dient dieselbe App als Jass-Zähler.
           </p>
         </div>
       </div>
