@@ -546,6 +546,17 @@ section{padding-block:var(--section-y)}
 }
 .proj-result strong{color:var(--text)}
 
+/* Echter Screenshot in einer Projektkarte */
+.proj-shot{grid-column:1/-1; margin:0}
+.proj-shot img{
+  width:100%; height:auto; display:block;
+  border:1px solid var(--line); border-radius:var(--r-md);
+  background:var(--bg-2);
+}
+.proj-shot figcaption{
+  margin-top:.6rem; font-size:.8rem; color:var(--muted);
+}
+
 /* Screenshot-Platzhalter – durch <img> ersetzen */
 .shot-slot{
   grid-column:1/-1;
@@ -877,7 +888,7 @@ form .btn{width:100%; justify-content:center}
       <h2>Wenn Standardsoftware zu kompliziert, zu teuer oder nicht passend ist</h2>
       <p class="lead" style="margin-top:1rem">
         Ich entwickle schlanke digitale Lösungen. Kein Baukasten mit hundert Modulen,
-        die du nicht brauchst – sondern genau die Funktionen, die deinen Ablauf abbilden.
+        die du nicht brauchst – sondern genau die Funktionen, die deinen Bedürfnissen entsprechen.
       </p>
 
       <ol class="approach-list">
@@ -1068,17 +1079,22 @@ form .btn{width:100%; justify-content:center}
        a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
        b) geschützt / mit Login  -> nur Screenshots + Badge "Geschützt"
 
-     TODO (wichtig): Die Beschreibungen sind ein Entwurf. Ich konnte die Apps
-     nicht selbst öffnen, deshalb bitte pro Projekt prüfen und korrigieren:
+     TODO: Beim DreamTeam stammen Ausgangslage und Problem von dir; Lösung,
+     Funktionsliste und Ergebnis habe ich passend dazu formuliert – bitte
+     gegenlesen. Bei den vier übrigen Apps sind alle Texte noch ein Entwurf:
        - Ausgangslage, Problem, Lösung und Ergebnis
        - die Liste der wichtigsten Funktionen
        - Angaben zu Datenschutz und Hosting
 
-     TODO: Screenshot-Platzhalter (.shot-slot) durch echte Bilder ersetzen:
-       <img src="assets/dt-uebersicht.png" width="1200" height="750"
-            alt="Übersicht des DreamTeam mit Rangliste" loading="lazy">
+     TODO: Screenshot-Platzhalter (.shot-slot) durch echte Bilder ersetzen,
+     nach dem Muster der Karte "WM 2026 DreamTeam" (figure.proj-shot):
+       <figure class="proj-shot">
+         <img src="assets/jass-punkte.png" width="1200" height="750" loading="lazy"
+              alt="Beschreibung dessen, was auf dem Bild zu sehen ist">
+         <figcaption>Kurze Bildunterschrift.</figcaption>
+       </figure>
      Bei Kundenprojekten (Fotografin) vorher die Freigabe für Referenz und
-     Screenshots einholen.
+     Screenshots einholen. Details siehe assets/README.md.
      ===================================================================== -->
 <section id="projekte">
   <div class="wrap">
@@ -1102,8 +1118,8 @@ form .btn{width:100%; justify-content:center}
           </div>
           <p class="proj-title">WM 2026 DreamTeam</p>
           <p class="proj-sum">
-            Eigenes Traumteam für die Fussball-WM 2026 zusammenstellen und im Freundes- oder
-            Arbeitskreis gegeneinander antreten – mit Rangliste, die sich selbst aktualisiert.
+            Ein Fantasy-Tippspiel zur Fussball-WM 2026: Statt Resultate zu tippen, stellst du ein
+            Team aus Turnierspielern zusammen und sammelst Punkte über deren Leistungen.
           </p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
@@ -1121,23 +1137,23 @@ form .btn{width:100%; justify-content:center}
         <div class="proj-cols">
           <div class="proj-block">
             <h4>Ausgangslage</h4>
-            <p>Tippspiele zu einer Fussball-WM entstehen meist in einer Excel-Tabelle und einer Chat-Gruppe. Eine Person sammelt die Teams ein und trägt nach jedem Spieltag die Punkte nach.</p>
+            <p>Eine Gruppe Fussballfans wollte für die WM ein Tippspiel mit mehr Spieltiefe: kein reines Resultatetippen, sondern ein Fantasy-Spiel, bei dem man Spieler auswählt und Punkte danach sammelt, wie diese im Turnier abschneiden.</p>
           </div>
           <div class="proj-block">
             <h4>Problem</h4>
-            <p>Das Auswerten von Hand kostet an jedem Spieltag Zeit, schleicht sich mit Fehlern ein und der Zwischenstand ist immer veraltet. Diskussionen über die Punktzahl gehören dazu.</p>
+            <p>Bestehende Tippportale treffen diese Vorstellung nicht: Sie lassen sich kaum konfigurieren, geben Regeln und Wertung vor und beschränken sich meist auf Resultatetipps.</p>
           </div>
           <div class="proj-block">
             <h4>Umgesetzte Lösung</h4>
-            <p>Eine Web-App, in der jede Person ihr eigenes DreamTeam zusammenstellt. Die Punkte entstehen automatisch aus den Spielergebnissen, die Rangliste aktualisiert sich für alle gleichzeitig.</p>
+            <p>Eine eigene Web-App mit genau den gewünschten Spielregeln: Jede Person stellt ihr DreamTeam aus Turnierspielern zusammen und bestimmt einen Captain. Die Punkte entstehen aus den Leistungen der gewählten Spieler, die Rangliste der Top Manager aktualisiert sich für alle gleichzeitig.</p>
           </div>
           <div class="proj-block">
             <h4>Wichtigste Funktionen</h4>
             <ul>
-              <li>Eigenes Team zusammenstellen</li>
-              <li>Automatische Punkteberechnung</li>
-              <li>Rangliste, für alle gleichzeitig aktuell</li>
-              <li>Eigene Gruppe für Freunde oder Team</li>
+              <li>Kader aus Turnierspielern zusammenstellen</li>
+              <li>Captain für das eigene Team bestimmen</li>
+              <li>Punkte pro Spieler aus den Turnierleistungen</li>
+              <li>Rangliste der Top Manager mit Gesamtpunkten</li>
               <li>Auf dem Handy bedienbar, ohne App-Store</li>
             </ul>
           </div>
@@ -1150,16 +1166,18 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Handy und Computer, ohne Installation. Zugriff über den Link, Betrieb und Backups laufen automatisch.</p>
           </div>
 
-          <!-- TODO: optional – Screenshot ergänzen oder diesen Block löschen,
-               die App ist ja öffentlich erreichbar. -->
-          <div class="shot-slot">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
-            <span>Screenshot: Teamaufstellung und Rangliste</span>
-          </div>
+          <!-- Screenshot: Datei muss unter assets/dt-top-manager.png liegen.
+               Bei anderem Dateinamen oder Zuschnitt src, width und height anpassen. -->
+          <figure class="proj-shot">
+            <img src="assets/dt-top-manager.png" width="1327" height="837" loading="lazy"
+                 alt="Rangliste der Top Manager im WM 2026 DreamTeam: die drei besten Teams mit ihren Spielern, Captain-Markierung und Gesamtpunkten, darunter die Plätze vier bis sieben.">
+            <figcaption>Rangliste der Top Manager mit Kader, Captain und Gesamtpunkten.</figcaption>
+          </figure>
 
           <p class="proj-result">
-            <strong>Ergebnis:</strong> Niemand muss mehr Punkte nachtragen. Alle sehen jederzeit
-            denselben Stand, und das Tippspiel läuft ohne Betreuung durch das ganze Turnier.
+            <strong>Ergebnis:</strong> Ein Tippspiel, das genau den Vorstellungen der Gruppe
+            entspricht, statt sich den Regeln eines fremden Portals anzupassen. Punkte und Rangliste
+            laufen ohne Betreuung durch das ganze Turnier.
           </p>
         </div>
       </div>
