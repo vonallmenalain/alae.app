@@ -32,19 +32,22 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [ ] **Telefonnummer** – Platzhalter `+41000000000` ersetzen oder den Block löschen
-- [ ] **Projekttexte prüfen** – die fünf Referenzprojekte sind ein Entwurf. Ausgangslage,
-      Problem, Lösung, Funktionsliste und Ergebnis pro App verifizieren; beim
-      Kundenprojekt (Fotografin) vorher die Freigabe für Referenz und Screenshots einholen
-- [ ] **Screenshots** – Platzhalter `.shot-slot` durch echte Bilder ersetzen:
-      `<img src="assets/dt-uebersicht.png" width="1200" height="750" alt="…" loading="lazy">`
-      Zwingend für die beiden geschützten Apps (`photographic`, `share`), optional für
-      die drei verlinkten. Bei privaten Inhalten vorher Namen unkenntlich machen oder
-      Demodaten verwenden
+- [x] **Screenshot DreamTeam** – `assets/dt-top-manager.png` ist im HTML eingebunden.
+      Dort liegt vorerst ein leerer Platzhalter in der richtigen Grösse – durch den
+      echten Screenshot ersetzen, gleicher Dateiname (siehe `assets/README.md`)
+- [ ] **Projekttexte prüfen** – beim DreamTeam stammen Ausgangslage und Problem von dir,
+      Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und gegenzulesen.
+      Bei den vier übrigen Apps sind alle Texte ein Entwurf; beim Kundenprojekt
+      (Fotografin) vorher die Freigabe für Referenz und Screenshots einholen
+- [ ] **Weitere Screenshots** – restliche `.shot-slot`-Platzhalter durch `figure.proj-shot`
+      ersetzen, Muster siehe DreamTeam-Karte. Zwingend für die beiden geschützten Apps
+      (`photographic`, `share`), optional für die verlinkten. Bei privaten Inhalten vorher
+      Namen unkenntlich machen oder Demodaten verwenden
 - [ ] **Portrait** – `.portrait` durch `<img src="assets/portrait.jpg" alt="…">` ersetzen
 - [ ] **Impressum und Datenschutzerklärung** – eigene Seiten anlegen und die
       Footer-Links darauf zeigen lassen (in der Schweiz erwartet, für Werbung nötig)
 - [ ] **Vorschaubild für Social Media** – `og:image`, 1200 × 630 px
-- [ ] **Preisrahmen in der FAQ** – optional, sobald Sie sich auf Zahlen festlegen
+- [ ] **Preisrahmen in der FAQ** – optional, sobald du dich auf Zahlen festlegst
 - [ ] **Einführungspreis-Block** im Kontaktbereich entfernen, wenn die ersten
       Referenzprojekte vergeben sind
 
