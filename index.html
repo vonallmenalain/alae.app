@@ -1079,22 +1079,18 @@ form .btn{width:100%; justify-content:center}
        a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
        b) geschützt / mit Login  -> nur Screenshots + Badge "Geschützt"
 
-     TODO: Beim DreamTeam stammen Ausgangslage und Problem von dir; Lösung,
-     Funktionsliste und Ergebnis habe ich passend dazu formuliert – bitte
-     gegenlesen. Bei den vier übrigen Apps sind alle Texte noch ein Entwurf:
-       - Ausgangslage, Problem, Lösung und Ergebnis
-       - die Liste der wichtigsten Funktionen
-       - Angaben zu Datenschutz und Hosting
+     Alle fünf Karten haben einen echten Screenshot (figure.proj-shot). Bei
+     einem Austausch daran denken: src, width, height und alt anpassen, und in
+     den Bildern der geschützten Apps müssen Gesichter und Namen erneut
+     unkenntlich gemacht werden – siehe assets/README.md.
 
-     TODO: Screenshot-Platzhalter (.shot-slot) durch echte Bilder ersetzen,
-     nach dem Muster der Karte "WM 2026 DreamTeam" (figure.proj-shot):
-       <figure class="proj-shot">
-         <img src="assets/share-uebersicht.png" width="1200" height="750" loading="lazy"
-              alt="Beschreibung dessen, was auf dem Bild zu sehen ist">
-         <figcaption>Kurze Bildunterschrift.</figcaption>
-       </figure>
-     Bei Kundenprojekten (Fotografin) vorher die Freigabe für Referenz und
-     Screenshots einholen. Details siehe assets/README.md.
+     TODO: Ausgangslage und Problem stammen bei allen fünf Apps vom Betreiber,
+     Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet – bitte
+     gegenlesen, ebenso die Angaben zu Datenschutz und Hosting.
+
+     TODO: Beim Kundenprojekt (Fotografin) vor der Veröffentlichung die
+     schriftliche Freigabe für Nennung als Referenz und für den Screenshot
+     einholen.
      ===================================================================== -->
 <section id="projekte">
   <div class="wrap">
@@ -1417,8 +1413,8 @@ form .btn{width:100%; justify-content:center}
           </div>
           <p class="proj-title">Familien- und Ferien-Sharing</p>
           <p class="proj-sum">
-            Ferien gemeinsam planen: Termine, Aufgaben, Einkaufslisten, Fotos und Kosten in einer
-            App, die alle Beteiligten auch wirklich benutzen.
+            Das Gesamtpaket für gemeinsame Ferien: Fotos und Videos in Originalqualität teilen,
+            dazu bei Bedarf Finanzen, Einkauf, Notizen und Kalender – alles in einer App statt fünf.
           </p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
@@ -1429,52 +1425,54 @@ form .btn{width:100%; justify-content:center}
         <div class="proj-open">
           <small>
             <strong>Kein öffentlicher Link:</strong> Die App enthält private Inhalte von Familien
-            und ist nur für eingeladene Mitglieder erreichbar. Deshalb hier nur Screenshots.
+            und ist nur für eingeladene Mitglieder erreichbar. Deshalb hier nur ein Screenshot.
           </small>
         </div>
         <div class="proj-cols">
           <div class="proj-block">
             <h4>Ausgangslage</h4>
-            <p>Mehrere Haushalte organisieren gemeinsame Ferien und Anlässe: wer kommt wann, wer bringt was, wer hat was bezahlt.</p>
+            <p>Mehrere Haushalte verbringen gemeinsam Ferien. Fotos wurden einzeln untereinander verschickt oder in einer Chat-Gruppe geteilt; Finanzen, Einkaufslisten und Termine liefen über verschiedene Apps.</p>
           </div>
           <div class="proj-block">
             <h4>Problem</h4>
-            <p>Die Informationen verteilten sich über Chats, Notizen und einzelne Kalender. Am Ende rechnete eine Person alles von Hand ab – mit entsprechendem Aufwand und Rückfragen.</p>
+            <p>Über den Chat verschickte Bilder kommen stark komprimiert und unscharf an – von den Ferienfotos bleibt wenig übrig. Und weil jeder Bereich in einer anderen App lag, musste man ständig wechseln und am Schluss die Ausgaben von Hand zusammenrechnen.</p>
           </div>
           <div class="proj-block">
             <h4>Umgesetzte Lösung</h4>
-            <p>Eine gemeinsame App pro Gruppe oder Reise: geteilter Kalender, Aufgaben- und Einkaufslisten, Fotoalbum und eine einfache Kostenteilung, die zeigt, wer wem was schuldet.</p>
+            <p>Eine App für die ganze Reise. Fotos und Videos werden hochgeladen und in Originalqualität untereinander geteilt. Weitere Bereiche – Finanzen, Einkauf, Notizen, Kalender – lassen sich bei Bedarf zuschalten und stehen sofort allen zur Verfügung. Im Bereich Finanzen tragen alle ihre Ausgaben ein; am Ende der Ferien zeigt eine Schlussabrechnung, wer wem was schuldet.</p>
           </div>
           <div class="proj-block">
             <h4>Wichtigste Funktionen</h4>
             <ul>
-              <li>Geteilter Kalender mit Zu- und Absagen</li>
-              <li>Listen für Aufgaben, Einkauf und Gepäck</li>
-              <li>Kostenteilung mit automatischem Ausgleich</li>
-              <li>Gemeinsames Fotoalbum</li>
-              <li>Einladung per Link, ohne komplizierte Registrierung</li>
+              <li>Fotos und Videos in Originalqualität teilen</li>
+              <li>Bereiche zuschalten: Finanzen, Einkauf, Notizen, Kalender</li>
+              <li>Ausgaben erfassen und am Schluss abrechnen</li>
+              <li>Passwortschutz für den Ferienbereich</li>
+              <li>Auf dem Handy bedienbar, ohne App-Store</li>
             </ul>
           </div>
           <div class="proj-block">
             <h4>Datenschutz &amp; Hosting</h4>
-            <p>Private Gruppen, Inhalte nur für eingeladene Mitglieder sichtbar, keine Weitergabe an Dritte, keine Werbung. Hosting in der Schweiz.</p>
+            <p>Alle Dateien und auch die Finanzdaten liegen auf einem Server in der Schweiz – keine Fotos in einer Cloud, keine Weitergabe an Dritte, keine Werbung. Der Zugang zum Ferienbereich lässt sich zusätzlich mit einem Passwort schützen.</p>
           </div>
           <div class="proj-block">
             <h4>Technik</h4>
             <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
           </div>
 
-          <!-- TODO: Screenshots nachliefern (Kalender, Listen, Kostenübersicht).
-               Vor der Veröffentlichung Namen und private Inhalte unkenntlich
-               machen oder eine Demo-Gruppe mit Beispieldaten verwenden. -->
-          <div class="shot-slot">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5.5-5 4 3.5L17 13l3 3"/></svg>
-            <span>Screenshot: Kalender, Listen und Kostenübersicht</span>
-          </div>
+          <!-- Die Fotos im Bild sind unkenntlich gemacht. Wird der Screenshot
+               ersetzt, muss das erneut geschehen – oder eine Demo-Gruppe mit
+               unverfänglichen Bildern verwenden. -->
+          <figure class="proj-shot">
+            <img src="assets/share.png" width="1317" height="1136" loading="lazy"
+                 alt="Fotobereich der Sharing-App mit einem Raster geteilter Bilder; links ein geöffnetes Menü, über das sich die Bereiche Fotos, Finanzen, Einkauf, Notizen und Kalender zuschalten lassen. Die Fotos sind unkenntlich gemacht.">
+            <figcaption>Geteilte Fotos, dazu das Menü zum Zuschalten weiterer Bereiche – Bilder unkenntlich gemacht.</figcaption>
+          </figure>
 
           <p class="proj-result">
-            <strong>Ergebnis:</strong> Ein Ort statt fünf Kanäle. Die Abrechnung am Schluss dauert
-            Minuten, und niemand muss mehr im Chat nach oben scrollen, um etwas zu finden.
+            <strong>Ergebnis:</strong> Ein Ort statt fünf Apps – mit Bildern in Originalqualität
+            statt in Chat-Qualität. Die Abrechnung am Ende der Ferien dauert Minuten, und niemand
+            muss mehr im Chat nach oben scrollen, um etwas zu finden.
           </p>
         </div>
       </div>
