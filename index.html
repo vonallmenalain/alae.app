@@ -437,11 +437,21 @@ section{padding-block:var(--section-y)}
 }
 
 /* --- Vertrauen / Über mich --------------------------------------------- */
+/* Auf dem Desktop steht der Text links – bündig mit dem Titel jeder
+   anderen Sparte –, das Porträt rechts. Im Quelltext kommt das Bild
+   zuerst, damit es auf schmalen Geräten oben bleibt; die Reihenfolge
+   dreht deshalb "order". */
 .about{
   display:grid; gap:clamp(2rem,4vw,3.5rem);
-  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); align-items:start;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); align-items:start;
 }
-@media (max-width: 56rem){ .about{grid-template-columns:1fr} }
+.about .portrait{order:2; justify-self:end}
+.about .about-text{order:1}
+@media (max-width: 56rem){
+  .about{grid-template-columns:1fr}
+  .about .portrait{order:0; justify-self:start}
+  .about .about-text{order:0}
+}
 .portrait{
   aspect-ratio:1/1; max-width:20rem; margin:0; border-radius:var(--r-xl); overflow:hidden;
   border:1px solid var(--line); background:var(--bg-2);
@@ -702,11 +712,11 @@ form .btn{width:100%; justify-content:center}
       <img src="assets/Alain.png" width="630" height="633" loading="lazy" alt="Porträt von Alain von Allmen">
     </figure>
 
-    <div class="reveal">
+    <div class="about-text reveal">
       <p class="eyebrow">Über mich</p>
       <h2>Angefangen hat es mit meinem eigenen Alltag</h2>
       <p class="lead" style="margin-top:1rem">
-        Ich bin Alain von Allmen und zu Web-Apps bin ich über ganz alltägliche Probleme gekommen:
+        Mein Name ist Alain von Allmen, ich wohne in Oberburg und zu Web-Apps bin ich über ganz alltägliche Probleme gekommen:
         eine Buchhaltung in einer fehleranfälligen Excel-Datei. Die Organisation eines Sportturniers mit Plänen in Papierform. Dokumente, die niemand mehr fand. Fotos,
         die ich mit der Familie teilen wollte, ohne sie einem Cloud-Anbieter zu überlassen.
       </p>
