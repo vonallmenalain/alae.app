@@ -11,7 +11,7 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 | Abschnitt | Zweck |
 | --- | --- |
 | Hero | Nutzenversprechen, ein Handlungsaufruf, vier Vertrauenspunkte |
-| Über mich | Wie es angefangen hat, Porträt und vier Fixpunkte |
+| Motivation | Wie es angefangen hat, Porträt und vier Fixpunkte |
 | Referenzprojekte | Sechs echte Apps, einzeiliger Kurzbeschrieb, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
 | Ablauf | Vier Schritte vom Erstgespräch bis zur Betreuung |
 | Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl nach der Entwicklung |
@@ -19,8 +19,14 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 | Kontakt | Formular über die volle Breite, unter der Frage „Was ist deine Idee?" |
 
 Die früheren Abschnitte Ausgangslage, Der Ansatz und Leistungen sind in
-„Über mich" aufgegangen. Damit ist auch die Aufzählung der fünf
-Dienstleistungen entfallen, unter anderem das Coaching zu KI-Werkzeugen.
+„Motivation" aufgegangen (früher „Über mich", Anker `#motivation`). Damit ist
+auch die Aufzählung der fünf Dienstleistungen entfallen, unter anderem das
+Coaching zu KI-Werkzeugen.
+
+Über jeder Abschnittsüberschrift steht das Signet der Marke – dieselben zwei
+Pfade wie in der Kopfzeile, ohne Schriftzug. Es zeichnet sich, sobald der
+Abschnitt eingeblendet wird, und wiederholt sich beim Zeigen mit der Maus,
+höchstens aber alle drei Sekunden. Beim Wegfahren läuft bewusst nichts mehr.
 
 ## Vor der Veröffentlichung anpassen
 
@@ -83,8 +89,10 @@ Empfang und Versand sind zwei getrennte Dinge:
 ## Rechtsseiten
 
 `impressum.html` und `datenschutz.html` teilen sich das Stylesheet
-`assets/legal.css`. Die Startseite behält ihr CSS inline, damit sie ohne zweite
-Anfrage auskommt; für die zwei Unterseiten wäre eine dreifache Kopie unwartbar.
+`assets/legal.css` und das Skript `assets/legal.js` (Jahreszahl in der
+Fusszeile, Signet-Animation der Marke). Die Startseite behält ihr CSS und ihr
+Skript inline, damit sie ohne zweite Anfrage auskommt; für die zwei
+Unterseiten wäre eine dreifache Kopie unwartbar.
 **Wird das Farbschema in `index.html` geändert, müssen die Tokens am Anfang von
 `legal.css` mitgeändert werden.**
 

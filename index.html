@@ -157,9 +157,10 @@ section{padding-block:var(--section-y)}
   letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
   margin:0 0 1.1rem;
 }
-.eyebrow::before{
-  content:""; width:1.75rem; height:1px; background:var(--accent); opacity:.6;
-}
+/* Statt eines Trennstrichs steht hier das Signet der Marke – dieselben zwei
+   Pfade wie in der Kopfzeile, nur kleiner und ohne Schriftzug. Wann es sich
+   zeichnet, steht weiter unten unter „Signet". */
+.eyebrow-mark{ width:1.55rem; height:1.13rem; flex:none }
 .sec-head{max-width:62ch; margin-bottom:clamp(2.25rem, 4vw, 3.5rem)}
 .sec-head .lead{color:var(--muted); font-size:1.07em; margin-top:1rem}
 .lead{color:var(--muted)}
@@ -305,7 +306,6 @@ section{padding-block:var(--section-y)}
   position:relative;
   max-width:52rem; margin-inline:auto; text-align:center;
 }
-.hero-inner .eyebrow::before{display:none}
 .hero-inner .hero-lead{margin-inline:auto}
 .hero-inner .hero-cta{justify-content:center}
 .hero-inner .trust-row{justify-content:center}
@@ -436,7 +436,7 @@ section{padding-block:var(--section-y)}
   .step{padding-bottom:2.75rem}
 }
 
-/* --- Vertrauen / Über mich --------------------------------------------- */
+/* --- Vertrauen / Motivation --------------------------------------------- */
 /* Auf dem Desktop steht der Text links – bündig mit dem Titel jeder
    anderen Sparte –, das Porträt rechts. Im Quelltext kommt das Bild
    zuerst, damit es auf schmalen Geräten oben bleibt; die Reihenfolge
@@ -594,7 +594,15 @@ form .btn{width:100%; justify-content:center}
   overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
 }
 
-/* --- Marke: Signet zeichnet sich, Text steigt nach ---------------------- */
+/* --- Signet: zeichnet sich, Text steigt nach ----------------------------
+   Zwei Auslöser, beide ohne Skript:
+     Kopf- und Fusszeile – beim Laden der Seite,
+     Abschnittsüberschriften – sobald der Abschnitt eingeblendet wird
+     (.reveal.is-in, siehe „Einblenden beim Scrollen" im Skript).
+   Die Wiederholung beim Zeigen mit der Maus übernimmt das Skript
+   (logoNeuZeichnen): Der frühere reine CSS-Hover lief zweimal – einmal beim
+   Betreten und noch einmal beim Verlassen – und startete bei jeder
+   Mausbewegung neu. */
 .brand-mark path{
   stroke-dasharray:1;
   animation:brand-draw .69s cubic-bezier(.65,0,.15,1) both;
@@ -603,21 +611,22 @@ form .btn{width:100%; justify-content:center}
 .brand-name{ display:block; animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .53s both }
 .brand span small{ animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .68s both }
 
-/* Wiederholung beim Hover / Tastaturfokus */
-.brand:hover .brand-mark path,
-.brand:focus-visible .brand-mark path{ animation-name:brand-draw-2 }
-.brand:hover .brand-name,
-.brand:focus-visible .brand-name,
-.brand:hover span small,
-.brand:focus-visible span small{ animation-name:brand-rise-2 }
+/* Bis der Abschnitt erscheint, bleibt das Signet ungezeichnet. Sichtbar wird
+   das nie: Der ganze .reveal-Block ist bis dahin ausgeblendet. */
+.eyebrow-mark path{ stroke-dasharray:1; stroke-dashoffset:1 }
+.reveal.is-in .eyebrow-mark path{
+  animation:brand-draw .69s cubic-bezier(.65,0,.15,1) both;
+}
+.reveal.is-in .eyebrow-mark path:nth-child(2){ animation-duration:.81s; animation-delay:.35s }
 
-@keyframes brand-draw   { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
-@keyframes brand-draw-2 { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
-@keyframes brand-rise   { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
-@keyframes brand-rise-2 { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
+@keyframes brand-draw { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
+@keyframes brand-rise { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
 
 @media (prefers-reduced-motion: reduce){
   .brand-mark path, .brand-name, .brand span small{ animation:none; stroke-dashoffset:0 }
+  /* Gleiche Selektorstärke wie oben, damit das "none" auch wirklich gewinnt */
+  .eyebrow-mark path,
+  .reveal.is-in .eyebrow-mark path{ animation:none; stroke-dashoffset:0 }
 }
 </style>
 </head>
@@ -643,7 +652,7 @@ form .btn{width:100%; justify-content:center}
     </a>
 
     <nav class="nav" id="nav" aria-label="Hauptnavigation">
-      <a href="#ueber-mich">Über mich</a>
+      <a href="#motivation">Motivation</a>
       <a href="#projekte">Projekte</a>
       <a href="#ablauf">Ablauf</a>
       <a href="#preise">Preise</a>
@@ -701,19 +710,32 @@ form .btn{width:100%; justify-content:center}
 </section>
 
 <!-- =====================================================================
-     ÜBER MICH
+     MOTIVATION
      ---------------------------------------------------------------------
-     Fasst die früheren Abschnitte Ausgangslage, Ansatz, Leistungen und
-     Über mich zusammen.
+     Hiess früher „Über mich" und fasst die noch älteren Abschnitte
+     Ausgangslage, Ansatz und Leistungen mit zusammen.
      ===================================================================== -->
-<section id="ueber-mich" class="band">
+<section id="motivation" class="band">
   <div class="wrap about">
     <figure class="portrait reveal">
       <img src="assets/Alain.png" width="630" height="633" loading="lazy" alt="Porträt von Alain von Allmen">
     </figure>
 
     <div class="about-text reveal">
-      <p class="eyebrow">Über mich</p>
+      <!-- Signet vor der Überschrift: gleiche zwei Pfade wie in der Kopfzeile,
+           nur ohne Schriftzug. aria-hidden, weil es rein schmückend ist – der
+           Text daneben sagt bereits, worum es geht.
+           Derselbe Block steht vor jeder der fünf Abschnittsüberschriften;
+           wird er geändert, müssen alle fünf mitgeändert werden. -->
+      <p class="eyebrow">
+        <svg class="eyebrow-mark" viewBox="0 0 44 32" aria-hidden="true">
+          <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="var(--text)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--accent)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Motivation
+      </p>
       <h2>Angefangen hat es mit meinem eigenen Alltag</h2>
       <p class="lead" style="margin-top:1rem">
         Mein Name ist Alain von Allmen, ich wohne in Oberburg und zu Web-Apps bin ich über ganz alltägliche Probleme gekommen:
@@ -758,7 +780,15 @@ form .btn{width:100%; justify-content:center}
 <section id="projekte">
   <div class="wrap">
     <div class="sec-head reveal">
-      <p class="eyebrow">Referenzprojekte</p>
+      <p class="eyebrow">
+        <svg class="eyebrow-mark" viewBox="0 0 44 32" aria-hidden="true">
+          <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="var(--text)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--accent)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Referenzprojekte
+      </p>
       <h2>Apps, die heute im Einsatz sind</h2>
     </div>
 
@@ -1178,7 +1208,15 @@ form .btn{width:100%; justify-content:center}
 <section id="ablauf" class="band">
   <div class="wrap">
     <div class="sec-head reveal">
-      <p class="eyebrow">Ablauf</p>
+      <p class="eyebrow">
+        <svg class="eyebrow-mark" viewBox="0 0 44 32" aria-hidden="true">
+          <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="var(--text)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--accent)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Ablauf
+      </p>
       <h2>Vier Schritte zur Web-App</h2>
     </div>
 
@@ -1230,7 +1268,15 @@ form .btn{width:100%; justify-content:center}
 <section id="preise">
   <div class="wrap">
     <div class="sec-head reveal">
-      <p class="eyebrow">Preise</p>
+      <p class="eyebrow">
+        <svg class="eyebrow-mark" viewBox="0 0 44 32" aria-hidden="true">
+          <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="var(--text)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--accent)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Preise
+      </p>
       <h2>Was kostet das?</h2>
       <p class="lead">
         Das hängt vom Umfang ab – deshalb nenne ich den Preis erst, wenn klar ist, was gebaut wird.
@@ -1381,7 +1427,15 @@ form .btn{width:100%; justify-content:center}
 <section id="kontakt">
   <div class="wrap contact">
     <div class="reveal">
-      <p class="eyebrow">Kontakt</p>
+      <p class="eyebrow">
+        <svg class="eyebrow-mark" viewBox="0 0 44 32" aria-hidden="true">
+          <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="var(--text)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--accent)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Kontakt
+      </p>
       <h2>Was ist deine Idee?</h2>
 
       <div class="contact-direct">
@@ -1463,7 +1517,7 @@ form .btn{width:100%; justify-content:center}
       <div>
         <h4>Seite</h4>
         <ul>
-          <li><a href="#ueber-mich">Über mich</a></li>
+          <li><a href="#motivation">Motivation</a></li>
           <li><a href="#projekte">Referenzprojekte</a></li>
           <li><a href="#ablauf">Ablauf</a></li>
           <li><a href="#preise">Preise</a></li>
@@ -1570,8 +1624,46 @@ form .btn{width:100%; justify-content:center}
     sections.forEach(function (s) { spy.observe(s); });
   }
 
-  /* --- Einblenden beim Scrollen ---------------------------------------- */
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- Signet-Animation -------------------------------------------------
+     Von selbst zeichnet sich das Signet über das CSS: in der Kopf- und
+     Fusszeile beim Laden, in den Abschnittsüberschriften beim Einblenden.
+     Hier steht nur die Wiederholung beim Zeigen mit der Maus – und die
+     höchstens alle drei Sekunden, damit nicht jede Mausbewegung eine neue
+     Runde auslöst. Beim Wegfahren passiert bewusst nichts mehr; der frühere
+     reine CSS-Hover startete die Bewegung genau dort ein zweites Mal.
+     ---------------------------------------------------------------------- */
+  var LOGO_PAUSE = 3000;
+  var LOGO_TEILE = '.brand-mark path, .eyebrow-mark path, .brand-name, .brand small';
+  var logoZuletzt = new WeakMap();
+
+  function logoGemerkt(el) { logoZuletzt.set(el, Date.now()); }
+
+  /* Eine laufende CSS-Animation beginnt nur dann von vorn, wenn sie
+     zwischendurch tatsächlich weg war. Der Zugriff auf offsetWidth erzwingt
+     die Neuberechnung dazwischen – und zwar am body, weil SVG-Elemente
+     diese Eigenschaft gar nicht kennen. */
+  function logoNeuZeichnen(el) {
+    var teile = el.querySelectorAll(LOGO_TEILE);
+    teile.forEach(function (teil) { teil.style.animation = 'none'; });
+    void document.body.offsetWidth;
+    teile.forEach(function (teil) { teil.style.animation = ''; });
+  }
+
+  if (!reduce) {
+    document.querySelectorAll('.brand, .eyebrow').forEach(function (el) {
+      function anstossen() {
+        if (Date.now() - (logoZuletzt.get(el) || 0) < LOGO_PAUSE) return;
+        logoGemerkt(el);
+        logoNeuZeichnen(el);
+      }
+      el.addEventListener('mouseenter', anstossen);
+      el.addEventListener('focus', anstossen);   /* Marke per Tastatur */
+    });
+  }
+
+  /* --- Einblenden beim Scrollen ---------------------------------------- */
   var revealables = document.querySelectorAll('.reveal');
   if (reduce || !('IntersectionObserver' in window)) {
     revealables.forEach(function (el) { el.classList.add('is-in'); });
@@ -1580,6 +1672,9 @@ form .btn{width:100%; justify-content:center}
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('is-in');
+        /* Das CSS zeichnet jetzt das Signet dieses Abschnitts. Zeitpunkt
+           merken, damit ein Hover direkt danach nicht gleich neu beginnt. */
+        entry.target.querySelectorAll('.eyebrow').forEach(logoGemerkt);
         obs.unobserve(entry.target);
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
