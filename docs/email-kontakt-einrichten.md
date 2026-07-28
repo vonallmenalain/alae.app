@@ -157,7 +157,36 @@ ein Blick in den Kopf der empfangenen Nachricht: `SPF: PASS` und
 
 ---
 
-## Schritt 5 – optional: Kontaktformular auf die neue Adresse
+## Schritt 5 – Kontaktformular scharfschalten
+
+Das Formular auf der Website ruft die Netlify-Funktion `kontakt.mjs` auf, und
+die versendet über Resend. Dafür braucht sie einen eigenen Schlüssel.
+
+1. **Resend** → *API Keys* → *Create API Key*: Name `netlify-kontaktformular`,
+   Permission **Sending access**, Domain `alae.app`. Bewusst ein zweiter
+   Schlüssel neben `gmail-smtp` – so lässt sich einer sperren, ohne den anderen
+   zu treffen.
+2. **Netlify** → Site → *Project configuration* → **Environment variables** →
+   *Add a variable*:
+
+   | Feld | Wert |
+   | --- | --- |
+   | Key | `RESEND_API_KEY` |
+   | Value | der Schlüssel `re_…` |
+   | Scopes | muss **Functions** enthalten |
+   | Deploy contexts | *All deploy contexts* |
+
+3. **Neu deployen:** *Deploys* → *Trigger deploy* → *Deploy site*. Ein
+   laufender Deploy übernimmt geänderte Variablen nicht von selbst.
+4. Formular absenden. Bei Erfolg ersetzt sich das Formular durch „Danke, deine
+   Anfrage ist angekommen.", und in Resend steht der Versand unter *Emails*.
+
+Der Absender `formular@alae.app` braucht keine eigene Freigabe – er liegt auf
+der in Resend verifizierten Domain.
+
+---
+
+## Schritt 6 – optional: Kontaktformular auf die neue Adresse
 
 Das Formular schickt Anfragen heute direkt an `vonallmenalain@gmail.com`. Setzt
 man in Netlify (*Project configuration → Environment variables*) stattdessen
@@ -181,6 +210,16 @@ und wechselt die Absenderadresse beim Antworten von Hand.
 - **Bestätigungscode kommt nicht an** → Schritt 1 ist nicht fertig. In
   Cloudflare unter *Email Routing → Overview* prüfen, ob die Zieladresse
   *Verified* ist und der Dienst *Enabled*.
+- **Testmail scheinbar nicht angekommen** → zuerst im Spam-Ordner und unter
+  *Alle Nachrichten* nachsehen, bevor die Einrichtung verdächtigt wird. Gmail
+  sortiert weitergeleitete Post aus einer frisch eingerichteten Domain gern
+  aus. Ob Cloudflare die Nachricht überhaupt erhalten hat, zeigt das
+  *Activity log* unter *Email Routing → Overview*.
+- **Formular meldet „Der Versand ist noch nicht eingerichtet."** → Die
+  Umgebungsvariable `RESEND_API_KEY` fehlt der Netlify-Funktion. Entweder ist
+  sie gar nicht gesetzt, oder ihr Scope umfasst **Functions** nicht, oder es
+  wurde nach dem Setzen nicht neu deployt. Steht in der Klammer stattdessen
+  „Fehler 404", ist die Funktion selbst nicht deployt.
 - **Antwort kommt nicht raus, Gmail meldet einen SMTP-Fehler** → Nutzername ist
   wörtlich `resend`, nicht die E-Mail-Adresse. Und der API-Schlüssel muss
   Sendeberechtigung für `alae.app` haben.
