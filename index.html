@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html lang="de-CH">
+<!-- data-theme="dark": Die Seite steht fest im Dunkelmodus und folgt nicht
+     mehr der Systemeinstellung. Das Farbschema für hell bleibt im CSS
+     erhalten – ein Wechsel auf data-theme="light" oder das Weglassen des
+     Attributs (dann gilt wieder die Systemeinstellung) genügt.
+     Wird das hier geändert, gilt dasselbe für impressum.html und
+     datenschutz.html sowie für die theme-color-Angabe darunter. -->
+<html lang="de-CH" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>alae.app – Individuelle Web-App für deinen Alltag</title>
 <meta name="description" content="alae.app entwickelt individuelle Web-Apps, genau nach deinen Bedürfnissen. Persönlich, transparent, Hosting in der Schweiz möglich.">
 <meta name="author" content="alae.app">
-<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0e1013">
 <link rel="canonical" href="https://alae.app/">
 
 <!-- Open Graph / Social ------------------------------------------------------
@@ -131,7 +136,9 @@ li{list-style:none}
 
 img,svg{max-width:100%; height:auto; display:block}
 strong{font-weight:650}
-::selection{background:var(--accent); color:#fff}
+/* --accent-fg statt #fff: Der Akzent ist im Dunkelmodus hell, weisse Schrift
+   darauf wäre kaum lesbar. */
+::selection{background:var(--accent); color:var(--accent-fg)}
 
 :where(a,button,summary,input,textarea,select):focus-visible{
   outline:2px solid var(--accent);
@@ -725,8 +732,8 @@ form .btn{width:100%; justify-content:center}
       <!-- Signet vor der Überschrift: gleiche zwei Pfade wie in der Kopfzeile,
            nur ohne Schriftzug. aria-hidden, weil es rein schmückend ist – der
            Text daneben sagt bereits, worum es geht.
-           Derselbe Block steht vor jeder der fünf Abschnittsüberschriften;
-           wird er geändert, müssen alle fünf mitgeändert werden. -->
+           Derselbe Block steht vor jeder der sechs Abschnittsüberschriften;
+           wird er geändert, müssen alle sechs mitgeändert werden. -->
       <p class="eyebrow">
         <svg class="eyebrow-mark" viewBox="0 0 44 32" aria-hidden="true">
           <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="var(--text)"
@@ -1333,6 +1340,15 @@ form .btn{width:100%; justify-content:center}
 <section id="faq" class="band">
   <div class="wrap">
     <div class="sec-head reveal">
+      <p class="eyebrow">
+        <svg class="eyebrow-mark" viewBox="0 0 44 32" aria-hidden="true">
+          <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="var(--text)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--accent)"
+                stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Fragen
+      </p>
       <h2>FAQ</h2>
     </div>
 

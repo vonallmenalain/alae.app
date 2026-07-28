@@ -15,7 +15,7 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 | Referenzprojekte | Sechs echte Apps, einzeiliger Kurzbeschrieb, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
 | Ablauf | Vier Schritte vom Erstgespräch bis zur Betreuung |
 | Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl nach der Entwicklung |
-| FAQ | Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
+| FAQ | Unter „Fragen": Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
 | Kontakt | Formular über die volle Breite, unter der Frage „Was ist deine Idee?" |
 
 Die früheren Abschnitte Ausgangslage, Der Ansatz und Leistungen sind in
@@ -127,7 +127,11 @@ Statische Datei, funktioniert auf jedem Hosting:
 
 ## Technische Eigenschaften
 
-- Hell- und Dunkelmodus: folgt automatisch der Systemeinstellung
+- Dunkelmodus, fest eingestellt über `data-theme="dark"` am `<html>` jeder der
+  drei Seiten. Das helle Farbschema steht weiterhin im CSS: `data-theme="light"`
+  stellt darauf um, ganz ohne das Attribut folgt die Seite wieder der
+  Systemeinstellung. Bei einer Änderung auch die `theme-color`-Angabe im
+  `<head>` mitziehen – sie färbt die Adressleiste auf dem Handy
 - Responsiv ab 320 px, keine horizontale Scrollleiste
 - Tastaturbedienbar, „Direkt zum Inhalt“-Link, sichtbarer Fokus, `prefers-reduced-motion`
 - Semantisches HTML mit strukturierten Daten (`ProfessionalService`) für Suchmaschinen
