@@ -412,9 +412,12 @@ section{padding-block:var(--section-y)}
 .proj-block ul{display:grid; gap:.35rem}
 .proj-block li{padding-left:1rem; position:relative}
 .proj-block li::before{content:"–"; position:absolute; left:0; color:var(--line-strong)}
+/* Ergebnis-Kachel: gleiche Fläche wie der Screenshot daneben (--bg-2 auf der
+   --surface-Karte), damit in der Projektkarte nur eine Kachelfarbe vorkommt.
+   Rot bleibt der Überschrift „Ergebnis" vorbehalten. */
 .proj-result{
   grid-column:1/-1; margin-top:.25rem; padding:1rem 1.2rem;
-  background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:var(--r-md);
+  background:var(--bg-2); border:1px solid var(--line); border-radius:var(--r-md);
   font-size:.95em;
 }
 .proj-result strong{color:var(--text)}
@@ -588,7 +591,7 @@ form .btn{width:100%; justify-content:center}
 .form-note{margin-top:.9rem; font-size:.78rem; color:var(--muted); text-align:center}
 .form-ok{
   margin:0; padding:1.4rem 1.2rem; text-align:center;
-  background:var(--accent-soft); border:1px solid var(--accent-line);
+  background:var(--bg-2); border:1px solid var(--line);
   border-radius:var(--r-md); font-size:.97em;
 }
 
@@ -1466,7 +1469,7 @@ form .btn{width:100%; justify-content:center}
      Schlägt der Versand fehl, öffnet sich als Rückfall das E-Mail-Programm.
      Soll das Formular ohne Server auskommen, genügt es, das Attribut
      data-endpoint am <form> zu entfernen.
-     TODO: E-Mail-Adresse und Telefonnummer unten ersetzen.
+     Bewusst nur die E-Mail-Adresse als direkter Draht, keine Telefonnummer.
      ===================================================================== -->
 <section id="kontakt">
   <div class="wrap contact">
@@ -1590,7 +1593,8 @@ form .btn{width:100%; justify-content:center}
 </footer>
 
 <!-- Strukturierte Daten für Suchmaschinen.
-     TODO: Adresse, Telefon und Social-Profile ergänzen. -->
+     Adresse und Telefon fehlen bewusst, siehe Impressum.
+     TODO: Social-Profile ergänzen, sobald es welche gibt. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

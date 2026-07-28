@@ -44,8 +44,8 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
       von der Einzelfirma für den Screenshot der Buchhaltung
 - [x] **Impressum und Datenschutzerklärung** – als `impressum.html` und
       `datenschutz.html` angelegt, im Footer verlinkt
-- [ ] **Angaben in den Rechtsseiten ausfüllen** – Adresse, Telefonnummer und UID.
-      Die Platzhalter stehen in eckigen Klammern, siehe Abschnitt „Rechtsseiten"
+- [x] **Angaben in den Rechtsseiten** – Name, E-Mail und Website. Adresse,
+      Telefonnummer und UID bleiben bewusst weg, siehe Abschnitt „Rechtsseiten"
 - [ ] **Rechtsseiten prüfen lassen** – die Texte sind ein Entwurf, keine
       Rechtsberatung
 - [ ] **Vorschaubild für Social Media** – `og:image`, 1200 × 630 px
@@ -104,16 +104,23 @@ Unterseiten wäre eine dreifache Kopie unwartbar.
 Beide Seiten sind zusätzlich ohne Dateiendung erreichbar (`/impressum`,
 `/datenschutz`) – dafür sorgen Weiterleitungen in `netlify.toml`.
 
-### Noch auszufüllen
+### Angaben zur Person
 
-| Platzhalter | Wo | Bemerkung |
-| --- | --- | --- |
-| `[Strasse und Hausnummer]`, `[PLZ]`, `[Ort]` | Impressum und Datenschutz | in beiden Dateien identisch halten |
-| `[Telefonnummer]` | Impressum | oder die ganze Zeile löschen |
-| `[CHE-xxx.xxx.xxx]` | Impressum | nur bei Eintrag im Handelsregister; sonst den Block „Handelsregister und Mehrwertsteuer" löschen |
+Impressum und Datenschutzerklärung nennen **Name, E-Mail und Website** – mehr
+nicht. Keine Postadresse, keine Telefonnummer, keine UID: Es besteht kein
+Eintrag im Handelsregister, und der Kontakt läuft ausschliesslich über
+`kontakt@alae.app`.
 
-Die Platzhalter stehen bewusst sichtbar in eckigen Klammern: Eine erfundene
-Adresse in einem Impressum wäre schlimmer als eine offensichtliche Lücke.
+Die Angaben stehen in beiden Dateien; **wird eine geändert, muss die andere
+mitgeändert werden.** Kommt später eine Adresse dazu, gehört sie in die
+`dl.angaben` beider Seiten und in die strukturierten Daten am Ende von
+`index.html`.
+
+Für Schweizer Websites, die Leistungen im elektronischen Geschäftsverkehr
+anbieten, verlangt Art. 3 Abs. 1 lit. s UWG neben der Identität auch eine
+Postadresse. Ob eine reine Informationsseite ohne Bestellmöglichkeit darunter
+fällt, ist umstritten. Das gehört zu den Punkten, die eine juristische Prüfung
+der Rechtsseiten klären sollte.
 
 Die Datenschutzerklärung beschreibt den tatsächlichen Stand der Website: keine
 Cookies, keine externen Anfragen, als einziger Browser-Speicher der Eintrag

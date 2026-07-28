@@ -166,10 +166,12 @@ ul.liste li{margin-bottom:.4rem}
 .tabelle td:first-child{color:var(--text); font-weight:600; white-space:nowrap}
 .tabelle-wrap{overflow-x:auto; margin-bottom:1em}
 
-/* Hinweiskasten */
+/* Hinweiskasten – gleiche Fläche wie die Angaben-Kachel darunter, damit auf
+   der Seite nur eine Kachelfarbe vorkommt. Der Akzent bleibt der Schrift
+   vorbehalten. */
 .hinweis{
   padding:1.1rem 1.25rem; margin:1.5rem 0;
-  background:var(--accent-soft); border:1px solid var(--accent-line);
+  background:var(--surface); border:1px solid var(--line);
   border-radius:var(--r-md);
 }
 .hinweis p{margin:0; color:var(--text); font-size:.97em}
