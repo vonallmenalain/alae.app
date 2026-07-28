@@ -35,6 +35,17 @@
     --accent-soft:rgba(255,122,114,.10); --accent-line:rgba(255,122,114,.26);
   }
 }
+/* Manuelle Umschaltung gewinnt in beide Richtungen – gleich wie index.html */
+:root[data-theme="light"]{
+  --bg:#FBFAF8; --bg-2:#F3F1ED; --surface:#FFFFFF; --line:#E4E0D9; --line-strong:#CFC9BF;
+  --text:#14171B; --muted:#5C6470; --accent:#C1272D; --accent-fg:#FFFFFF;
+  --accent-soft:rgba(193,39,45,.07); --accent-line:rgba(193,39,45,.22);
+}
+:root[data-theme="dark"]{
+  --bg:#0E1013; --bg-2:#14181D; --surface:#14181D; --line:#262B32; --line-strong:#39404A;
+  --text:#EDEFF2; --muted:#9AA4B2; --accent:#FF7A72; --accent-fg:#22100F;
+  --accent-soft:rgba(255,122,114,.10); --accent-line:rgba(255,122,114,.26);
+}
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -71,13 +82,54 @@ a:hover{text-decoration-color:var(--accent)}
   display:flex; align-items:center; justify-content:space-between; gap:1rem;
   min-height:4.25rem;
 }
-.brand{
-  display:inline-flex; align-items:center; gap:.6rem;
-  font-weight:700; letter-spacing:-.025em; font-size:1.1rem; text-decoration:none;
-}
-.brand svg{width:2.1rem; height:1.5rem; flex:none}
 .back{font-size:.93rem; color:var(--muted); text-decoration:none; white-space:nowrap}
 .back:hover{color:var(--text)}
+
+/* --- Marke -------------------------------------------------------------
+   Wortgleiche Kopie des Marken-Blocks aus index.html: Signet, Schriftzug
+   und Zeile "Individuelle Web-Apps" gehören zusammen und sehen auf allen
+   Seiten identisch aus – gleiche Grössen, gleiche Farben, gleiche
+   Animation. Wird die Marke in index.html geändert, muss sie hier
+   mitgeändert werden. */
+.brand{
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-weight:700; letter-spacing:-.025em; font-size:1.1rem; line-height:1.65;
+  color:var(--text); text-decoration:none;
+}
+.site-header .brand{ margin-right:auto }
+.brand-mark{ width:2.1rem; height:1.5rem; flex:none }
+.brand span small{
+  display:block; font-family:var(--mono); font-size:.6rem; font-weight:500;
+  letter-spacing:.11em; text-transform:uppercase; color:var(--muted); line-height:1.4;
+  white-space:nowrap;
+}
+@media (max-width: 26rem){ .brand span small{display:none} }
+
+/* Signet zeichnet sich, Text steigt nach */
+.brand-mark path{
+  stroke-dasharray:1;
+  animation:brand-draw .69s cubic-bezier(.65,0,.15,1) both;
+}
+.brand-mark path:nth-child(2){ animation-duration:.81s; animation-delay:.35s }
+.brand-name{ display:block; animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .53s both }
+.brand span small{ animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .68s both }
+
+/* Wiederholung beim Hover / Tastaturfokus */
+.brand:hover .brand-mark path,
+.brand:focus-visible .brand-mark path{ animation-name:brand-draw-2 }
+.brand:hover .brand-name,
+.brand:focus-visible .brand-name,
+.brand:hover span small,
+.brand:focus-visible span small{ animation-name:brand-rise-2 }
+
+@keyframes brand-draw   { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
+@keyframes brand-draw-2 { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
+@keyframes brand-rise   { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
+@keyframes brand-rise-2 { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
+
+@media (prefers-reduced-motion: reduce){
+  .brand-mark path, .brand-name, .brand span small{ animation:none; stroke-dashoffset:0 }
+}
 
 /* --- Inhalt ------------------------------------------------------------- */
 main{padding-block:clamp(2.5rem, 6vw, 4.5rem)}
