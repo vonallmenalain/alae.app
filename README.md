@@ -86,6 +86,11 @@ Empfang und Versand sind zwei getrennte Dinge:
 - **Versenden** übernimmt Resend – für das Kontaktformular über die Funktion
   oben, und für Antworten aus Gmail über Resends SMTP-Zugang.
 
+Die Einrichtung Schritt für Schritt steht in
+[`docs/email-kontakt-einrichten.md`](docs/email-kontakt-einrichten.md) – mit
+Reihenfolge, den nötigen DNS-Einträgen, den SMTP-Daten für Gmail und einer
+Test-Checkliste.
+
 ## Rechtsseiten
 
 `impressum.html` und `datenschutz.html` teilen sich das Stylesheet
