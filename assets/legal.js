@@ -13,6 +13,16 @@
   var jahr = document.getElementById('jahr');
   if (jahr) jahr.textContent = String(new Date().getFullYear());
 
+  /* --- Farbe der Adressleiste -------------------------------------------
+     Das Farbschema selbst setzt das Skript im <head>. Hier wird nur die
+     theme-color nachgezogen, damit sie zur gespeicherten Wahl passt. Einen
+     Umschalter gibt es auf diesen Seiten nicht, nur auf der Startseite. */
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) {
+    themeMeta.content = document.documentElement.getAttribute('data-theme') === 'light'
+      ? '#fbfaf8' : '#0e1013';
+  }
+
   /* --- Signet-Animation -------------------------------------------------
      Beim Laden zeichnet sich das Signet über das CSS. Beim Zeigen mit der
      Maus wiederholt es sich – höchstens alle drei Sekunden, damit nicht

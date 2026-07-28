@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<!-- data-theme="dark": fest im Dunkelmodus, gleich wie index.html -->
+<!-- data-theme="dark": Dunkelmodus als Voreinstellung, gleich wie index.html.
+     Den Umschalter gibt es nur auf der Startseite, die dort getroffene Wahl
+     gilt aber auch hier – siehe das Skript im <head>. -->
 <html lang="de-CH" data-theme="dark">
 <head>
 <meta charset="utf-8">
@@ -10,6 +12,16 @@
 <link rel="canonical" href="https://alae.app/datenschutz">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314171B'/%3E%3Cpath d='M4.2 21.4 10 10.6l2.9 5.3' stroke='%23FBFAF8' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M16.1 21.4 21.9 10.6l5.9 10.8' stroke='%23C1272D' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/legal.css">
+
+<!-- Wortgleich zu index.html: Wahl setzen, bevor gezeichnet wird. -->
+<script>
+(function () {
+  try {
+    var wahl = localStorage.getItem('alae-theme');
+    if (wahl === 'light' || wahl === 'dark') document.documentElement.setAttribute('data-theme', wahl);
+  } catch (e) { /* Privates Fenster: es bleibt beim Dunkelmodus */ }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#inhalt">Direkt zum Inhalt</a>
@@ -79,17 +91,19 @@
 
     <h2>2. Keine Cookies, kein Tracking</h2>
     <p>
-      Es werden keine Cookies gesetzt und keine Daten im Browser gespeichert –
-      auch nicht in „Local Storage" oder vergleichbaren Ablagen. Es kommen keine
-      Analyse-, Statistik- oder Werbedienste zum Einsatz, und es werden keine
-      Inhalte von fremden Servern nachgeladen: Schriften, Bilder und Skripte
-      liegen alle auf dem eigenen Webserver. Deshalb braucht diese Website auch
-      keinen Cookie-Hinweis.
+      Es werden keine Cookies gesetzt. Es kommen keine Analyse-, Statistik- oder
+      Werbedienste zum Einsatz, und es werden keine Inhalte von fremden Servern
+      nachgeladen: Schriften, Bilder und Skripte liegen alle auf dem eigenen
+      Webserver. Deshalb braucht diese Website auch keinen Cookie-Hinweis.
     </p>
     <p>
-      Die Seite passt sich der Hell-/Dunkel-Einstellung deines Geräts an. Diese
-      Einstellung liest der Browser lokal aus; sie wird nicht übermittelt und
-      nicht gespeichert.
+      Im Browser gespeichert wird eine einzige Angabe: Die Seite wird dunkel
+      dargestellt; wechselst du über den Knopf in der Kopfzeile auf die helle
+      Darstellung, merkt sie sich diese Wahl im „Local Storage" deines Browsers
+      unter dem Namen „alae-theme" mit dem Wert „light" oder „dark". Der Eintrag
+      enthält keine Personendaten, wird an keinen Server übermittelt und dient
+      allein der Darstellung. Er entsteht erst, wenn du den Knopf benutzt, und
+      lässt sich jederzeit über die Einstellungen deines Browsers löschen.
     </p>
 
     <h2>3. Zugriffsdaten beim Aufruf der Website</h2>
