@@ -111,8 +111,9 @@ Die Platzhalter stehen bewusst sichtbar in eckigen Klammern: Eine erfundene
 Adresse in einem Impressum wäre schlimmer als eine offensichtliche Lücke.
 
 Die Datenschutzerklärung beschreibt den tatsächlichen Stand der Website: keine
-Cookies, kein Browser-Speicher, keine externen Anfragen, als Dienstleister nur
-Netlify, Resend, Cloudflare und Google. **Kommt ein weiterer Dienst dazu – etwa
+Cookies, keine externen Anfragen, als einziger Browser-Speicher der Eintrag
+`alae-theme` für das gewählte Farbschema, als Dienstleister nur Netlify,
+Resend, Cloudflare und Google. **Kommt ein weiterer Dienst dazu – etwa
 Terminbuchung, Newsletter oder Statistik –, muss die Tabelle in Ziffer 6 ergänzt
 und der Abschnitt „Keine Cookies, kein Tracking" überprüft werden.**
 
@@ -127,11 +128,15 @@ Statische Datei, funktioniert auf jedem Hosting:
 
 ## Technische Eigenschaften
 
-- Dunkelmodus, fest eingestellt über `data-theme="dark"` am `<html>` jeder der
-  drei Seiten. Das helle Farbschema steht weiterhin im CSS: `data-theme="light"`
-  stellt darauf um, ganz ohne das Attribut folgt die Seite wieder der
-  Systemeinstellung. Bei einer Änderung auch die `theme-color`-Angabe im
-  `<head>` mitziehen – sie färbt die Adressleiste auf dem Handy
+- Dunkelmodus als Voreinstellung über `data-theme="dark"` am `<html>` jeder der
+  drei Seiten; die Systemeinstellung wird bewusst nicht mehr gefolgt. Der Knopf
+  rechts neben „Kontakt" schaltet auf hell um und merkt sich die Wahl unter
+  `alae-theme` im Local Storage. Gesetzt wird sie von einem kurzen Skript im
+  `<head>` – dort und nicht weiter unten, sonst blitzt beim Laden kurz die
+  falsche Farbe auf. Dieses Skript steht wortgleich in allen drei Dateien,
+  damit die Wahl auch auf den Rechtsseiten gilt. **Kommt weiterer
+  Browser-Speicher dazu, muss Ziffer 2 der Datenschutzerklärung ergänzt
+  werden**
 - Responsiv ab 320 px, keine horizontale Scrollleiste
 - Tastaturbedienbar, „Direkt zum Inhalt“-Link, sichtbarer Fokus, `prefers-reduced-motion`
 - Semantisches HTML mit strukturierten Daten (`ProfessionalService`) für Suchmaschinen
