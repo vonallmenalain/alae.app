@@ -12,7 +12,7 @@ Bilder für die Landingpage.
 | `foto-app.png` | Fotoverkauf – Galerie einer Familie | 929 × 1211 px |
 | `share.png` | Familien-Sharing – Fotobereich mit Bereiche-Menü | 1317 × 1136 px |
 | `buchhaltung.png` | Management Einzelfirma – Buchungserfassung und Journal | 1547 × 994 px |
-| `Alain.png` | Porträt für den Abschnitt „Über mich" | 630 × 633 px |
+| `Alain.png` | Porträt für den Abschnitt „Motivation" | 630 × 633 px |
 
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass

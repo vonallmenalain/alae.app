@@ -105,7 +105,9 @@ a:hover{text-decoration-color:var(--accent)}
 }
 @media (max-width: 26rem){ .brand span small{display:none} }
 
-/* Signet zeichnet sich, Text steigt nach */
+/* Signet zeichnet sich beim Laden, Text steigt nach. Die Wiederholung beim
+   Zeigen mit der Maus übernimmt assets/legal.js – höchstens alle drei
+   Sekunden und nicht noch einmal beim Wegfahren. */
 .brand-mark path{
   stroke-dasharray:1;
   animation:brand-draw .69s cubic-bezier(.65,0,.15,1) both;
@@ -114,18 +116,8 @@ a:hover{text-decoration-color:var(--accent)}
 .brand-name{ display:block; animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .53s both }
 .brand span small{ animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .68s both }
 
-/* Wiederholung beim Hover / Tastaturfokus */
-.brand:hover .brand-mark path,
-.brand:focus-visible .brand-mark path{ animation-name:brand-draw-2 }
-.brand:hover .brand-name,
-.brand:focus-visible .brand-name,
-.brand:hover span small,
-.brand:focus-visible span small{ animation-name:brand-rise-2 }
-
-@keyframes brand-draw   { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
-@keyframes brand-draw-2 { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
-@keyframes brand-rise   { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
-@keyframes brand-rise-2 { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
+@keyframes brand-draw { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
+@keyframes brand-rise { from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none} }
 
 @media (prefers-reduced-motion: reduce){
   .brand-mark path, .brand-name, .brand span small{ animation:none; stroke-dashoffset:0 }
