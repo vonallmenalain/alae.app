@@ -49,7 +49,7 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **Rechtsseiten prüfen lassen** – die Texte sind ein Entwurf, keine
       Rechtsberatung
 - [ ] **Vorschaubild für Social Media** – `og:image`, 1200 × 630 px
-- [ ] **Richtwert CHF 200 prüfen** – steht im Abschnitt „Preise" und in der FAQ-Antwort
+- [ ] **Richtwert CHF 100 prüfen** – steht im Abschnitt „Preise" und in der FAQ-Antwort
       „Was kostet eine individuelle App?". Bei einer Änderung beide Stellen anpassen
 
 ## Kontaktformular
