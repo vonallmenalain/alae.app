@@ -40,8 +40,7 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
       (Details in `assets/README.md`)
 - [ ] **Projekttexte prüfen** – bei allen sieben Apps stammen Ausgangslage und Problem
       von dir, Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und
-      gegenzulesen; bei Gripszug besonders die Funktionsliste und den Abschnitt
-      „Datenschutz & Hosting"
+      gegenzulesen; bei Gripszug besonders die Funktionsliste
 - [ ] **Freigaben einholen** – von der Fotografin für Nennung und Screenshot, ebenso
       von der Einzelfirma für den Screenshot der Buchhaltung
 - [x] **Impressum und Datenschutzerklärung** – als `impressum.html` und
