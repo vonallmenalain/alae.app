@@ -12,7 +12,7 @@ keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, ferti
 | --- | --- |
 | Hero | Nutzenversprechen, ein Handlungsaufruf, vier Vertrauenspunkte |
 | Motivation | Wie es angefangen hat, Porträt und vier Fixpunkte |
-| Referenzprojekte | Sechs echte Apps, einzeiliger Kurzbeschrieb, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
+| Referenzprojekte | Sieben echte Apps – zuoberst Gripszug –, einzeiliger Kurzbeschrieb, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
 | Ablauf | Vier Schritte vom Erstgespräch bis zur Betreuung |
 | Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl nach der Entwicklung |
 | FAQ | Unter „Fragen": Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
@@ -34,12 +34,14 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
-- [x] **Screenshots aller sechs Projekte und Porträt** – eingebunden; bei den drei
-      geschützten Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
+- [x] **Bilder aller sieben Projekte und Porträt** – eingebunden; sechs Screenshots,
+      bei Gripszug die Illustration der Trainingsbereiche. Bei den drei geschützten
+      Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
       (Details in `assets/README.md`)
-- [ ] **Projekttexte prüfen** – bei allen sechs Apps stammen Ausgangslage und Problem
+- [ ] **Projekttexte prüfen** – bei allen sieben Apps stammen Ausgangslage und Problem
       von dir, Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und
-      gegenzulesen
+      gegenzulesen; bei Gripszug besonders die Funktionsliste und den Abschnitt
+      „Datenschutz & Hosting"
 - [ ] **Freigaben einholen** – von der Fotografin für Nennung und Screenshot, ebenso
       von der Einzelfirma für den Screenshot der Buchhaltung
 - [x] **Impressum und Datenschutzerklärung** – als `impressum.html` und
