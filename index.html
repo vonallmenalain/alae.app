@@ -802,14 +802,18 @@ form .btn{width:100%; justify-content:center}
        a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
        b) geschützt / mit Login  -> nur Screenshots + Badge "Geschützt"
 
-     Alle sechs Karten haben einen echten Screenshot (figure.proj-shot). Bei
-     einem Austausch daran denken: src, width, height und alt anpassen, und in
-     den Bildern der geschützten Apps müssen Gesichter und Namen erneut
-     unkenntlich gemacht werden – siehe assets/README.md.
+     Jede der sieben Karten hat ein Bild (figure.proj-shot): bei sechs Apps ein
+     echter Screenshot, bei Gripszug die Illustration der Trainingsbereiche aus
+     der App. Bei einem Austausch daran denken: src, width, height und alt
+     anpassen, und in den Bildern der geschützten Apps müssen Gesichter und
+     Namen erneut unkenntlich gemacht werden – siehe assets/README.md.
 
-     TODO: Ausgangslage und Problem stammen bei allen sechs Apps vom Betreiber,
+     Die Reihenfolge ist bewusst gewählt: Gripszug steht als neuste App zuoberst.
+
+     TODO: Ausgangslage und Problem stammen bei allen sieben Apps vom Betreiber,
      Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet – bitte
-     gegenlesen, ebenso die Angaben zu Datenschutz und Hosting.
+     gegenlesen, ebenso die Angaben zu Datenschutz und Hosting. Bei Gripszug
+     insbesondere die Funktionsliste und den Datenschutz-Abschnitt prüfen.
 
      TODO: Beim Kundenprojekt (Fotografin) vor der Veröffentlichung die
      schriftliche Freigabe für Nennung als Referenz und für den Screenshot
@@ -830,7 +834,79 @@ form .btn{width:100%; justify-content:center}
       <h2>Apps, die heute im Einsatz sind</h2>
     </div>
 
-    <!-- Projekt 1: WM 2026 DreamTeam ------------------------------------ -->
+    <!-- Projekt 1: Gripszug ---------------------------------------------
+         Steht bewusst an erster Stelle: neuste eigene App.
+         Das Bild ist kein Oberflächen-Screenshot, sondern die Illustration
+         der fünf Trainingsbereiche aus der App selbst. -->
+    <details class="proj reveal">
+      <summary>
+        <div>
+          <p class="proj-title">Gripszug</p>
+          <p class="proj-sum">Lern-App für Kinder: fünf Trainingsbereiche, kein einziges Werbebanner.</p>
+        </div>
+        <span class="proj-toggle" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </summary>
+      <div class="proj-detail">
+        <div class="proj-open">
+          <a href="https://kids.alae.app" target="_blank" rel="noopener">
+            App öffnen
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
+          </a>
+          <small>kids.alae.app &middot; öffnet in einem neuen Tab</small>
+        </div>
+        <div class="proj-cols">
+          <div class="proj-block">
+            <h4>Ausgangslage</h4>
+            <p>Als Vater von drei Kindern wollte ich, dass die Zeit am Bildschirm etwas bringt: eine App, die spielerisch fördert, in der die Kinder Fortschritte machen und tatsächlich etwas lernen.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Problem</h4>
+            <p>Eine gute Kinder-App zu finden ist erstaunlich schwierig. Fast überall läuft Werbung mit, mitten im Spiel stehen Kaufaufforderungen, und ob dabei etwas gelernt wird, zeigt sich erst nach dem Installieren. Nach langem Suchen habe ich die App deshalb selbst programmiert.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Umgesetzte Lösung</h4>
+            <p>Gripszug ist ein Zug mit fünf Wagen, und jeder Wagen steht für einen Trainingsbereich: Gedächtnis, Konzentration, Geschwindigkeit, Problemlösen sowie Zahl und Buchstabe. Dahinter stecken kurze Übungen, die ohne Erklärung der Eltern verständlich sind. Was gespielt wird, zahlt auf den jeweiligen Bereich ein – so wird sichtbar, wo ein Kind vorwärtskommt. Keine Werbung, keine Käufe im Spiel, keine Ablenkung.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Wichtigste Funktionen</h4>
+            <ul>
+              <li>Fünf Trainingsbereiche, dargestellt als Zugwagen</li>
+              <li>Kurze Übungen, für Kinder selbsterklärend</li>
+              <li>Sichtbarer Fortschritt je Bereich</li>
+              <li>Keine Werbung und keine Käufe im Spiel</li>
+              <li>Auf Tablet und Handy bedienbar, ohne App-Store</li>
+            </ul>
+          </div>
+          <div class="proj-block">
+            <h4>Datenschutz &amp; Hosting</h4>
+            <p>Eine App für Kinder darf nicht mitschneiden: keine Werbung, kein Tracking zu Werbezwecken, keine Weitergabe an Dritte. Gespeichert wird nur, was für den Spielstand nötig ist. Hosting in der Schweiz.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Technik</h4>
+            <p>Läuft im Browser auf Tablet, Handy und Computer – ohne Installation und ohne App-Store. Aufruf über den Link, Betrieb und Updates laufen automatisch.</p>
+          </div>
+
+          <!-- Illustration aus der App (assets/gripszug.webp). Bei Austausch
+               src, width, height und alt anpassen. -->
+          <figure class="proj-shot">
+            <img src="assets/gripszug.webp" width="2000" height="1125" loading="lazy"
+                 alt="Illustration aus Gripszug: eine Lokomotive zieht fünf Wagen mit Einhorn, Wal, Roboter, Drache und Piratenschiff durch eine Hügellandschaft. Darunter stehen die fünf Trainingsbereiche Gedächtnis, Konzentration, Geschwindigkeit, Problemlösen sowie Zahl und Buchstabe.">
+            <figcaption>Fünf Bereiche – fünf Wagen: die Trainingsbereiche von Gripszug.</figcaption>
+          </figure>
+
+          <p class="proj-result">
+            <strong>Ergebnis:</strong> Aus der erfolglosen Suche nach einer brauchbaren Lern-App
+            wurde eine eigene. Meine Kinder spielen heute in Gripszug, statt Werbebanner
+            wegzuklicken – und die Bildschirmzeit hinterlässt etwas. Die App ist unter
+            kids.alae.app offen erreichbar.
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Projekt 2: WM 2026 DreamTeam ------------------------------------ -->
     <details class="proj reveal">
       <summary>
         <div>
@@ -899,7 +975,7 @@ form .btn{width:100%; justify-content:center}
       </div>
     </details>
 
-    <!-- Projekt 2: Jass App --------------------------------------------- -->
+    <!-- Projekt 3: Jass App --------------------------------------------- -->
     <details class="proj reveal">
       <summary>
         <div>
@@ -965,7 +1041,7 @@ form .btn{width:100%; justify-content:center}
       </div>
     </details>
 
-    <!-- Projekt 3: Volleyballturnier ------------------------------------ -->
+    <!-- Projekt 4: Volleyballturnier ------------------------------------ -->
     <details class="proj reveal">
       <summary>
         <div>
@@ -1033,7 +1109,7 @@ form .btn{width:100%; justify-content:center}
       </div>
     </details>
 
-    <!-- Projekt 4: Fotoverkauf (geschützt) ------------------------------ -->
+    <!-- Projekt 5: Fotoverkauf (geschützt) ------------------------------ -->
     <details class="proj reveal">
       <summary>
         <div>
@@ -1101,7 +1177,7 @@ form .btn{width:100%; justify-content:center}
       </div>
     </details>
 
-    <!-- Projekt 5: Familien- und Ferien-Sharing (geschützt) ------------- -->
+    <!-- Projekt 6: Familien- und Ferien-Sharing (geschützt) ------------- -->
     <details class="proj reveal">
       <summary>
         <div>
@@ -1169,7 +1245,7 @@ form .btn{width:100%; justify-content:center}
       </div>
     </details>
 
-    <!-- Projekt 6: Management Einzelfirma (geschützt) ------------------- -->
+    <!-- Projekt 7: Management Einzelfirma (geschützt) ------------------- -->
     <details class="proj reveal">
       <summary>
         <div>
