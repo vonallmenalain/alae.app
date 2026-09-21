@@ -37,7 +37,7 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [x] **Bilder aller sieben Projekte und Porträt** – eingebunden; sechs Screenshots,
-      bei Gripszug die Illustration der Trainingsbereiche. Bei den drei geschützten
+      bei Gripszug der Kurzfilm in beiden Formaten (hoch und quer). Bei den drei geschützten
       Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
       (Details in `assets/README.md`)
 - [ ] **Projekttexte prüfen** – bei allen sieben Apps stammen Ausgangslage und Problem
