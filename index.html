@@ -951,21 +951,17 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Tablet, Handy und Computer – ohne Installation und ohne App-Store. Aufruf über den Link, Betrieb und Updates laufen automatisch.</p>
           </div>
 
-          <!-- Kurzfilm statt Standbild. Zwei Fassungen desselben Films sind
-               vorgesehen: data-hoch für stehende Bildschirme (Handy), data-quer
-               für liegende (Computer, gedrehtes Handy). Das Skript wählt beim
-               Laden und bei jeder Drehung die passende aus.
-
-               Zurzeit liegt nur die hohe Fassung vor, sie läuft deshalb überall.
-               Sobald assets/gripszug-quer.mp4 und das zugehörige Standbild da
-               sind, genügen zwei Attribute mehr am figure:
-                 data-quer="assets/gripszug-quer.mp4"
-                 data-quer-poster="assets/gripszug-quer-poster.webp"
-               Am Rest ändert sich nichts. -->
+          <!-- Kurzfilm statt Standbild. Beide Fassungen desselben Films liegen
+               vor: data-hoch für stehende Bildschirme (Handy), data-quer für
+               liegende (Computer, gedrehtes Handy), je mit eigenem Standbild.
+               Das Skript wählt beim Laden und bei jeder Drehung die passende
+               aus, nie mitten im Abspielen. -->
           <figure class="proj-shot proj-clip"
                   data-clip
                   data-hoch="assets/gripszug-hoch.mp4"
-                  data-hoch-poster="assets/gripszug-hoch-poster.webp">
+                  data-hoch-poster="assets/gripszug-hoch-poster.webp"
+                  data-quer="assets/gripszug-quer.mp4"
+                  data-quer-poster="assets/gripszug-quer-poster.webp">
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
@@ -973,10 +969,10 @@ form .btn{width:100%; justify-content:center}
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
                 </span>
-                <span class="visually-hidden">Kurzfilm über Gripszug abspielen, 21 Sekunden, mit Ton</span>
+                <span class="visually-hidden">Kurzfilm über Gripszug abspielen, 24 Sekunden, mit Ton</span>
               </button>
             </div>
-            <figcaption>Kurzfilm (21 s, mit Ton): Der Zug wächst mit jedem gelösten Rätsel – fünf Wagen für die fünf Trainingsbereiche, 85 Stationen von der Wiese bis ins Weltall.</figcaption>
+            <figcaption>Kurzfilm (24 s, mit Ton): Der Zug wächst mit jedem gelösten Rätsel – drei Übungen aus drei Trainingsbereichen, dazu der Wagen, der Schritt für Schritt fertig wird. Fünf Wagen, 25 Spiele.</figcaption>
           </figure>
 
           <p class="proj-result">

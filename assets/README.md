@@ -6,8 +6,10 @@ Bilder und Kurzfilme für die Landingpage.
 
 | Datei | Projekt | Grösse |
 | --- | --- | --- |
-| `gripszug-hoch.mp4` | Gripszug – Kurzfilm, hohe Fassung | 720 × 1280 px, 21 s |
-| `gripszug-hoch-poster.webp` | Standbild dazu (Sekunde 1,2 des Films) | 720 × 1280 px |
+| `gripszug-hoch.mp4` | Gripszug – Kurzfilm, hohe Fassung | 720 × 1280 px, 24 s |
+| `gripszug-hoch-poster.webp` | Standbild dazu (Sekunde 3 des Films) | 720 × 1280 px |
+| `gripszug-quer.mp4` | Gripszug – derselbe Kurzfilm, quere Fassung | 1280 × 720 px, 24 s |
+| `gripszug-quer-poster.webp` | Standbild dazu (Sekunde 3 des Films) | 1280 × 720 px |
 | `gripszug.webp` | Gripszug – Illustration der fünf Trainingsbereiche; seit dem Kurzfilm nicht mehr eingebunden, bleibt als Reserve liegen | 2000 × 1125 px |
 | `dt-top-manager.png` | DreamTeam – Rangliste der Top Manager (WM 2026) | 1101 × 831 px |
 | `dt-champions-league.webp` | DreamTeam – Teamansicht im heutigen Champions-League-Betrieb | 1401 × 1192 px |
@@ -31,32 +33,43 @@ das vor dem ersten Klick zu sehen ist.
 **Zwei Fassungen pro Film.** Das Skript wählt nach der Lage des Bildschirms aus:
 `data-hoch` für stehende (Handy), `data-quer` für liegende (Computer, gedrehtes
 Handy), je mit eigenem Standbild in `data-hoch-poster` beziehungsweise
-`data-quer-poster`. Fehlt die Querfassung – wie heute bei Gripszug –, läuft die
-hohe überall. Gewechselt wird beim Laden und beim Drehen, nie mitten im Abspielen.
+`data-quer-poster`. Bei Gripszug liegen beide vor. Fehlt die Querfassung, läuft
+die hohe überall. Gewechselt wird beim Laden und beim Drehen, nie mitten im
+Abspielen.
 
-**So sind die vorhandenen Dateien entstanden** (Quelle war eine 1080 × 1920-Aufnahme
-mit rund 8 MB):
+**So sind die vorhandenen Dateien entstanden** (Quellen waren zwei Aufnahmen
+desselben Films: 1080 × 1920 mit rund 9 MB und 1920 × 1080 mit rund 11 MB):
 
 ```
-ffmpeg -i roh.mp4 -vf "scale=720:1280:flags=lanczos" \
+ffmpeg -i roh-hoch.mp4 -vf "scale=720:1280:flags=lanczos" \
        -c:v libx264 -crf 27 -preset slow -profile:v high -level 4.0 -pix_fmt yuv420p \
        -c:a aac -b:a 96k -movflags +faststart gripszug-hoch.mp4
 
-ffmpeg -ss 1.2 -i roh.mp4 -frames:v 1 -vf "scale=720:1280:flags=lanczos" \
+ffmpeg -ss 3 -i roh-hoch.mp4 -frames:v 1 -vf "scale=720:1280:flags=lanczos" \
        -c:v libwebp -quality 80 gripszug-hoch-poster.webp
+
+ffmpeg -i roh-quer.mp4 -vf "scale=1280:720:flags=lanczos" \
+       -c:v libx264 -crf 27 -preset slow -profile:v high -level 4.0 -pix_fmt yuv420p \
+       -c:a aac -b:a 96k -movflags +faststart gripszug-quer.mp4
+
+ffmpeg -ss 3 -i roh-quer.mp4 -frames:v 1 -vf "scale=1280:720:flags=lanczos" \
+       -c:v libwebp -quality 80 gripszug-quer-poster.webp
 ```
 
 Worauf es ankommt:
 
 - **`-movflags +faststart`** schiebt den Index an den Dateianfang. Ohne ihn lädt
   der Browser erst die ganze Datei, bevor das erste Bild kommt.
-- **720 px Breite genügen.** Angezeigt wird die hohe Fassung höchstens 20 rem
-  breit; 720 px bleiben auch auf feinen Bildschirmen scharf. 1080 px kosten das
-  Dreifache an Daten, ohne dass man es sieht.
+- **Eine Breite pro Fassung genügt.** Angezeigt wird die hohe höchstens 20 rem
+  breit, die quere höchstens rund 1030 px; 720 beziehungsweise 1280 px bleiben
+  auch auf feinen Bildschirmen scharf. Die vollen 1080 × 1920 und 1920 × 1080
+  kosten ein Mehrfaches an Daten, ohne dass man es sieht: So liegt jede Fassung
+  bei rund 1 MB statt bei 9 und 11 MB.
 - **`yuv420p`** ist Pflicht, sonst spielt Safari die Datei nicht ab.
 - **Standbild aus dem Film selbst** schneiden, und zwar aus einem Bild, dessen
   Mitte frei ist: Genau dort sitzt der Play-Knopf. Bei Gripszug liegt deshalb
-  Sekunde 1,2 zugrunde – Text oben, Wagen unten, Himmel dazwischen.
+  Sekunde 3 zugrunde – in beiden Fassungen fällt die Mitte in den Himmel über
+  dem Zug, und der Zug ist da vollständig eingefahren.
 - **Ton** bleibt drin, wenn der Film welchen hat. Abgespielt wird erst nach einem
   Klick, nie von selbst.
 
