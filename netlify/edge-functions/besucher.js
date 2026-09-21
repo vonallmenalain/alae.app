@@ -18,6 +18,14 @@
  *   - der grobe Adressbereich (IPv4 nur die ersten zwei Blöcke, IPv6 nur den
  *     ersten), damit sich ein auffälliger Absender überhaupt einordnen lässt.
  *
+ * Reihenfolge am Rand: Netlify führt Edge Functions, die ihren Pfad in der
+ * eigenen Datei festlegen, alphabetisch nach Dateinamen aus. "besucher.js"
+ * läuft damit vor "schutz.js" – und das muss so bleiben: schutz.js beantwortet
+ * Scanner-Pfade selbst mit 404, ohne die Kette fortzusetzen. Liefe es zuerst,
+ * fehlten in der Statistik ausgerechnet die Anfragen, wegen denen sie gebaut
+ * wurde. Wird eine der beiden Dateien umbenannt, muss die Reihenfolge in
+ * netlify.toml unter [[edge_functions]] festgelegt werden.
+ *
  * Umgebungsvariablen (Netlify → Project configuration → Environment variables):
  *   STATISTIK_SALZ   Empfohlen. Lange zufällige Zeichenkette. Ohne Salz sind
  *                    die Tageskennungen theoretisch rückrechenbar.
