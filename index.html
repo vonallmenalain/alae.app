@@ -432,16 +432,6 @@ section{padding-block:var(--section-y)}
 .proj-shot figcaption{
   margin-top:.6rem; font-size:.8rem; color:var(--muted);
 }
-/* Zwei Bilder nebeneinander – bisher nur beim DreamTeam (WM 2026 und
-   Champions League). Unterhalb von rund 36rem Kartenbreite stehen sie
-   untereinander, damit keines briefmarkengross wird. */
-.proj-shots{
-  grid-column:1/-1;
-  display:grid; gap:1.25rem 1.5rem; align-items:start;
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));
-}
-.proj-shots .proj-shot{grid-column:auto}
-
 /* Videoclip statt Standbild in einer Projektkarte -------------------------
    Aufbau: figure.proj-clip > .clip (Rahmen, fester Platz) > video + Knopf.
    Das Seitenverhältnis steht hier im CSS und nicht als width/height am
@@ -856,18 +846,23 @@ form .btn{width:100%; justify-content:center}
      ---------------------------------------------------------------------
      Hier stehen nur echte, laufende Apps. Zwei Arten von Nachweis:
        a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
-       b) geschützt / mit Login  -> nur Screenshots + Badge "Geschützt"
+       b) geschützt / mit Login  -> nur Kurzfilm + Badge "Geschützt"
 
-     Jede der sieben Karten zeigt etwas aus der App selbst:
-       Gripszug      -> Kurzfilm (figure.proj-clip), Knopf und Formatwahl
-                        stehen im Skript unter „Videoclips",
-       DreamTeam     -> zwei Bilder nebeneinander (.proj-shots), weil dieselbe
-                        App zuerst für die WM 2026 und heute für die Champions
-                        League läuft,
-       übrige fünf   -> je ein echter Screenshot (figure.proj-shot).
-     Bei einem Austausch daran denken: src, width, height und alt anpassen,
-     und in den Bildern der geschützten Apps müssen Gesichter und Namen
-     erneut unkenntlich gemacht werden – siehe assets/README.md.
+     Jede der sieben Karten zeigt einen Kurzfilm aus der App selbst
+     (figure.proj-clip, je eine hohe und eine quere Fassung). Knopf und
+     Formatwahl stehen im Skript unter „Videoclips". Einzige Ausnahme ist
+     das DreamTeam: Dort steht unter dem Film zusätzlich ein Screenshot,
+     weil der Film den heutigen Champions-League-Betrieb zeigt und die
+     Rangliste aus der WM 2026 nur als Bild vorliegt.
+     Bei einem Austausch daran denken: am figure data-hoch, data-quer und
+     die beiden Standbilder anpassen, am Screenshot src, width, height
+     und alt.
+
+     Die Filme zeigen durchwegs erfundene Daten. Damit fällt weg, was für
+     die früheren Screenshots der drei geschützten Apps nötig war: Dort
+     mussten Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
+     werden. Die Screenshots liegen weiterhin in assets/, eingebunden ist
+     nur noch der eine beim DreamTeam – siehe assets/README.md.
 
      Die Reihenfolge ist bewusst gewählt: Gripszug steht als neuste App zuoberst.
 
@@ -877,7 +872,7 @@ form .btn{width:100%; justify-content:center}
      insbesondere die Funktionsliste prüfen.
 
      TODO: Beim Kundenprojekt (Fotografin) vor der Veröffentlichung die
-     schriftliche Freigabe für Nennung als Referenz und für den Screenshot
+     schriftliche Freigabe für Nennung als Referenz und für den Kurzfilm
      einholen.
      ===================================================================== -->
 <section id="projekte">
@@ -1045,22 +1040,37 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Handy und Computer, ohne Installation. Zugriff über den Link, Betrieb und Backups laufen automatisch.</p>
           </div>
 
-          <!-- Zwei Bilder nebeneinander: links der Stand aus der WM 2026, rechts
-               der heutige Champions-League-Betrieb. Die Dateien müssen unter
-               assets/dt-top-manager.png und assets/dt-champions-league.webp
-               liegen; bei Austausch src, width, height und alt anpassen. -->
-          <div class="proj-shots">
-            <figure class="proj-shot">
-              <img src="assets/dt-top-manager.png" width="1101" height="831" loading="lazy"
-                   alt="Rangliste der Top Manager im DreamTeam zur WM 2026: die drei besten Teams mit ihren Spielern, Captain-Markierung und Gesamtpunkten, darunter die Plätze vier bis sieben.">
-              <figcaption>WM 2026: Rangliste der Top Manager mit Kader, Captain und Gesamtpunkten.</figcaption>
-            </figure>
-            <figure class="proj-shot">
-              <img src="assets/dt-champions-league.webp" width="1401" height="1192" loading="lazy"
-                   alt="Teamansicht im DreamTeam zur Champions League: Spielerkarten mit Foto, Name und Vereinswappen, in der Mitte die gewählten Spieler, am Rand die übrigen. Unten ein Knopf zum Bearbeiten des eigenen Teams.">
-              <figcaption>Champions League: das eigene Team als Spielerkarten – ein Knopf führt zum Bearbeiten.</figcaption>
-            </figure>
-          </div>
+          <!-- Kurzfilm aus dem heutigen Champions-League-Betrieb. Die Teamansicht
+               aus assets/dt-champions-league.webp zeigt er mit, deshalb ist
+               dieses Bild nicht mehr eingebunden. -->
+          <figure class="proj-shot proj-clip"
+                  data-clip
+                  data-hoch="assets/dt-hoch.mp4"
+                  data-hoch-poster="assets/dt-hoch-poster.webp"
+                  data-quer="assets/dt-quer.mp4"
+                  data-quer-poster="assets/dt-quer-poster.webp">
+            <div class="clip">
+              <video class="clip-video" preload="none" playsinline
+                     controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <button class="clip-play" type="button">
+                <span class="clip-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
+                </span>
+                <span class="visually-hidden">Kurzfilm über das DreamTeam abspielen, 23 Sekunden, mit Ton</span>
+              </button>
+            </div>
+            <figcaption>Kurzfilm (23 s, mit Ton): Kader zusammenstellen – 15 Spieler, höchstens einer pro Klub –, Punkte, die während der laufenden Spiele hereinkommen, und die Rangliste, die dabei live mitrechnet.</figcaption>
+          </figure>
+
+          <!-- Einziger Screenshot, der neben einem Film stehen bleibt: Die
+               Rangliste stammt aus der WM 2026, der Film zeigt die Champions
+               League. Ohne ihn fehlte der Karte der Beleg für das Turnier,
+               von dem der Text erzählt. -->
+          <figure class="proj-shot">
+            <img src="assets/dt-top-manager.png" width="1101" height="831" loading="lazy"
+                 alt="Rangliste der Top Manager im DreamTeam zur WM 2026: die drei besten Teams mit ihren Spielern, Captain-Markierung und Gesamtpunkten, darunter die Plätze vier bis sieben.">
+            <figcaption>WM 2026: Rangliste der Top Manager mit Kader, Captain und Gesamtpunkten.</figcaption>
+          </figure>
 
           <p class="proj-result">
             <strong>Ergebnis:</strong> Eine vollständig selbst konfigurierte Web-App für eine kleine
@@ -1124,10 +1134,25 @@ form .btn{width:100%; justify-content:center}
             <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
           </div>
 
-          <figure class="proj-shot">
-            <img src="assets/jass-app.png" width="965" height="375" loading="lazy"
-                 alt="Startbildschirm der Jass App mit einer Willkommen-Zeile und drei Schaltflächen: Turnier, Zähler auswählen und von Allmen Jass.">
-            <figcaption>Startbildschirm mit den beiden Betriebsarten: Turnier und Jass-Zähler.</figcaption>
+          <!-- Kurzfilm statt des früheren Startbildschirms (assets/jass-app.png):
+               Er zeigt beide Betriebsarten im Ablauf statt nur die zwei Knöpfe. -->
+          <figure class="proj-shot proj-clip"
+                  data-clip
+                  data-hoch="assets/jass-hoch.mp4"
+                  data-hoch-poster="assets/jass-hoch-poster.webp"
+                  data-quer="assets/jass-quer.mp4"
+                  data-quer-poster="assets/jass-quer-poster.webp">
+            <div class="clip">
+              <video class="clip-video" preload="none" playsinline
+                     controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <button class="clip-play" type="button">
+                <span class="clip-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
+                </span>
+                <span class="visually-hidden">Kurzfilm über die Jass App abspielen, 23 Sekunden, mit Ton</span>
+              </button>
+            </div>
+            <figcaption>Kurzfilm (23 s, mit Ton): Vom leeren Zettel zum laufenden Stand – Teams eintippen, Regeln einmal festlegen, Punkte erfassen. Dazu die Coiffeur-Tafel, die selber multipliziert, und ein ganzes Turnier mit Paarungen und Rangliste.</figcaption>
           </figure>
 
           <p class="proj-result">
@@ -1190,12 +1215,25 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Handy und Computer. Der Zugriff erfolgt über einen Link, Rollen trennen Organisation und Publikum.</p>
           </div>
 
-          <!-- Screenshot: Datei muss unter assets/pvt.png liegen.
-               Bei anderem Dateinamen oder Zuschnitt src, width und height anpassen. -->
-          <figure class="proj-shot">
-            <img src="assets/pvt.png" width="1084" height="1246" loading="lazy"
-                 alt="Dashboard des Pfahlvolleyballturniers für ein einzelnes Team: Tabelle der Gruppenphase, darunter die eigenen Spiele mit Uhrzeit, Feld, Turnierphase und Resultat sowie die Spiele, bei denen das Team zählen muss.">
-            <figcaption>Dashboard eines Teams: Gruppentabelle, eigene Spiele und Zähldienste.</figcaption>
+          <!-- Kurzfilm statt des früheren Dashboard-Bildes (assets/pvt.png): Der Film
+               zeigt dieselbe Ansicht und zusätzlich, woher die Zahlen kommen. -->
+          <figure class="proj-shot proj-clip"
+                  data-clip
+                  data-hoch="assets/pvt-hoch.mp4"
+                  data-hoch-poster="assets/pvt-hoch-poster.webp"
+                  data-quer="assets/pvt-quer.mp4"
+                  data-quer-poster="assets/pvt-quer-poster.webp">
+            <div class="clip">
+              <video class="clip-video" preload="none" playsinline
+                     controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <button class="clip-play" type="button">
+                <span class="clip-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
+                </span>
+                <span class="visually-hidden">Kurzfilm über das Volleyballturnier abspielen, 24 Sekunden, mit Ton</span>
+              </button>
+            </div>
+            <figcaption>Kurzfilm (24 s, mit Ton): Ein Turniertag von der Ausschreibung bis zur Rangliste – 19 Teams in drei Kategorien, 72 Spiele auf drei Feldern, ein eingetipptes Resultat, das die Tabelle sofort nachrechnet, und das Dashboard, das jedem Team nur die eigenen Spiele zeigt.</figcaption>
           </figure>
 
           <p class="proj-result">
@@ -1257,13 +1295,26 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Handy und Computer. Vorschaubilder tragen ein Wasserzeichen, die gekauften Dateien werden in Originalqualität ausgeliefert.</p>
           </div>
 
-          <!-- Die Kinderfotos und die Zeile mit Name, Kindergarten und Klasse sind
-               im Bild unkenntlich gemacht. Wird der Screenshot ersetzt, muss das
-               erneut geschehen – oder besser eine Demo-Galerie verwenden. -->
-          <figure class="proj-shot">
-            <img src="assets/foto-app.png" width="929" height="1211" loading="lazy"
-                 alt="Galerie im Fotoshop: sechs Vorschaubilder mit Wasserzeichen, jeweils mit Schaltflächen zum digitalen Kauf oder zur Bestellung als Druck. Die Kinderfotos sind unkenntlich gemacht.">
-            <figcaption>Galerie einer Familie – Kinderfotos und Namenszeile unkenntlich gemacht.</figcaption>
+          <!-- Kurzfilm mit einer Demo-Galerie: gezeichnete Bilder, erfundene Adresse.
+               Damit entfällt das Unkenntlichmachen, das der frühere Screenshot
+               assets/foto-app.png nötig machte. -->
+          <figure class="proj-shot proj-clip"
+                  data-clip
+                  data-hoch="assets/foto-hoch.mp4"
+                  data-hoch-poster="assets/foto-hoch-poster.webp"
+                  data-quer="assets/foto-quer.mp4"
+                  data-quer-poster="assets/foto-quer-poster.webp">
+            <div class="clip">
+              <video class="clip-video" preload="none" playsinline
+                     controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <button class="clip-play" type="button">
+                <span class="clip-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
+                </span>
+                <span class="visually-hidden">Kurzfilm über den Fotoverkauf abspielen, 24 Sekunden, mit Ton</span>
+              </button>
+            </div>
+            <figcaption>Kurzfilm (24 s, mit Ton): der Weg der Eltern – E-Mail bestätigen, danach nur die eigenen Fotos sehen, Vorschauen mit Wasserzeichen, Druck oder reine Datei bestellen und nach dem Kauf das Original herunterladen. Gezeigt wird eine Demo-Galerie mit gezeichneten Bildern.</figcaption>
           </figure>
 
           <p class="proj-result">
@@ -1325,13 +1376,26 @@ form .btn{width:100%; justify-content:center}
             <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
           </div>
 
-          <!-- Die Fotos im Bild sind unkenntlich gemacht. Wird der Screenshot
-               ersetzt, muss das erneut geschehen – oder eine Demo-Gruppe mit
-               unverfänglichen Bildern verwenden. -->
-          <figure class="proj-shot">
-            <img src="assets/share.png" width="1317" height="1136" loading="lazy"
-                 alt="Fotobereich der Sharing-App mit einem Raster geteilter Bilder; links ein geöffnetes Menü, über das sich die Bereiche Fotos, Finanzen, Einkauf, Notizen und Kalender zuschalten lassen. Die Fotos sind unkenntlich gemacht.">
-            <figcaption>Geteilte Fotos, dazu das Menü zum Zuschalten weiterer Bereiche – Bilder unkenntlich gemacht.</figcaption>
+          <!-- Kurzfilm mit einer Demo-Gruppe: gezeichnete Bilder, erfundene Namen und
+               Beträge. Damit entfällt das Unkenntlichmachen, das der frühere
+               Screenshot assets/share.png nötig machte. -->
+          <figure class="proj-shot proj-clip"
+                  data-clip
+                  data-hoch="assets/share-hoch.mp4"
+                  data-hoch-poster="assets/share-hoch-poster.webp"
+                  data-quer="assets/share-quer.mp4"
+                  data-quer-poster="assets/share-quer-poster.webp">
+            <div class="clip">
+              <video class="clip-video" preload="none" playsinline
+                     controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <button class="clip-play" type="button">
+                <span class="clip-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
+                </span>
+                <span class="visually-hidden">Kurzfilm über das Familien-Sharing abspielen, 23 Sekunden, mit Ton</span>
+              </button>
+            </div>
+            <figcaption>Kurzfilm (23 s, mit Ton): ein Link für die ganze Gruppe – Bilder nach Tag oder Person sortiert, die Ferienkasse, die am Schluss auf zwei Zahlungen kommt, dazu Einkaufsliste, Notizen und Kalender. Gezeigt wird eine Demo-Gruppe mit erfundenen Namen.</figcaption>
           </figure>
 
           <p class="proj-result">
@@ -1393,13 +1457,27 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Computer und Handy, ohne Installation. Betrieb und Backups laufen automatisch.</p>
           </div>
 
-          <!-- Im Bild sind Firmenname, Objektnamen, Buchungstexte und Beträge
-               unkenntlich gemacht. Wird der Screenshot ersetzt, muss das erneut
-               geschehen – siehe assets/README.md. -->
-          <figure class="proj-shot">
-            <img src="assets/buchhaltung.png" width="1547" height="994" loading="lazy"
-                 alt="Buchhaltungsansicht mit Reitern für Erfassen und Journal, Erfolgsrechnung, Bilanz und Kontenplan, einem Formular für neue Buchungen und dem Journal darunter. Firmenbezug, Buchungstexte und Beträge sind unkenntlich gemacht.">
-            <figcaption>Buchungserfassung und Journal – Firmenbezug, Texte und Beträge unkenntlich gemacht.</figcaption>
+          <!-- Kurzfilm mit erfundenen Daten: drei Objekte (Ferienhaus, Fotostudio,
+               Schreinerei), erfundene Buchungstexte und Beträge, kein Firmenname.
+               Damit entfällt das Unkenntlichmachen, das der frühere Screenshot
+               assets/buchhaltung.png nötig machte. -->
+          <figure class="proj-shot proj-clip"
+                  data-clip
+                  data-hoch="assets/buchhaltung-hoch.mp4"
+                  data-hoch-poster="assets/buchhaltung-hoch-poster.webp"
+                  data-quer="assets/buchhaltung-quer.mp4"
+                  data-quer-poster="assets/buchhaltung-quer-poster.webp">
+            <div class="clip">
+              <video class="clip-video" preload="none" playsinline
+                     controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <button class="clip-play" type="button">
+                <span class="clip-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
+                </span>
+                <span class="visually-hidden">Kurzfilm über die Buchhaltung abspielen, 25 Sekunden, mit Ton</span>
+              </button>
+            </div>
+            <figcaption>Kurzfilm (25 s, mit Ton): eine Buchung erfassen und zusehen, wie der Gewinn in der Erfolgsrechnung mitgeht – erst ein Ertrag, dann ein Aufwand –, dazu Journal und Bilanz. Gezeigt werden erfundene Objekte, Texte und Beträge.</figcaption>
           </figure>
 
           <p class="proj-result">
