@@ -130,6 +130,35 @@ Resend, Cloudflare und Google. **Kommt ein weiterer Dienst dazu – etwa
 Terminbuchung, Newsletter oder Statistik –, muss die Tabelle in Ziffer 6 ergänzt
 und der Abschnitt „Keine Cookies, kein Tracking" überprüft werden.**
 
+## Schutz vor automatisierten Anfragen
+
+Auf die Seite laufen laufend Anfragen von Programmen, die reihum bekannte
+Sicherheitslücken abklopfen – WordPress, PHP, `.env`, `.git`. Nichts davon
+gibt es hier, aber jede Anfrage kostet Rechenzeit und verstopft die Logs.
+Dagegen stehen drei Dinge, alle auf Netlify und ohne Zutun im Browser:
+
+| Massnahme | Wo | Wirkung |
+| --- | --- | --- |
+| Scanner-Pfade sperren | `netlify/edge-functions/schutz.js` | Typische Suchpfade bekommen sofort 404, die Seite wird gar nicht erst geladen |
+| Nur Lesen erlauben | dieselbe Datei | `POST`, `PUT` und Ähnliches gehen nur ans Kontaktformular, sonst 405 |
+| Tempolimit | `config.rateLimit` in derselben Datei | 120 Seitenaufrufe pro Minute und Besucher, darüber antwortet Netlify mit 429 |
+| Tempolimit Formular | `netlify/functions/kontakt.mjs` | 5 Absendeversuche pro Minute und Besucher |
+| Sicherheits-Kopfzeilen | `netlify.toml` | Content-Security-Policy, HSTS und Verwandte |
+
+Gesperrt wird nach Verhalten, nicht nach Herkunft: Es gibt keine Länder- oder
+IP-Sperre, ein normaler Besucher merkt von alldem nichts. Die Liste der
+Scanner-Muster steht oben in `schutz.js` und ist bewusst eng gefasst – lieber
+ein Scanner zu wenig gesperrt als eine echte Seite.
+
+Abgewiesene Anfragen schreiben eine Zeile mit Methode, Pfad und Land ins
+Netlify-Log. Absichtlich ohne IP-Adresse: Für die Auswertung reicht das, und
+personenbezogen wird es so gar nicht erst.
+
+Die Content-Security-Policy hält fest, dass die Seite nichts von fremden
+Servern lädt. **Wird später doch etwas Externes eingebunden** – eine Schrift,
+ein Analysewerkzeug, ein eingebettetes Video –, muss es in `netlify.toml`
+freigegeben werden, sonst blockiert der Browser es kommentarlos.
+
 ## Deployment
 
 Statische Datei, funktioniert auf jedem Hosting:
@@ -138,6 +167,11 @@ Statische Datei, funktioniert auf jedem Hosting:
 - **GitHub Pages** – in den Repository-Einstellungen aktivieren; für die eigene
   Domain eine Datei `CNAME` mit dem Inhalt `alae.app` ergänzen
 - **Eigener Server / QNAP** – `index.html` ins Web-Verzeichnis kopieren
+
+Der Schutz oben ist allerdings auf Netlify zugeschnitten: Edge Functions,
+Functions und `netlify.toml` gibt es dort. Bei einem Wechsel müsste das
+Gegenstück der neuen Plattform eingerichtet werden – sonst steht die Seite
+wieder offen.
 
 ## Technische Eigenschaften
 
