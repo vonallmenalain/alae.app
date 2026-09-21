@@ -469,6 +469,20 @@ async function aufraeumen(store, jetzt) {
   const frist = Number(process.env.STATISTIK_AUFBEWAHRUNG_TAGE) || STANDARD_AUFBEWAHRUNG;
   const grenze = lokaleZeit(new Date(jetzt.getTime() - frist * 86400000)).datum;
 
+  // Einzeleinträge werden STUNDENGENAU entsorgt, nicht tagesgenau. Sonst
+  // entsteht um Mitternacht ein Loch: Verdichtet wird mit einer Stunde
+  // Karenz (siehe `zeit.grenze` im Handler), also ist um 00:30 die Stunde
+  // 23 von gestern noch offen – tagesgenaues Löschen würde sie trotzdem
+  // mitnehmen, und der nächste Aufruf fände eine leere Stunde vor und
+  // schriebe sie als fertig fest. Die Besuche dieser Stunde wären weg.
+  //
+  // 25 Stunden Abstand: mehr als die eine Stunde Karenz, und genug, dass
+  // die Rohdaten eines Tages als Rückfallebene dienen können (siehe
+  // tageswert()). Zugleich deutlich unter den zwei Tagen, die Ziffer 3
+  // der Datenschutzerklärung zusagt.
+  const rohGrenze = lokaleZeit(new Date(jetzt.getTime() - 25 * 3600000));
+  const rohGrenzeSchluessel = `${rohGrenze.datum} ${rohGrenze.stunde}`;
+
   const { blobs } = await store.list({ prefix: 'tag/' });
   await Promise.all(
     blobs
@@ -477,8 +491,7 @@ async function aufraeumen(store, jetzt) {
   );
 
   // Einzeleinträge. Das hier ist die EINZIGE Stelle, die Rohdaten löscht,
-  // und sie geht nach dem Kalender, nicht nach dem Verdichtungsstand:
-  // Entfernt wird nur, was von einem früheren Tag stammt.
+  // und sie geht nach der Uhr, nicht nach dem Verdichtungsstand.
   //
   // Der Unterschied ist der ganze Punkt. Löschte man eine Stunde, sobald
   // sie im Tageswert steht, hinge das Löschen an genau der Angabe, die
@@ -494,7 +507,8 @@ async function aufraeumen(store, jetzt) {
   const roh = await store.list({ prefix: 'roh/' });
   await Promise.all(
     roh.blobs
-      .filter((blob) => blob.key.slice(4, 14) < heute)
+      // Schlüssel: roh/JJJJ-MM-TT/SS/...  (besucher.js)
+      .filter((blob) => `${blob.key.slice(4, 14)} ${blob.key.slice(15, 17)}` < rohGrenzeSchluessel)
       .map((blob) => store.delete(blob.key)),
   );
 
