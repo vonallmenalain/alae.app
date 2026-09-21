@@ -14,7 +14,7 @@ Netlify-Funktionen (Speicher der Besucherstatistik).
 | --- | --- |
 | Hero | Nutzenversprechen, ein Handlungsaufruf, vier Vertrauenspunkte |
 | Motivation | Wie es angefangen hat, Porträt und vier Fixpunkte |
-| Referenzprojekte | Sieben echte Apps – zuoberst Gripszug –, einzeiliger Kurzbeschrieb, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis |
+| Referenzprojekte | Sieben echte Apps – zuoberst Gripszug –, einzeiliger Kurzbeschrieb, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis und einem Kurzfilm aus der App |
 | Ablauf | Vier Schritte vom Erstgespräch bis zur Betreuung |
 | Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl nach der Entwicklung |
 | FAQ | Unter „Fragen": Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
@@ -36,15 +36,16 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
-- [x] **Bilder aller sieben Projekte und Porträt** – eingebunden; sechs Screenshots,
-      bei Gripszug der Kurzfilm in beiden Formaten (hoch und quer). Bei den drei geschützten
-      Apps sind Gesichter, Namen und Geschäftszahlen unkenntlich gemacht
-      (Details in `assets/README.md`)
+- [x] **Bilder aller sieben Projekte und Porträt** – eingebunden; jede der sieben
+      Karten zeigt einen Kurzfilm in beiden Formaten (hoch und quer), beim DreamTeam
+      steht darunter zusätzlich die Rangliste der WM 2026 als Bild. Die Filme zeigen
+      erfundene Daten; damit entfällt das Unkenntlichmachen, das die Screenshots der
+      drei geschützten Apps nötig machte (Details in `assets/README.md`)
 - [ ] **Projekttexte prüfen** – bei allen sieben Apps stammen Ausgangslage und Problem
       von dir, Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet und
       gegenzulesen; bei Gripszug besonders die Funktionsliste
-- [ ] **Freigaben einholen** – von der Fotografin für Nennung und Screenshot, ebenso
-      von der Einzelfirma für den Screenshot der Buchhaltung
+- [ ] **Freigaben einholen** – von der Fotografin für Nennung und Kurzfilm, ebenso
+      von der Einzelfirma für den Kurzfilm der Buchhaltung
 - [x] **Impressum und Datenschutzerklärung** – als `impressum.html` und
       `datenschutz.html` angelegt, im Footer verlinkt
 - [x] **Angaben in den Rechtsseiten** – Name, E-Mail und Website. Adresse,
