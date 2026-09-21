@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!-- ===========================================================================
+     Adminbereich: Auswertung der Zugriffe auf alae.app.
+
+     Die Seite ist nicht verlinkt, trägt "noindex" und zeigt ohne das richtige
+     Passwort gar nichts an – die Zahlen selbst holt sie erst nach der Anmeldung
+     von /api/statistik. Das Passwort steht als ADMIN_PASSWORT in den
+     Netlify-Umgebungsvariablen, nie in dieser Datei.
+
+     Aufbau wie die Rechtsseiten: assets/legal.css liefert Farben, Schrift und
+     Kopfzeile, assets/admin.css nur das, was es dort noch nicht gibt.
+     =========================================================================== -->
+<html lang="de-CH" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Besucherstatistik – alae.app</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e1013">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314171B'/%3E%3Cpath d='M4.2 21.4 10 10.6l2.9 5.3' stroke='%23FBFAF8' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M16.1 21.4 21.9 10.6l5.9 10.8' stroke='%23C1272D' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/legal.css">
+<link rel="stylesheet" href="assets/admin.css">
+
+<!-- Wortgleich zu index.html: Wahl setzen, bevor gezeichnet wird. -->
+<script>
+(function () {
+  try {
+    var wahl = localStorage.getItem('alae-theme');
+    if (wahl === 'light' || wahl === 'dark') document.documentElement.setAttribute('data-theme', wahl);
+  } catch (e) { /* Privates Fenster: es bleibt beim Dunkelmodus */ }
+})();
+</script>
+</head>
+<body>
+<a class="skip" href="#inhalt">Direkt zum Inhalt</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html" aria-label="alae.app – Startseite">
+      <svg class="brand-mark" viewBox="0 0 44 32" aria-hidden="true">
+        <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="currentColor"
+              stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--accent)"
+              stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>
+        <span class="brand-name">alae.app</span>
+        <small>Individuelle Web-Apps</small>
+      </span>
+    </a>
+    <a class="back" href="index.html">&larr; Zur Startseite</a>
+  </div>
+</header>
+
+<main id="inhalt">
+  <div class="wrap wrap-breit">
+    <p class="eyebrow">Intern</p>
+    <h1>Besucherstatistik</h1>
+
+    <!-- --- Anmeldung ---------------------------------------------------- -->
+    <section id="anmeldung" aria-labelledby="anmeldung-titel">
+      <h2 id="anmeldung-titel" class="sr-only">Anmeldung</h2>
+      <form id="anmeldeformular" class="karte anmeldung">
+        <label for="passwort">Passwort</label>
+        <input id="passwort" name="passwort" type="password" autocomplete="current-password"
+               required aria-describedby="anmeldefehler">
+        <button type="submit" class="knopf knopf-haupt">Anmelden</button>
+        <p id="anmeldefehler" class="fehler" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <!-- --- Auswertung --------------------------------------------------- -->
+    <section id="auswertung" aria-labelledby="auswertung-titel" hidden>
+      <h2 id="auswertung-titel" class="sr-only">Auswertung</h2>
+
+      <div class="leiste">
+        <label for="zeitraum">Zeitraum</label>
+        <select id="zeitraum">
+          <option value="7">7 Tage</option>
+          <option value="14" selected>14 Tage</option>
+          <option value="30">30 Tage</option>
+          <option value="90">90 Tage</option>
+        </select>
+        <button type="button" id="aktualisieren" class="knopf">Aktualisieren</button>
+        <button type="button" id="abmelden" class="knopf knopf-still">Abmelden</button>
+        <span id="stand" class="stand" aria-live="polite"></span>
+      </div>
+
+      <p id="ladefehler" class="fehler" role="alert" hidden></p>
+
+      <div class="kennzahlen" id="kennzahlen"></div>
+
+      <figure class="karte figur">
+        <figcaption>
+          <h3>Anfragen pro Tag</h3>
+          <p class="notiz">Jeder Balken ein Tag, Schweizer Zeit. Auffällig sind Aufrufe
+             typischer Angriffspfade und Fehlversuche auf Seiten, die es nicht gibt.</p>
+        </figcaption>
+        <div class="legende" id="legende"></div>
+        <div class="diagramm-feld">
+          <div id="tage-diagramm" class="diagramm"></div>
+          <div id="tipp" class="tipp" role="status" hidden></div>
+        </div>
+        <details class="tabellenansicht">
+          <summary>Als Tabelle anzeigen</summary>
+          <div id="tage-tabelle" class="tabelle-wrap"></div>
+        </details>
+      </figure>
+
+      <figure class="karte figur">
+        <figcaption>
+          <h3>Verteilung über den Tag</h3>
+          <p class="notiz">Alle Anfragen des gewählten Zeitraums nach Tageszeit.</p>
+        </figcaption>
+        <div class="diagramm-feld">
+          <div id="stunden-diagramm" class="diagramm"></div>
+        </div>
+      </figure>
+
+      <div class="raster" id="listen"></div>
+
+      <p class="fussnote">
+        Gespeichert werden keine IP-Adressen. „Absender“ ist eine Kennung, die
+        täglich neu aus der Adresse berechnet wird und sich nicht zurückrechnen
+        lässt; der Adressbereich ist absichtlich unvollständig. Einzelne
+        Anfragen werden nach der Verdichtung gelöscht, Tageswerte nach 90 Tagen.
+      </p>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>&copy; <span id="jahr">2026</span> alae.app &middot; Alain von Allmen</span>
+    <span>
+      <a href="index.html">Startseite</a> &middot;
+      <a href="datenschutz.html">Datenschutz</a>
+    </span>
+  </div>
+</footer>
+
+<script src="assets/admin.js"></script>
+</body>
+</html>

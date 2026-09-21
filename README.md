@@ -3,8 +3,10 @@
 Einseitige Website für alae.app: individuelle Web-Apps, genau nach den
 Bedürfnissen der Kundschaft.
 
-Alles steckt in **`index.html`** – kein Build-Schritt, keine Abhängigkeiten,
-keine externen Schriften oder Skripte. Datei auf einen Webserver kopieren, fertig.
+Alles steckt in **`index.html`** – kein Build-Schritt, keine externen Schriften
+oder Skripte. Datei auf einen Webserver kopieren, fertig. Die einzige
+Abhängigkeit in `package.json` gehört nicht zur Seite, sondern zu den beiden
+Netlify-Funktionen (Speicher der Besucherstatistik).
 
 ## Aufbau der Seite
 
@@ -78,6 +80,46 @@ Spam-Falle: Ist es ausgefüllt, verwirft die Funktion die Anfrage stillschweigen
 Soll das Formular wieder ohne Server auskommen, genügt es, das Attribut
 `data-endpoint` am `<form>` zu entfernen.
 
+## Adminbereich: Besucherstatistik
+
+Unter **`/admin`** liegt eine geschützte Auswertung der Zugriffe: Anfragen pro
+Tag, Herkunftsländer, häufigste Seiten, verweisende Seiten, Browser und Robots –
+und eine eigene Spalte für auffällige Anfragen, also das automatische Absuchen
+nach WordPress-Pfaden, `.env`-Dateien und ähnlichem. Die Seite ist nirgends
+verlinkt, trägt `noindex` und zeigt ohne Passwort nichts an.
+
+Drei Teile arbeiten zusammen:
+
+| Datei | Aufgabe |
+| --- | --- |
+| `netlify/edge-functions/besucher.js` | Erfasst jede Anfrage am Rand des Netzes, noch bevor die statische Datei ausgeliefert wird |
+| `netlify/functions/statistik.mjs` | Verdichtet die Einträge zu Tageswerten und gibt sie unter `/api/statistik` aus – nur mit Passwort |
+| `admin.html` mit `assets/admin.css` und `assets/admin.js` | Stellt die Zahlen dar |
+
+Die Erfassung läuft bewusst am Rand und nicht im Browser: Ein Skript in der
+Seite würde genau die Zugriffe verpassen, um die es geht – Robots und Scanner
+führen kein JavaScript aus.
+
+**Nötige Umgebungsvariablen in Netlify:**
+
+| Variable | Pflicht | Bedeutung |
+| --- | --- | --- |
+| `ADMIN_PASSWORT` | ja | Zugang zu `/admin`. Ohne diese Variable bleibt der Bereich gesperrt. Lang und zufällig wählen |
+| `STATISTIK_SALZ` | empfohlen | Geheimer Zusatz für die Tageskennung. Ohne ihn liesse sich theoretisch ausprobieren, welche IP-Adresse hinter einer Kennung steckt |
+| `STATISTIK_AUFBEWAHRUNG_TAGE` | nein | Standard 90. Ältere Tageswerte werden gelöscht |
+| `STATISTIK_AUS` | nein | `1` schaltet die Erfassung ab |
+
+Die Einrichtung Schritt für Schritt steht in
+[`docs/adminbereich-einrichten.md`](docs/adminbereich-einrichten.md).
+
+**Was gespeichert wird – und was nicht:** Keine IP-Adresse. Statt ihrer eine
+Tageskennung (SHA-256 aus Salz, Adresse und Datum, gekürzt) und der grobe
+Adressbereich, bei IPv4 nur die ersten zwei Blöcke. Einzelne Anfragen werden
+spätestens nach zwei Tagen zu Tagessummen verdichtet und dabei gelöscht.
+Gespeichert wird alles in Netlify Blobs, also im selben Projekt – es verlässt
+kein Datensatz das Hosting. **Ziffer 3 der Datenschutzerklärung beschreibt
+genau das; wird an der Erfassung etwas geändert, muss sie mitgeändert werden.**
+
 ## E-Mail-Adresse kontakt@alae.app
 
 Empfang und Versand sind zwei getrennte Dinge:
@@ -103,7 +145,8 @@ Unterseiten wäre eine dreifache Kopie unwartbar.
 `legal.css` mitgeändert werden.**
 
 Beide Seiten sind zusätzlich ohne Dateiendung erreichbar (`/impressum`,
-`/datenschutz`) – dafür sorgen Weiterleitungen in `netlify.toml`.
+`/datenschutz`) – dafür sorgen Weiterleitungen in `netlify.toml`. Auch
+`admin.html` baut auf `legal.css` auf und ergänzt nur `assets/admin.css`.
 
 ### Angaben zur Person
 
@@ -128,7 +171,7 @@ Cookies, keine externen Anfragen, als einziger Browser-Speicher der Eintrag
 `alae-theme` für das gewählte Farbschema, als Dienstleister nur Netlify,
 Resend, Cloudflare und Google. **Kommt ein weiterer Dienst dazu – etwa
 Terminbuchung, Newsletter oder Statistik –, muss die Tabelle in Ziffer 6 ergänzt
-und der Abschnitt „Keine Cookies, kein Tracking" überprüft werden.**
+und der Abschnitt „Keine Cookies, keine fremden Dienste" überprüft werden.**
 
 ## Schutz vor automatisierten Anfragen
 
@@ -161,7 +204,9 @@ freigegeben werden, sonst blockiert der Browser es kommentarlos.
 
 ## Deployment
 
-Statische Datei, funktioniert auf jedem Hosting:
+Die Seite selbst ist eine statische Datei und funktioniert auf jedem Hosting.
+Kontaktformular und Besucherstatistik brauchen dagegen Netlify (Functions, Edge
+Functions und Blobs); bei einem Umzug fallen sie ersatzlos weg.
 
 - **Cloudflare Pages** – Repository verbinden, kein Build-Befehl, Ausgabeverzeichnis `/`
 - **GitHub Pages** – in den Repository-Einstellungen aktivieren; für die eigene
@@ -187,5 +232,6 @@ wieder offen.
 - Responsiv ab 320 px, keine horizontale Scrollleiste
 - Tastaturbedienbar, „Direkt zum Inhalt“-Link, sichtbarer Fokus, `prefers-reduced-motion`
 - Semantisches HTML mit strukturierten Daten (`ProfessionalService`) für Suchmaschinen
-- Keine Cookies, kein Tracking, keine externen Anfragen – damit auch kein
-  Cookie-Banner nötig
+- Keine Cookies, keine fremden Analyse- oder Werbedienste, keine externen
+  Anfragen – damit auch kein Cookie-Banner nötig. Die eigene Besucherstatistik
+  läuft auf dem Server und speichert keine IP-Adressen (siehe unten)

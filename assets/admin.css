@@ -1,0 +1,167 @@
+/* =========================================================================
+   Adminbereich (admin.html) – Ergänzung zu assets/legal.css.
+
+   Farben, Schrift, Kopf- und Fusszeile kommen von dort; hier steht nur, was
+   die Auswertung zusätzlich braucht: Anmeldung, Kennzahlen, Diagramme und
+   Listen. Wird das Farbschema in index.html geändert, muss legal.css
+   mitgeändert werden – die beiden Diagrammfarben unten ebenso.
+   ========================================================================= */
+
+:root{
+  /* Zwei Reihen, zwei Farben. Auf Unterscheidbarkeit auch bei Farbsehschwäche
+     geprüft; die Balken tragen zusätzlich Beschriftung und Legende, damit die
+     Farbe nie das einzige Merkmal ist. */
+  --reihe-normal:#3A6EA5;
+  --reihe-auffaellig:#C1272D;
+  --gitter:rgba(92,100,112,.22);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --reihe-normal:#4C8FD1; --reihe-auffaellig:#E2574F; --gitter:rgba(154,164,178,.20) }
+}
+:root[data-theme="light"]{
+  --reihe-normal:#3A6EA5; --reihe-auffaellig:#C1272D; --gitter:rgba(92,100,112,.22);
+}
+:root[data-theme="dark"]{
+  --reihe-normal:#4C8FD1; --reihe-auffaellig:#E2574F; --gitter:rgba(154,164,178,.20);
+}
+
+.wrap-breit{max-width:64rem}
+
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+
+/* --- Kachel -------------------------------------------------------------- */
+.karte{
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-lg); padding:clamp(1.1rem, 2.5vw, 1.6rem);
+  margin-bottom:1.25rem;
+}
+
+/* --- Anmeldung ----------------------------------------------------------- */
+.anmeldung{display:grid; gap:.6rem; max-width:22rem; margin-top:2rem}
+.anmeldung label{font-size:.82rem; color:var(--muted)}
+input[type="password"], select{
+  font:inherit; font-size:.95rem; color:var(--text);
+  background:var(--bg); border:1px solid var(--line-strong);
+  border-radius:var(--r-sm); padding:.55rem .7rem; width:100%;
+}
+input[type="password"]:focus-visible, select:focus-visible{
+  outline:2px solid var(--accent); outline-offset:2px;
+}
+
+.knopf{
+  font:inherit; font-size:.9rem; font-weight:600; cursor:pointer;
+  color:var(--text); background:var(--bg-2);
+  border:1px solid var(--line-strong); border-radius:var(--r-sm);
+  padding:.5rem .95rem;
+}
+.knopf:hover{border-color:var(--accent-line)}
+.knopf-haupt{background:var(--accent); border-color:var(--accent); color:var(--accent-fg)}
+.knopf-haupt:hover{filter:brightness(1.07)}
+.knopf-still{background:none; color:var(--muted)}
+
+.fehler{
+  color:var(--accent); font-size:.9rem; font-weight:600; margin:.25rem 0 0;
+}
+
+/* --- Leiste über der Auswertung ------------------------------------------ */
+.leiste{
+  display:flex; flex-wrap:wrap; align-items:center; gap:.6rem;
+  margin:1.75rem 0 1.25rem;
+}
+.leiste label{font-size:.82rem; color:var(--muted)}
+.leiste select{width:auto}
+.leiste .stand{margin:0 0 0 auto}
+
+/* --- Kennzahlen ---------------------------------------------------------- */
+.kennzahlen{
+  display:grid; gap:.75rem; margin-bottom:1.25rem;
+  grid-template-columns:repeat(auto-fit, minmax(10.5rem, 1fr));
+}
+.kennzahl{
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-md); padding:1rem 1.1rem;
+}
+.kennzahl dt{
+  font-size:.75rem; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; margin-bottom:.35rem;
+}
+.kennzahl dd{
+  margin:0; font-size:1.75rem; font-weight:650; letter-spacing:-.03em;
+  line-height:1.1; font-variant-numeric:tabular-nums;
+}
+.kennzahl .dazu{display:block; font-size:.8rem; font-weight:500; color:var(--muted); margin-top:.3rem}
+.kennzahl.warnung dd{color:var(--accent)}
+
+/* --- Diagramme ----------------------------------------------------------- */
+.figur{margin-inline:0}
+.figur figcaption h3{margin:0 0 .3rem; font-size:1.02rem}
+.figur .notiz{margin:0 0 1rem; font-size:.85rem; color:var(--muted)}
+
+.legende{display:flex; flex-wrap:wrap; gap:.25rem 1.1rem; margin-bottom:.6rem}
+.legende span{display:inline-flex; align-items:center; gap:.4rem; font-size:.82rem; color:var(--muted)}
+.legende i{width:.7rem; height:.7rem; border-radius:3px; display:inline-block}
+
+.diagramm-feld{position:relative}
+.diagramm svg{display:block; width:100%; height:auto; overflow:visible}
+.diagramm .achse{fill:var(--muted); font-size:9px; font-family:var(--mono)}
+.diagramm .wert{fill:var(--text); font-size:9px; font-family:var(--mono); font-weight:600}
+.diagramm .gitterlinie{stroke:var(--gitter); stroke-width:1}
+.diagramm .balken-feld{fill:transparent; cursor:default}
+.diagramm .gruppe:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.diagramm .gruppe:hover .balken-feld, .diagramm .gruppe:focus-visible .balken-feld{
+  fill:var(--accent-soft);
+}
+
+.tipp{
+  position:absolute; z-index:5; pointer-events:none;
+  background:var(--text); color:var(--bg);
+  border-radius:var(--r-sm); padding:.5rem .65rem;
+  font-size:.8rem; line-height:1.45; white-space:nowrap;
+  box-shadow:0 6px 20px rgba(0,0,0,.25); transform:translate(-50%, -110%);
+}
+.tipp strong{color:var(--bg)}
+
+.tabellenansicht{margin-top:1rem; font-size:.88rem}
+.tabellenansicht summary{cursor:pointer; color:var(--muted)}
+.tabellenansicht summary:hover{color:var(--text)}
+
+/* --- Listen -------------------------------------------------------------- */
+.raster{
+  display:grid; gap:1.25rem; align-items:start;
+  grid-template-columns:repeat(auto-fit, minmax(19rem, 1fr));
+}
+.raster .karte{margin:0}
+.raster h3{margin:0 0 .2rem; font-size:1rem}
+.raster .notiz{margin:0 0 .8rem; font-size:.82rem; color:var(--muted)}
+
+/* Die Tabellen selbst kommen aus legal.css (.tabelle); hier nur die Ergänzung
+   für die Balken hinter den Zahlen. */
+.raster .tabelle td:first-child{white-space:normal; word-break:break-word}
+.raster .tabelle td.zahl{
+  text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums;
+  color:var(--text); font-weight:600; width:1%;
+}
+.raster .tabelle .dazu{
+  display:block; font-size:.78rem; font-weight:500; color:var(--muted); margin-top:.15rem;
+}
+
+.anteil{
+  position:relative; display:block; height:.35rem; border-radius:99px;
+  background:var(--reihe-normal); opacity:.55; margin-top:.35rem;
+}
+.anteil.auffaellig{background:var(--reihe-auffaellig); opacity:.7}
+
+.marke{
+  display:inline-block; margin-left:.4rem; padding:.05rem .4rem; border-radius:99px;
+  font-size:.7rem; font-weight:700; letter-spacing:.03em;
+  background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent-line);
+}
+.leer{color:var(--muted); font-size:.88rem; margin:0}
+.fussnote{font-size:.82rem; color:var(--muted); margin-top:2rem}
+
+@media (prefers-reduced-motion: no-preference){
+  .kennzahl, .karte{transition:border-color .2s ease}
+}

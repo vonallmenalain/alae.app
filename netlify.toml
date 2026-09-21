@@ -26,6 +26,18 @@
   to = "/.netlify/functions/kontakt"
   status = 200
 
+# Adminbereich: Besucherstatistik. Die Seite ist nirgends verlinkt und zeigt
+# ohne das Passwort aus ADMIN_PASSWORT nichts an.
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/api/statistik"
+  to = "/.netlify/functions/statistik"
+  status = 200
+
 # Quelltext der Funktion nicht als statische Datei ausliefern
 [[redirects]]
   from = "/netlify/*"
@@ -62,6 +74,13 @@
 
     Cross-Origin-Opener-Policy = "same-origin"
     X-Permitted-Cross-Domain-Policies = "none"
+
+# Adminbereich gehört in keinen Suchindex
+[[headers]]
+  for = "/admin*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
 
 [[headers]]
   for = "/assets/*"
