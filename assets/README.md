@@ -7,7 +7,8 @@ Bilder für die Landingpage.
 | Datei | Projekt | Grösse |
 | --- | --- | --- |
 | `gripszug.webp` | Gripszug – Illustration der fünf Trainingsbereiche | 2000 × 1125 px |
-| `dt-top-manager.png` | WM 2026 DreamTeam – Rangliste der Top Manager | 1101 × 831 px |
+| `dt-top-manager.png` | DreamTeam – Rangliste der Top Manager (WM 2026) | 1101 × 831 px |
+| `dt-champions-league.webp` | DreamTeam – Teamansicht im heutigen Champions-League-Betrieb | 1401 × 1192 px |
 | `jass-app.png` | Jass App – Startbildschirm mit beiden Betriebsarten | 965 × 375 px |
 | `pvt.png` | Volleyballturnier – Dashboard eines Teams | 1084 × 1246 px |
 | `foto-app.png` | Fotoverkauf – Galerie einer Familie | 929 × 1211 px |
@@ -33,7 +34,8 @@ Screenshots werden als PNG schnell unnötig gross. Zwei Stufen:
    100–150 KB realistisch. Danach in `index.html` nur die Dateiendung im `src`
    anpassen. Reine Oberflächen-Screenshots mit flächigen Farben – wie
    `jass-app.png` – sind als PNG dagegen gut aufgehoben. `gripszug.webp` liegt
-   bereits als WebP vor: 2000 × 1125 px in rund 92 KB.
+   bereits als WebP vor: 2000 × 1125 px in rund 92 KB, `dt-champions-league.webp`
+   1401 × 1192 px in rund 93 KB.
 
 ## Unkenntlich gemachte Inhalte
 
