@@ -442,6 +442,53 @@ section{padding-block:var(--section-y)}
 }
 .proj-shots .proj-shot{grid-column:auto}
 
+/* Videoclip statt Standbild in einer Projektkarte -------------------------
+   Aufbau: figure.proj-clip > .clip (Rahmen, fester Platz) > video + Knopf.
+   Das Seitenverhältnis steht hier im CSS und nicht als width/height am
+   <video>, weil preload="none" gilt: Vor dem ersten Klick sind die Masse
+   des Films unbekannt, ohne reservierten Platz würde die Karte springen.
+   Welche Fassung läuft, sagt data-format am figure – gesetzt wird es im
+   Skript, siehe „Videoclips" weiter unten. */
+.proj-clip{grid-column:1/-1; margin:0}
+.proj-clip .clip{
+  position:relative; margin-inline:auto; overflow:hidden;
+  border:1px solid var(--line); border-radius:var(--r-md);
+  background:var(--bg-2);
+}
+/* Hochformat nicht über die ganze Kartenbreite ziehen – es würde turmhoch.
+   Stattdessen mittig in Handybreite, quer dagegen wie ein Screenshot. */
+.proj-clip[data-format="hoch"] .clip{aspect-ratio:9/16; max-width:20rem}
+.proj-clip[data-format="quer"] .clip{aspect-ratio:16/9; max-width:none}
+/* Beim schmalen Hochformat hängt die Bildzeile sonst weit links neben dem
+   Film; mittig unter ihm gehört sie sichtbar dazu. Quer bleibt es wie bei
+   den Screenshots: linksbündig unter dem Bild. */
+.proj-clip[data-format="hoch"] figcaption{max-width:28rem; margin-inline:auto; text-align:center}
+.proj-clip video{width:100%; height:100%; display:block; object-fit:cover}
+
+/* Ein Knopf über dem ganzen Standbild: überall treffbar, auch mit dem
+   Daumen. Sobald der Film läuft, übernimmt die Leiste des Browsers. */
+.clip-play{
+  position:absolute; inset:0; width:100%; height:100%;
+  display:grid; place-items:center;
+  background:rgba(14,16,19,.16); border:0; padding:0;
+  color:inherit; font:inherit; cursor:pointer;
+  transition:background .16s ease;
+}
+.clip-play:hover{background:rgba(14,16,19,.30)}
+/* Der Rahmen schneidet ab, darum der Fokusring nach innen statt nach aussen */
+.clip-play:focus-visible{outline-offset:-5px}
+.clip-icon{
+  display:grid; place-items:center;
+  width:4.25rem; height:4.25rem; border-radius:999px;
+  background:var(--accent); color:var(--accent-fg);
+  box-shadow:var(--shadow-md);
+  transition:transform .16s ease, background .16s ease;
+}
+.clip-play:hover .clip-icon{background:var(--accent-hover); transform:scale(1.06)}
+/* Dreieck sitzt optisch mittig, wenn es leicht nach rechts rückt */
+.clip-play svg{margin-left:.15rem}
+@media (prefers-reduced-motion: reduce){ .clip-play:hover .clip-icon{transform:none} }
+.proj-clip[data-laeuft] .clip-play{display:none}
 
 /* --- Ablauf ------------------------------------------------------------- */
 .steps{display:grid; gap:0}
@@ -811,14 +858,16 @@ form .btn{width:100%; justify-content:center}
        a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
        b) geschützt / mit Login  -> nur Screenshots + Badge "Geschützt"
 
-     Jede der sieben Karten hat mindestens ein Bild (figure.proj-shot): bei
-     sechs Apps ein echter Screenshot, bei Gripszug die Illustration der
-     Trainingsbereiche aus der App. Das DreamTeam zeigt zwei Bilder in einer
-     .proj-shots-Reihe, weil dieselbe App zuerst für die WM 2026 und heute für
-     die Champions League läuft. Bei einem Austausch daran denken: src, width,
-     height und alt anpassen, und in den Bildern der geschützten Apps müssen
-     Gesichter und Namen erneut unkenntlich gemacht werden – siehe
-     assets/README.md.
+     Jede der sieben Karten zeigt etwas aus der App selbst:
+       Gripszug      -> Kurzfilm (figure.proj-clip), Knopf und Formatwahl
+                        stehen im Skript unter „Videoclips",
+       DreamTeam     -> zwei Bilder nebeneinander (.proj-shots), weil dieselbe
+                        App zuerst für die WM 2026 und heute für die Champions
+                        League läuft,
+       übrige fünf   -> je ein echter Screenshot (figure.proj-shot).
+     Bei einem Austausch daran denken: src, width, height und alt anpassen,
+     und in den Bildern der geschützten Apps müssen Gesichter und Namen
+     erneut unkenntlich gemacht werden – siehe assets/README.md.
 
      Die Reihenfolge ist bewusst gewählt: Gripszug steht als neuste App zuoberst.
 
@@ -902,12 +951,32 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Tablet, Handy und Computer – ohne Installation und ohne App-Store. Aufruf über den Link, Betrieb und Updates laufen automatisch.</p>
           </div>
 
-          <!-- Illustration aus der App (assets/gripszug.webp). Bei Austausch
-               src, width, height und alt anpassen. -->
-          <figure class="proj-shot">
-            <img src="assets/gripszug.webp" width="2000" height="1125" loading="lazy"
-                 alt="Illustration aus Gripszug: eine Lokomotive zieht fünf Wagen mit Einhorn, Wal, Roboter, Drache und Piratenschiff durch eine Hügellandschaft. Darunter stehen die fünf Trainingsbereiche Gedächtnis, Konzentration, Geschwindigkeit, Problemlösen sowie Zahl und Buchstabe.">
-            <figcaption>Fünf Bereiche – fünf Wagen: die Trainingsbereiche von Gripszug.</figcaption>
+          <!-- Kurzfilm statt Standbild. Zwei Fassungen desselben Films sind
+               vorgesehen: data-hoch für stehende Bildschirme (Handy), data-quer
+               für liegende (Computer, gedrehtes Handy). Das Skript wählt beim
+               Laden und bei jeder Drehung die passende aus.
+
+               Zurzeit liegt nur die hohe Fassung vor, sie läuft deshalb überall.
+               Sobald assets/gripszug-quer.mp4 und das zugehörige Standbild da
+               sind, genügen zwei Attribute mehr am figure:
+                 data-quer="assets/gripszug-quer.mp4"
+                 data-quer-poster="assets/gripszug-quer-poster.webp"
+               Am Rest ändert sich nichts. -->
+          <figure class="proj-shot proj-clip"
+                  data-clip
+                  data-hoch="assets/gripszug-hoch.mp4"
+                  data-hoch-poster="assets/gripszug-hoch-poster.webp">
+            <div class="clip">
+              <video class="clip-video" preload="none" playsinline
+                     controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <button class="clip-play" type="button">
+                <span class="clip-icon" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
+                </span>
+                <span class="visually-hidden">Kurzfilm über Gripszug abspielen, 21 Sekunden, mit Ton</span>
+              </button>
+            </div>
+            <figcaption>Kurzfilm (21 s, mit Ton): Der Zug wächst mit jedem gelösten Rätsel – fünf Wagen für die fünf Trainingsbereiche, 85 Stationen von der Wiese bis ins Weltall.</figcaption>
           </figure>
 
           <p class="proj-result">
@@ -1805,6 +1874,65 @@ form .btn{width:100%; justify-content:center}
   }
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- Videoclips -------------------------------------------------------
+     Eine figure[data-clip] hält bis zu zwei Fassungen desselben Films:
+     data-hoch für stehende Bildschirme, data-quer für liegende, dazu je ein
+     Standbild. Gewählt wird beim Laden und bei jeder Drehung des Geräts,
+     nie aber mitten im Abspielen. Fehlt die Querfassung, läuft die hohe.
+
+     preload="none" plus poster heisst: Vor dem ersten Klick wird kein Byte
+     Film geladen, die Karte sieht aus wie mit einem Standbild. Erst der
+     Knopf startet die Übertragung, und weil die Dateien mit dem Index
+     vorne liegen (ffmpeg -movflags +faststart), läuft der Film sofort los.
+
+     Bedienung bewusst knapp: ein grosser Knopf auf dem Standbild, danach
+     die gewohnte Leiste des Browsers zum Pausieren. Ist der Film zu Ende,
+     kommt das Standbild mit dem Knopf zurück.
+     ---------------------------------------------------------------------- */
+  var liegend = window.matchMedia('(orientation: landscape)');
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-clip]'), function (figur) {
+    var video = figur.querySelector('video');
+    var knopf = figur.querySelector('.clip-play');
+    if (!video || !knopf) return;
+
+    function fassungWaehlen() {
+      var format = (liegend.matches && figur.dataset.quer) ? 'quer' : 'hoch';
+      if (figur.dataset.format === format) return;
+      figur.dataset.format = format;
+      video.poster = figur.dataset[format + 'Poster'] || '';
+      video.src = figur.dataset[format];
+    }
+
+    function zurueckAufStandbild() {
+      var hatteFokus = document.activeElement === video;
+      delete figur.dataset.laeuft;
+      video.controls = false;
+      video.load();                    // zeigt wieder das Standbild
+      if (hatteFokus) knopf.focus();
+    }
+
+    fassungWaehlen();
+
+    knopf.addEventListener('click', function () {
+      figur.dataset.laeuft = '';
+      video.controls = true;
+      video.focus();                   // Tastatur bedient ab jetzt den Film
+      var lauf = video.play();
+      // Weist der Browser das Abspielen ab, kommt der Knopf zurück,
+      // statt dass die Karte leer und ohne Bedienung dasteht.
+      if (lauf && lauf.catch) lauf.catch(zurueckAufStandbild);
+    });
+
+    video.addEventListener('ended', zurueckAufStandbild);
+
+    var beiDrehung = function () {
+      if (!('laeuft' in figur.dataset)) fassungWaehlen();
+    };
+    if (liegend.addEventListener) liegend.addEventListener('change', beiDrehung);
+    else if (liegend.addListener) liegend.addListener(beiDrehung);   // Safari < 14
+  });
 
   /* --- Signet-Animation -------------------------------------------------
      Von selbst zeichnet sich das Signet über das CSS: in der Kopf- und
