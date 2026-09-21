@@ -31,20 +31,29 @@ const STANDARD_TAGE = 14;
 const MAX_TAGE = 90;
 const STANDARD_AUFBEWAHRUNG = 90;
 
-/* Sperre gegen gleichzeitiges Verdichten. Zwei Aufrufe, die sich
-   überschneiden, lesen dieselben Roheinträge und löschen sie beide – dabei
-   kann einer Einträge wegräumen, die der andere noch nicht gelesen hat. Das
-   passiert schneller als man denkt: Ein doppelt geladener Adminbereich
-   genügt. Wer die Sperre nicht bekommt, zeigt die Zahlen trotzdem an,
-   schreibt aber nichts fest und löscht nichts. */
-const SPERRE = 'meta/verdichtung';
-const SPERRE_DAUER = 30000;
+/* Vermerk, dass gerade verdichtet wird. Das spart doppelte Arbeit, wenn
+   der Adminbereich zweimal geladen wird – eine echte Sperre ist es NICHT:
+   Zwischen dem Lesen und dem Schreiben dieses Vermerks liegt ein
+   Speicherzugriff, und in dieses Fenster passen zwei Aufrufe. Netlify Blobs
+   8.2 kennt keine bedingten Schreibzugriffe (kein onlyIfNew, kein
+   onlyIfMatch), ein wirklich atomares Sperren ist damit nicht möglich.
+
+   Deshalb verlässt sich unten nichts auf Ausschluss: Die Verdichtung ist so
+   gebaut, dass zwei gleichzeitige Durchläufe dasselbe Ergebnis liefern.
+   Siehe den Kommentar bei tageswert(). */
+const VERDICHTUNG_LAEUFT = 'meta/verdichtung';
+const VERDICHTUNG_DAUER = 30000;
 
 /* Vermerk, an welchem Tag zuletzt aufgeräumt wurde. */
 const AUFRAEUM_VERMERK = 'meta/aufgeraeumt';
 
 /* Wie viele Speicherzugriffe gleichzeitig laufen dürfen. Alles auf einmal
-   wäre bei einem Ansturm zu viel, eines nach dem anderen zu langsam. */
+   wäre bei einem Ansturm zu viel, eines nach dem anderen zu langsam.
+
+   Die Grenze gilt für ALLE Zugriffe, auch für die äusseren Schleifen über
+   Tage und Stunden. Ohne das käme ein Aufruf mit `tage=90` auf 90 Tage mal
+   24 Stunden gleichzeitig – über zweitausend Abfragen auf einen Schlag,
+   und die ersten, die das Tempolimit des Speichers treffen, scheitern. */
 const BLOCK = 40;
 
 /* Wie viele Einträge eine Liste höchstens behält. Ohne Deckel würde ein
@@ -79,12 +88,12 @@ export default async (request) => {
   const url = new URL(request.url);
   const tage = Math.min(Math.max(Number(url.searchParams.get('tage')) || STANDARD_TAGE, 1), MAX_TAGE);
 
-  const store = getStore({ name: SPEICHER, consistency: 'strong' });
+  const store = gedrosselt(getStore({ name: SPEICHER, consistency: 'strong' }), BLOCK);
   const jetzt = new Date();
 
-  // Verdichten darf immer nur ein Aufruf gleichzeitig. Wer die Sperre nicht
-  // bekommt, liest und zeigt an – mehr nicht.
-  const verdichten = await sperreHolen(store, jetzt);
+  // Wer sich hier nicht anmelden kann, liest und zeigt nur an. Das spart
+  // doppelte Arbeit; auf Ausschluss ist die Verdichtung nicht angewiesen.
+  const verdichten = await verdichtungAnmelden(store, jetzt);
 
   try {
     const zeit = {
@@ -97,8 +106,9 @@ export default async (request) => {
       grenze: lokaleZeit(new Date(jetzt.getTime() - 3600000)),
     };
 
-    // Die Tage nebeneinander statt nacheinander: vierzehn Tage waren vierzehn
-    // Speicherzugriffe hintereinander, jeder mit seiner eigenen Wartezeit.
+    // Die Tage nebeneinander statt nacheinander – aber in Blöcken, nicht
+    // alle auf einmal: Bei `tage=90` wären es sonst 90 Tage mal 24 Stunden
+    // gleichzeitig.
     const daten = await Promise.all(
       letzteTage(jetzt, tage).map((datum) => tageswert(store, datum, zeit, verdichten)),
     );
@@ -112,30 +122,71 @@ export default async (request) => {
       tage: daten.reverse(), // ältester Tag zuerst, so wird auch gezeichnet
     });
   } finally {
-    if (verdichten) await sperreFreigeben(store);
+    if (verdichten) await verdichtungAbmelden(store);
   }
 };
 
-/* --- Sperre -------------------------------------------------------------- */
+/* --- Vermerk "verdichtet gerade" -------------------------------------------------------------- */
 
-/** true, wenn dieser Aufruf verdichten darf. */
-async function sperreHolen(store, jetzt) {
-  const sperre = await store.get(SPERRE, { type: 'json' }).catch(() => null);
+/** true, wenn dieser Aufruf verdichten soll. Siehe VERDICHTUNG_LAEUFT:
+    das hält nur doppelte Arbeit vom Hals, es schützt nichts. */
+async function verdichtungAnmelden(store, jetzt) {
+  const sperre = await store.get(VERDICHTUNG_LAEUFT, { type: 'json' }).catch(() => null);
   if (sperre && Number(sperre.bis) > jetzt.getTime()) return false;
-  await store.setJSON(SPERRE, { bis: jetzt.getTime() + SPERRE_DAUER });
+  await store.setJSON(VERDICHTUNG_LAEUFT, { bis: jetzt.getTime() + VERDICHTUNG_DAUER });
   return true;
 }
 
-async function sperreFreigeben(store) {
-  await store.setJSON(SPERRE, { bis: 0 }).catch(() => {});
+async function verdichtungAbmelden(store) {
+  await store.setJSON(VERDICHTUNG_LAEUFT, { bis: 0 }).catch(() => {});
 }
 
-/** Arbeitet eine Liste in Blöcken ab: innerhalb eines Blocks gleichzeitig,
-    die Blöcke nacheinander. */
-async function inBloecken(werte, arbeit) {
-  for (let i = 0; i < werte.length; i += BLOCK) {
-    await Promise.all(werte.slice(i, i + BLOCK).map((wert) => arbeit(wert)));
+/**
+ * Legt eine Drossel um den Speicher: Es laufen nie mehr als `grenze`
+ * Zugriffe gleichzeitig, egal von wo sie kommen.
+ *
+ * Der Weg über den Speicher selbst und nicht über die einzelnen Schleifen
+ * ist Absicht. Eine Grenze pro Schleife nützt nichts, weil sich die Ebenen
+ * multiplizieren: Tage mal Stunden mal Einträge. Bei `tage=90` und je 40
+ * gleichzeitig wären das fast tausend Abfragen auf einen Schlag – und wer
+ * dabei das Tempolimit des Speichers reisst, bekommt Fehler zurück.
+ * Hier ist die Grenze eine einzige, für alles zusammen.
+ */
+function gedrosselt(store, grenze) {
+  let laufend = 0;
+  const schlange = [];
+
+  function naechsterDran() {
+    if (laufend >= grenze || schlange.length === 0) return;
+    laufend += 1;
+    schlange.shift()();
   }
+
+  function anstellen() {
+    return new Promise((weiter) => {
+      schlange.push(weiter);
+      naechsterDran();
+    });
+  }
+
+  function durchDieDrossel(zugriff) {
+    return async (...args) => {
+      await anstellen();
+      try {
+        return await zugriff(...args);
+      } finally {
+        laufend -= 1;
+        naechsterDran();
+      }
+    };
+  }
+
+  return {
+    get: durchDieDrossel(store.get.bind(store)),
+    setJSON: durchDieDrossel(store.setJSON.bind(store)),
+    delete: durchDieDrossel(store.delete.bind(store)),
+    list: durchDieDrossel(store.list.bind(store)),
+  };
 }
 
 /* --- Zugang -------------------------------------------------------------- */
@@ -183,11 +234,39 @@ function gleich(a, b) {
  * vierzehn Tage entsprechend 336. Genau daher kamen die zweistelligen
  * Sekundenwerte.
  *
+ * Wiederholbar: Diese Funktion LÖSCHT KEINE Einzeleinträge. Das erledigt
+ * allein aufraeumen(), und zwar nach Alter. Der Unterschied ist der Grund,
+ * warum zwei gleichzeitige Aufrufe hier nicht schaden können:
+ *
+ *   Würde hier gelöscht, könnte ein Aufruf mit veraltetem Tageswert eine
+ *   Stunde als leer vorfinden, die ein anderer gerade verdichtet und
+ *   weggeräumt hat – und sie mit seinem alten Stand überschreiben. Die
+ *   Einträge wären gezählt, dann wieder weg.
+ *
+ *   So herum liegen die Rohdaten für jeden Aufruf vollständig da. Beide
+ *   rechnen dieselben Stunden ein und kommen auf dasselbe Ergebnis; wer
+ *   zuletzt schreibt, schreibt einen Stand, der mindestens so vollständig
+ *   ist wie der andere. Ein verlorener Zähler ist damit ausgeschlossen,
+ *   ganz ohne Sperre – und das ist gut so, denn Netlify Blobs 8.2 kann
+ *   gar nicht atomar sperren.
+ *
+ * Der Preis: Die Einzeleinträge bleiben bis zum Aufräumen liegen, also
+ * etwa zwei Tage statt bis zum Ende ihrer Stunde. Sie werden nie zweimal
+ * gezählt, weil die Stunde in `stundenFertig` steht und gar nicht mehr
+ * gelesen wird.
+ *
  * @param zeit { jetzt, grenze } – beides { datum, stunde } in Schweizer Zeit.
  */
 async function tageswert(store, datum, zeit, verdichten) {
   const gespeichert = (await store.get(`tag/${datum}`, { type: 'json' })) || leererTag(datum);
   const fertig = new Set(gespeichert.stundenFertig || []);
+
+  // Stunden, die ein FRÜHERER Aufruf festgeschrieben hat und deren
+  // Einzeleinträge noch liegen. Sie stehen dauerhaft im Tageswert, sind
+  // also gezählt – jetzt dürfen sie weg.
+  const nachzuholen = Array.isArray(gespeichert.stundenZuLoeschen)
+    ? gespeichert.stundenZuLoeschen
+    : [];
 
   const offen = [];
   for (let i = 0; i < 24; i++) {
@@ -199,8 +278,9 @@ async function tageswert(store, datum, zeit, verdichten) {
     offen.push(stunde);
   }
 
-  // Die offenen Stunden nebeneinander lesen. Bereits verdichtete Stunden
-  // stehen in `stundenFertig` und kosten gar keinen Zugriff mehr.
+  // Die offenen Stunden nebeneinander lesen, wieder in Blöcken. Bereits
+  // verdichtete Stunden stehen in `stundenFertig` und kosten gar keinen
+  // Zugriff mehr.
   const gelesen = await Promise.all(
     offen.map((stunde) =>
       stundeLesen(store, datum, stunde).then((eintraege) => ({ stunde, ...eintraege })),
@@ -208,58 +288,77 @@ async function tageswert(store, datum, zeit, verdichten) {
   );
 
   const anzeige = kopie(gespeichert);
-  let gespeichertGeaendert = false;
-  const zuLoeschen = [];
+  // Auch das Nachholen ist Verdichtungsarbeit: Wer sich nicht angemeldet
+  // hat, liest und zeigt nur an.
+  let gespeichertGeaendert = verdichten && nachzuholen.length > 0;
+  const neuFertig = [];
 
-  for (const { stunde, schluessel, werte } of gelesen) {
+  for (const { stunde, vollstaendig, werte } of gelesen) {
     // Angezeigt wird alles, auch die laufende Stunde.
     for (const eintrag of werte) einrechnen(anzeige, eintrag);
 
     // Festgeschrieben nur, was abgeschlossen ist – und nur, wenn dieser
-    // Aufruf die Sperre hat.
+    // Aufruf verdichten soll.
     const abgeschlossen = datum < zeit.grenze.datum
       || (datum === zeit.grenze.datum && stunde < zeit.grenze.stunde);
     if (!abgeschlossen || !verdichten) continue;
+
+    // Konnte auch nur ein Eintrag der Stunde nicht gelesen werden – etwa
+    // weil der Speicher gerade bremst –, bleibt die Stunde offen. Sie
+    // jetzt als fertig zu vermerken hiesse, die fehlenden Einträge nie
+    // mehr zu zählen.
+    if (!vollstaendig) continue;
 
     for (const eintrag of werte) einrechnen(gespeichert, eintrag);
     // Auch ohne Einträge vermerken – sonst wird die leere Stunde für immer
     // wieder abgefragt.
     fertig.add(stunde);
+    if (werte.length) neuFertig.push(stunde);
     gespeichertGeaendert = true;
-    zuLoeschen.push(...schluessel);
   }
 
   if (gespeichertGeaendert) {
     gespeichert.stundenFertig = [...fertig].sort();
+    // Was dieser Aufruf gerade festgeschrieben hat, wird erst beim nächsten
+    // Mal gelöscht – dann steht es sicher im gespeicherten Tageswert.
+    gespeichert.stundenZuLoeschen = neuFertig;
     aufraeumenListen(gespeichert);
-
-    // Reihenfolge ist wichtig: erst den Tageswert festschreiben, dann die
-    // Einzeleinträge löschen. Vorher war es umgekehrt – bricht die Funktion
-    // dazwischen ab, sind die Einträge weg und nirgends eingerechnet. So
-    // herum bleiben sie im schlechtesten Fall liegen und werden beim
-    // nächsten Aufräumen entsorgt; gezählt sind sie bereits.
     await store.setJSON(`tag/${datum}`, gespeichert);
-    await inBloecken(zuLoeschen, (schluessel) => store.delete(schluessel));
+
+    // Jetzt die Stunden aus früheren Aufrufen. Geht dabei etwas schief,
+    // bleiben die Einträge liegen und das altersbasierte Aufräumen holt
+    // sie – gezählt sind sie längst, doppelt gezählt werden sie nie, weil
+    // ihre Stunde in `stundenFertig` steht und nicht mehr gelesen wird.
+    await Promise.all(nachzuholen.map((stunde) => stundeLoeschen(store, datum, stunde)));
   }
 
   aufraeumenListen(anzeige);
   return anzeige;
 }
 
+/** Entfernt die Einzeleinträge einer Stunde, die bereits verdichtet ist. */
+async function stundeLoeschen(store, datum, stunde) {
+  const { blobs } = await store.list({ prefix: `roh/${datum}/${stunde}/` });
+  await Promise.all(blobs.map((blob) => store.delete(blob.key).catch(() => {})));
+}
+
+/**
+ * Alle Einzeleinträge einer Stunde.
+ *
+ * `vollstaendig` sagt, ob wirklich jeder aufgelistete Eintrag gelesen
+ * werden konnte. Fehlt einer, darf die Stunde nicht festgeschrieben
+ * werden – siehe tageswert().
+ */
 async function stundeLesen(store, datum, stunde) {
   const { blobs } = await store.list({ prefix: `roh/${datum}/${stunde}/` });
   const schluessel = blobs.map((b) => b.key);
-  const werte = [];
 
-  // In Blöcken lesen: alles auf einmal wäre bei einem Ansturm zu viel,
-  // nacheinander zu langsam.
-  for (let i = 0; i < schluessel.length; i += 40) {
-    const teil = await Promise.all(
-      schluessel.slice(i, i + 40).map((k) => store.get(k, { type: 'json' }).catch(() => null)),
-    );
-    for (const eintrag of teil) if (eintrag) werte.push(eintrag);
-  }
-  return { schluessel, werte };
+  const gelesen = await Promise.all(
+    schluessel.map((k) => store.get(k, { type: 'json' }).catch(() => null)),
+  );
+  const werte = gelesen.filter(Boolean);
+
+  return { vollstaendig: werte.length === schluessel.length, werte };
 }
 
 function leererTag(datum) {
@@ -269,6 +368,7 @@ function leererTag(datum) {
     auffaellig: 0,
     robots: 0,
     stundenFertig: [],
+    stundenZuLoeschen: [],
     stunden: Array(24).fill(0),
     laender: {},
     pfade: {},
@@ -388,17 +488,22 @@ async function aufraeumen(store, jetzt) {
   const vorgestern = lokaleZeit(new Date(jetzt.getTime() - 2 * 86400000)).datum;
 
   const { blobs } = await store.list({ prefix: 'tag/' });
-  await inBloecken(
-    blobs.filter((blob) => blob.key.slice(4) < grenze).map((blob) => blob.key),
-    (schluessel) => store.delete(schluessel),
+  await Promise.all(
+    blobs
+      .filter((blob) => blob.key.slice(4) < grenze)
+      .map((blob) => store.delete(blob.key)),
   );
 
-  // Einzeleinträge, die keine Auswertung mehr erreicht hat (etwa weil der
-  // Adminbereich tagelang nicht geöffnet wurde), verfallen ebenfalls.
+  // Einzeleinträge. Seit tageswert() nicht mehr löscht, ist das hier die
+  // einzige Stelle, die Rohdaten entfernt – nach Alter, nicht nach
+  // Verdichtungsstand. Zwei Tage Abstand, damit eine Stunde sicher
+  // verdichtet sein konnte. Was bis dahin keine Auswertung erreicht hat
+  // (etwa weil der Adminbereich tagelang nicht geöffnet wurde), verfällt.
   const roh = await store.list({ prefix: 'roh/' });
-  await inBloecken(
-    roh.blobs.filter((blob) => blob.key.slice(4, 14) < vorgestern).map((blob) => blob.key),
-    (schluessel) => store.delete(schluessel),
+  await Promise.all(
+    roh.blobs
+      .filter((blob) => blob.key.slice(4, 14) < vorgestern)
+      .map((blob) => store.delete(blob.key)),
   );
 
   await store.setJSON(AUFRAEUM_VERMERK, { datum: heute });
