@@ -8,7 +8,29 @@ Rechne mit rund zehn Minuten.
 
 ## 1. Passwort und Salz erzeugen
 
-Beides sind lange Zufallszeichenketten. Auf dem Mac im Terminal:
+Beides sind lange Zufallszeichenketten. Sie müssen nichts bedeuten und
+nirgends getippt werden – kopieren genügt.
+
+**Windows (PowerShell).** Diese drei Zeilen zusammen einfügen und ausführen,
+dann dasselbe noch einmal für den zweiten Wert:
+
+```powershell
+$bytes = [byte[]]::new(32)
+[System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+($bytes | ForEach-Object { $_.ToString('x2') }) -join ''
+```
+
+`openssl` gibt es unter Windows normalerweise nicht; der Zufall kommt hier aus
+demselben kryptografischen Generator des Betriebssystems.
+
+Kürzer, wenn es schnell gehen soll – zwei GUIDs aneinandergehängt ergeben
+ebenfalls 64 zufällige Zeichen:
+
+```powershell
+[guid]::NewGuid().ToString('N') + [guid]::NewGuid().ToString('N')
+```
+
+**macOS oder Linux (Terminal).**
 
 ```sh
 # Passwort für den Adminbereich

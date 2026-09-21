@@ -197,6 +197,14 @@ Abgewiesene Anfragen schreiben eine Zeile mit Methode, Pfad und Land ins
 Netlify-Log. Absichtlich ohne IP-Adresse: Für die Auswertung reicht das, und
 personenbezogen wird es so gar nicht erst.
 
+Abgewiesene Anfragen erscheinen ausserdem in der Besucherstatistik unter
+`/admin`, als „auffällig" gezählt. Das hängt an der Reihenfolge: Netlify führt
+Edge Functions, die ihren Pfad in der eigenen Datei festlegen, alphabetisch
+nach Dateinamen aus, also `besucher.js` vor `schutz.js`. **Wird eine der beiden
+Dateien umbenannt, muss die Reihenfolge in `netlify.toml` unter
+`[[edge_functions]]` festgelegt werden** – sonst fehlen in der Statistik
+ausgerechnet die Anfragen, wegen denen sie gebaut wurde.
+
 Die Content-Security-Policy hält fest, dass die Seite nichts von fremden
 Servern lädt. **Wird später doch etwas Externes eingebunden** – eine Schrift,
 ein Analysewerkzeug, ein eingebettetes Video –, muss es in `netlify.toml`
