@@ -1,12 +1,14 @@
 # assets
 
-Bilder für die Landingpage.
+Bilder und Kurzfilme für die Landingpage.
 
-## Vorhandene Bilder
+## Vorhandene Dateien
 
 | Datei | Projekt | Grösse |
 | --- | --- | --- |
-| `gripszug.webp` | Gripszug – Illustration der fünf Trainingsbereiche | 2000 × 1125 px |
+| `gripszug-hoch.mp4` | Gripszug – Kurzfilm, hohe Fassung | 720 × 1280 px, 21 s |
+| `gripszug-hoch-poster.webp` | Standbild dazu (Sekunde 1,2 des Films) | 720 × 1280 px |
+| `gripszug.webp` | Gripszug – Illustration der fünf Trainingsbereiche; seit dem Kurzfilm nicht mehr eingebunden, bleibt als Reserve liegen | 2000 × 1125 px |
 | `dt-top-manager.png` | DreamTeam – Rangliste der Top Manager (WM 2026) | 1101 × 831 px |
 | `dt-champions-league.webp` | DreamTeam – Teamansicht im heutigen Champions-League-Betrieb | 1401 × 1192 px |
 | `jass-app.png` | Jass App – Startbildschirm mit beiden Betriebsarten | 965 × 375 px |
@@ -19,6 +21,44 @@ Bilder für die Landingpage.
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
 die Seite beim Laden springt.
+
+## Kurzfilme
+
+Eine Projektkarte kann statt eines Bildes einen Kurzfilm zeigen (`figure.proj-clip`,
+zurzeit nur Gripszug). Dazu gehören immer zwei Dateien: der Film und ein Standbild,
+das vor dem ersten Klick zu sehen ist.
+
+**Zwei Fassungen pro Film.** Das Skript wählt nach der Lage des Bildschirms aus:
+`data-hoch` für stehende (Handy), `data-quer` für liegende (Computer, gedrehtes
+Handy), je mit eigenem Standbild in `data-hoch-poster` beziehungsweise
+`data-quer-poster`. Fehlt die Querfassung – wie heute bei Gripszug –, läuft die
+hohe überall. Gewechselt wird beim Laden und beim Drehen, nie mitten im Abspielen.
+
+**So sind die vorhandenen Dateien entstanden** (Quelle war eine 1080 × 1920-Aufnahme
+mit rund 8 MB):
+
+```
+ffmpeg -i roh.mp4 -vf "scale=720:1280:flags=lanczos" \
+       -c:v libx264 -crf 27 -preset slow -profile:v high -level 4.0 -pix_fmt yuv420p \
+       -c:a aac -b:a 96k -movflags +faststart gripszug-hoch.mp4
+
+ffmpeg -ss 1.2 -i roh.mp4 -frames:v 1 -vf "scale=720:1280:flags=lanczos" \
+       -c:v libwebp -quality 80 gripszug-hoch-poster.webp
+```
+
+Worauf es ankommt:
+
+- **`-movflags +faststart`** schiebt den Index an den Dateianfang. Ohne ihn lädt
+  der Browser erst die ganze Datei, bevor das erste Bild kommt.
+- **720 px Breite genügen.** Angezeigt wird die hohe Fassung höchstens 20 rem
+  breit; 720 px bleiben auch auf feinen Bildschirmen scharf. 1080 px kosten das
+  Dreifache an Daten, ohne dass man es sieht.
+- **`yuv420p`** ist Pflicht, sonst spielt Safari die Datei nicht ab.
+- **Standbild aus dem Film selbst** schneiden, und zwar aus einem Bild, dessen
+  Mitte frei ist: Genau dort sitzt der Play-Knopf. Bei Gripszug liegt deshalb
+  Sekunde 1,2 zugrunde – Text oben, Wagen unten, Himmel dazwischen.
+- **Ton** bleibt drin, wenn der Film welchen hat. Abgespielt wird erst nach einem
+  Klick, nie von selbst.
 
 ## Bilder klein halten
 
