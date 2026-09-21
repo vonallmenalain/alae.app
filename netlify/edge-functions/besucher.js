@@ -26,6 +26,15 @@
  * wurde. Wird eine der beiden Dateien umbenannt, muss die Reihenfolge in
  * netlify.toml unter [[edge_functions]] festgelegt werden.
  *
+ * Was diese Funktion NICHT sieht: Aufrufe von www.alae.app. Netlify leitet
+ * die Nebendomain mit einer 301 auf alae.app um, und zwar auf Domain-Ebene –
+ * noch bevor Edge Functions starten. Im Netlify-Log sind solche Zeilen an
+ * der Dauer erkennbar (unter einer Millisekunde, keine Primitives). Wer der
+ * Umleitung folgt, landet als zweite Anfrage hier und wird gezählt; wer sie
+ * ignoriert, taucht nirgends auf. Automatische Scanner tun meist Letzteres.
+ * Die Statistik unterschätzt den Scanner-Anteil also – abstellen liesse sich
+ * das nur, indem man die www-Umleitung aufgibt, und die ist erwünscht.
+ *
  * Umgebungsvariablen (Netlify → Project configuration → Environment variables):
  *   STATISTIK_SALZ   Empfohlen. Lange zufällige Zeichenkette. Ohne Salz sind
  *                    die Tageskennungen theoretisch rückrechenbar.

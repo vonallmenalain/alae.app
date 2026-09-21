@@ -31,6 +31,22 @@ const STANDARD_TAGE = 14;
 const MAX_TAGE = 90;
 const STANDARD_AUFBEWAHRUNG = 90;
 
+/* Sperre gegen gleichzeitiges Verdichten. Zwei Aufrufe, die sich
+   überschneiden, lesen dieselben Roheinträge und löschen sie beide – dabei
+   kann einer Einträge wegräumen, die der andere noch nicht gelesen hat. Das
+   passiert schneller als man denkt: Ein doppelt geladener Adminbereich
+   genügt. Wer die Sperre nicht bekommt, zeigt die Zahlen trotzdem an,
+   schreibt aber nichts fest und löscht nichts. */
+const SPERRE = 'meta/verdichtung';
+const SPERRE_DAUER = 30000;
+
+/* Vermerk, an welchem Tag zuletzt aufgeräumt wurde. */
+const AUFRAEUM_VERMERK = 'meta/aufgeraeumt';
+
+/* Wie viele Speicherzugriffe gleichzeitig laufen dürfen. Alles auf einmal
+   wäre bei einem Ansturm zu viel, eines nach dem anderen zu langsam. */
+const BLOCK = 40;
+
 /* Wie viele Einträge eine Liste höchstens behält. Ohne Deckel würde ein
    einzelner Scanner mit tausend verschiedenen Pfaden den Tageswert aufblähen. */
 const DECKEL = { pfade: 150, absender: 200, verweise: 60, browser: 60, auffaelligePfade: 80 };
@@ -65,21 +81,62 @@ export default async (request) => {
 
   const store = getStore({ name: SPEICHER, consistency: 'strong' });
   const jetzt = new Date();
-  const heute = lokaleZeit(jetzt).datum;
 
-  const daten = [];
-  for (const datum of letzteTage(jetzt, tage)) {
-    daten.push(await tageswert(store, datum, datum === heute ? lokaleZeit(jetzt).stunde : null));
+  // Verdichten darf immer nur ein Aufruf gleichzeitig. Wer die Sperre nicht
+  // bekommt, liest und zeigt an – mehr nicht.
+  const verdichten = await sperreHolen(store, jetzt);
+
+  try {
+    const zeit = {
+      // Alles ab hier liegt in der Zukunft und kann keine Einträge haben.
+      jetzt: lokaleZeit(jetzt),
+      // Eine Stunde gilt als abgeschlossen, wenn sie mehr als eine Stunde
+      // zurückliegt. Der Abstand ist Absicht: Ein Eintrag, der genau auf der
+      // Stundengrenze geschrieben wird, soll nicht in dem Moment weggeräumt
+      // werden, in dem die Auswertung die Stunde für fertig erklärt.
+      grenze: lokaleZeit(new Date(jetzt.getTime() - 3600000)),
+    };
+
+    // Die Tage nebeneinander statt nacheinander: vierzehn Tage waren vierzehn
+    // Speicherzugriffe hintereinander, jeder mit seiner eigenen Wartezeit.
+    const daten = await Promise.all(
+      letzteTage(jetzt, tage).map((datum) => tageswert(store, datum, zeit, verdichten)),
+    );
+
+    if (verdichten) await aufraeumen(store, jetzt);
+
+    return json({
+      erstellt: jetzt.toISOString(),
+      zeitzone: ZEITZONE,
+      verdichtet: verdichten,
+      tage: daten.reverse(), // ältester Tag zuerst, so wird auch gezeichnet
+    });
+  } finally {
+    if (verdichten) await sperreFreigeben(store);
   }
-
-  await aufraeumen(store, jetzt);
-
-  return json({
-    erstellt: jetzt.toISOString(),
-    zeitzone: ZEITZONE,
-    tage: daten.reverse(), // ältester Tag zuerst, so wird auch gezeichnet
-  });
 };
+
+/* --- Sperre -------------------------------------------------------------- */
+
+/** true, wenn dieser Aufruf verdichten darf. */
+async function sperreHolen(store, jetzt) {
+  const sperre = await store.get(SPERRE, { type: 'json' }).catch(() => null);
+  if (sperre && Number(sperre.bis) > jetzt.getTime()) return false;
+  await store.setJSON(SPERRE, { bis: jetzt.getTime() + SPERRE_DAUER });
+  return true;
+}
+
+async function sperreFreigeben(store) {
+  await store.setJSON(SPERRE, { bis: 0 }).catch(() => {});
+}
+
+/** Arbeitet eine Liste in Blöcken ab: innerhalb eines Blocks gleichzeitig,
+    die Blöcke nacheinander. */
+async function inBloecken(werte, arbeit) {
+  for (let i = 0; i < werte.length; i += BLOCK) {
+    await Promise.all(werte.slice(i, i + BLOCK).map((wert) => arbeit(wert)));
+  }
+}
 
 /* --- Zugang -------------------------------------------------------------- */
 
@@ -119,39 +176,70 @@ function gleich(a, b) {
  * letzten Verdichtung dazugekommen ist. Abgeschlossene Stunden werden dabei
  * gespeichert und ihre Einzeleinträge gelöscht.
  *
- * @param laufendeStunde "14" wenn das Datum heute ist, sonst null.
+ * Wichtig: Als fertig vermerkt wird eine abgeschlossene Stunde auch dann,
+ * wenn sie leer war. Vorher geschah das nur für Stunden mit Einträgen –
+ * und weil die allermeisten Stunden leer sind, wurden sie bei JEDEM Aufruf
+ * neu abgefragt. Ein Tag ohne Verkehr kostete so dauerhaft 24 Zugriffe,
+ * vierzehn Tage entsprechend 336. Genau daher kamen die zweistelligen
+ * Sekundenwerte.
+ *
+ * @param zeit { jetzt, grenze } – beides { datum, stunde } in Schweizer Zeit.
  */
-async function tageswert(store, datum, laufendeStunde) {
+async function tageswert(store, datum, zeit, verdichten) {
   const gespeichert = (await store.get(`tag/${datum}`, { type: 'json' })) || leererTag(datum);
   const fertig = new Set(gespeichert.stundenFertig || []);
 
-  let gespeichertGeaendert = false;
-  const anzeige = kopie(gespeichert);
-
+  const offen = [];
   for (let i = 0; i < 24; i++) {
     const stunde = String(i).padStart(2, '0');
     if (fertig.has(stunde)) continue;
+    // Stunden, die noch bevorstehen, gar nicht erst abfragen. Beim Blick auf
+    // den heutigen Tag am Vormittag sind das die meisten.
+    if (datum === zeit.jetzt.datum && stunde > zeit.jetzt.stunde) continue;
+    offen.push(stunde);
+  }
 
-    const eintraege = await stundeLesen(store, datum, stunde);
-    if (!eintraege.schluessel.length) continue;
+  // Die offenen Stunden nebeneinander lesen. Bereits verdichtete Stunden
+  // stehen in `stundenFertig` und kosten gar keinen Zugriff mehr.
+  const gelesen = await Promise.all(
+    offen.map((stunde) =>
+      stundeLesen(store, datum, stunde).then((eintraege) => ({ stunde, ...eintraege })),
+    ),
+  );
 
-    const abgeschlossen = laufendeStunde === null || stunde < laufendeStunde;
-    if (abgeschlossen) {
-      for (const eintrag of eintraege.werte) einrechnen(gespeichert, eintrag);
-      fertig.add(stunde);
-      gespeichert.stundenFertig = [...fertig].sort();
-      gespeichertGeaendert = true;
-      for (const schluessel of eintraege.schluessel) await store.delete(schluessel);
-      for (const eintrag of eintraege.werte) einrechnen(anzeige, eintrag);
-    } else {
-      // Laufende Stunde: nur anzeigen, noch nicht festschreiben.
-      for (const eintrag of eintraege.werte) einrechnen(anzeige, eintrag);
-    }
+  const anzeige = kopie(gespeichert);
+  let gespeichertGeaendert = false;
+  const zuLoeschen = [];
+
+  for (const { stunde, schluessel, werte } of gelesen) {
+    // Angezeigt wird alles, auch die laufende Stunde.
+    for (const eintrag of werte) einrechnen(anzeige, eintrag);
+
+    // Festgeschrieben nur, was abgeschlossen ist – und nur, wenn dieser
+    // Aufruf die Sperre hat.
+    const abgeschlossen = datum < zeit.grenze.datum
+      || (datum === zeit.grenze.datum && stunde < zeit.grenze.stunde);
+    if (!abgeschlossen || !verdichten) continue;
+
+    for (const eintrag of werte) einrechnen(gespeichert, eintrag);
+    // Auch ohne Einträge vermerken – sonst wird die leere Stunde für immer
+    // wieder abgefragt.
+    fertig.add(stunde);
+    gespeichertGeaendert = true;
+    zuLoeschen.push(...schluessel);
   }
 
   if (gespeichertGeaendert) {
+    gespeichert.stundenFertig = [...fertig].sort();
     aufraeumenListen(gespeichert);
+
+    // Reihenfolge ist wichtig: erst den Tageswert festschreiben, dann die
+    // Einzeleinträge löschen. Vorher war es umgekehrt – bricht die Funktion
+    // dazwischen ab, sind die Einträge weg und nirgends eingerechnet. So
+    // herum bleiben sie im schlechtesten Fall liegen und werden beim
+    // nächsten Aufräumen entsorgt; gezählt sind sie bereits.
     await store.setJSON(`tag/${datum}`, gespeichert);
+    await inBloecken(zuLoeschen, (schluessel) => store.delete(schluessel));
   }
 
   aufraeumenListen(anzeige);
@@ -281,25 +369,39 @@ function kopie(objekt) {
 
 /* --- Aufbewahrung -------------------------------------------------------- */
 
-/** Löscht Tageswerte, die älter sind als die Aufbewahrungsfrist, und
-    Einzeleinträge von Tagen, die längst verdichtet sein müssten. */
+/**
+ * Löscht Tageswerte, die älter sind als die Aufbewahrungsfrist, und
+ * Einzeleinträge von Tagen, die längst verdichtet sein müssten.
+ *
+ * Läuft höchstens einmal pro Tag. Vorher geschah das bei JEDEM Aufruf des
+ * Adminbereichs – und dazu gehört ein `list` über sämtliche Einzeleinträge.
+ * Bei ein paar tausend Scanner-Anfragen am Tag ist das die mit Abstand
+ * teuerste Stelle der ganzen Funktion, und sie hat fast nie etwas zu tun.
+ */
 async function aufraeumen(store, jetzt) {
+  const heute = lokaleZeit(jetzt).datum;
+  const vermerk = await store.get(AUFRAEUM_VERMERK, { type: 'json' }).catch(() => null);
+  if (vermerk && vermerk.datum === heute) return;
+
   const frist = Number(process.env.STATISTIK_AUFBEWAHRUNG_TAGE) || STANDARD_AUFBEWAHRUNG;
   const grenze = lokaleZeit(new Date(jetzt.getTime() - frist * 86400000)).datum;
   const vorgestern = lokaleZeit(new Date(jetzt.getTime() - 2 * 86400000)).datum;
 
   const { blobs } = await store.list({ prefix: 'tag/' });
-  for (const blob of blobs) {
-    if (blob.key.slice(4) < grenze) await store.delete(blob.key);
-  }
+  await inBloecken(
+    blobs.filter((blob) => blob.key.slice(4) < grenze).map((blob) => blob.key),
+    (schluessel) => store.delete(schluessel),
+  );
 
   // Einzeleinträge, die keine Auswertung mehr erreicht hat (etwa weil der
   // Adminbereich tagelang nicht geöffnet wurde), verfallen ebenfalls.
   const roh = await store.list({ prefix: 'roh/' });
-  for (const blob of roh.blobs) {
-    const datum = blob.key.slice(4, 14);
-    if (datum < vorgestern) await store.delete(blob.key);
-  }
+  await inBloecken(
+    roh.blobs.filter((blob) => blob.key.slice(4, 14) < vorgestern).map((blob) => blob.key),
+    (schluessel) => store.delete(schluessel),
+  );
+
+  await store.setJSON(AUFRAEUM_VERMERK, { datum: heute });
 }
 
 /* --- Kleinkram ----------------------------------------------------------- */

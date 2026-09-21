@@ -96,6 +96,19 @@ Drei Teile arbeiten zusammen:
 | `netlify/functions/statistik.mjs` | Verdichtet die Einträge zu Tageswerten und gibt sie unter `/api/statistik` aus – nur mit Passwort |
 | `admin.html` mit `assets/admin.css` und `assets/admin.js` | Stellt die Zahlen dar |
 
+**Was die Statistik nicht enthält:** Aufrufe von `www.alae.app`. Netlify leitet
+die Nebendomain mit einer 301 auf `alae.app` um, und zwar auf Domain-Ebene –
+bevor Edge Functions überhaupt starten. Wer der Umleitung folgt, wird als
+zweite Anfrage gezählt; wer sie ignoriert, taucht nirgends auf. Automatische
+Scanner tun meist Letzteres, der tatsächliche Scanner-Anteil liegt also höher
+als die Zahlen zeigen. Abstellen liesse sich das nur, indem man die
+www-Umleitung aufgibt – und die ist erwünscht.
+
+Im Netlify-Log sind diese Umleitungen an drei Dingen erkennbar: Status 301
+(blau, kein Fehler), eine Dauer unter einer Millisekunde und ein leeres Feld
+unter „Primitives“. Mit dem Schalter **Full** statt **Shortened** über der
+Liste wird der vollständige Host sichtbar.
+
 Die Erfassung läuft bewusst am Rand und nicht im Browser: Ein Skript in der
 Seite würde genau die Zugriffe verpassen, um die es geht – Robots und Scanner
 führen kein JavaScript aus.

@@ -125,6 +125,17 @@
         lässt; der Adressbereich ist absichtlich unvollständig. Einzelne
         Anfragen werden nach der Verdichtung gelöscht, Tageswerte nach 90 Tagen.
       </p>
+
+      <p class="fussnote">
+        <strong>Nicht enthalten:</strong> Aufrufe von <code>www.alae.app</code>.
+        Netlify leitet sie mit einer 301 auf <code>alae.app</code> um, und das
+        geschieht auf Domain-Ebene – bevor die Erfassung überhaupt startet. Im
+        Netlify-Log sind diese Zeilen an der Dauer erkennbar: unter einer
+        Millisekunde und ohne Eintrag unter „Primitives“. Wer der Umleitung
+        folgt, wird hier gezählt; wer sie ignoriert, nicht. Automatische
+        Scanner tun meist Letzteres, der tatsächliche Scanner-Anteil liegt also
+        höher als hier sichtbar.
+      </p>
     </section>
   </div>
 </main>
