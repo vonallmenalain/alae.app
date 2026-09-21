@@ -432,6 +432,15 @@ section{padding-block:var(--section-y)}
 .proj-shot figcaption{
   margin-top:.6rem; font-size:.8rem; color:var(--muted);
 }
+/* Zwei Bilder nebeneinander – bisher nur beim DreamTeam (WM 2026 und
+   Champions League). Unterhalb von rund 36rem Kartenbreite stehen sie
+   untereinander, damit keines briefmarkengross wird. */
+.proj-shots{
+  grid-column:1/-1;
+  display:grid; gap:1.25rem 1.5rem; align-items:start;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));
+}
+.proj-shots .proj-shot{grid-column:auto}
 
 
 /* --- Ablauf ------------------------------------------------------------- */
@@ -802,11 +811,14 @@ form .btn{width:100%; justify-content:center}
        a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
        b) geschützt / mit Login  -> nur Screenshots + Badge "Geschützt"
 
-     Jede der sieben Karten hat ein Bild (figure.proj-shot): bei sechs Apps ein
-     echter Screenshot, bei Gripszug die Illustration der Trainingsbereiche aus
-     der App. Bei einem Austausch daran denken: src, width, height und alt
-     anpassen, und in den Bildern der geschützten Apps müssen Gesichter und
-     Namen erneut unkenntlich gemacht werden – siehe assets/README.md.
+     Jede der sieben Karten hat mindestens ein Bild (figure.proj-shot): bei
+     sechs Apps ein echter Screenshot, bei Gripszug die Illustration der
+     Trainingsbereiche aus der App. Das DreamTeam zeigt zwei Bilder in einer
+     .proj-shots-Reihe, weil dieselbe App zuerst für die WM 2026 und heute für
+     die Champions League läuft. Bei einem Austausch daran denken: src, width,
+     height und alt anpassen, und in den Bildern der geschützten Apps müssen
+     Gesichter und Namen erneut unkenntlich gemacht werden – siehe
+     assets/README.md.
 
      Die Reihenfolge ist bewusst gewählt: Gripszug steht als neuste App zuoberst.
 
@@ -908,12 +920,16 @@ form .btn{width:100%; justify-content:center}
       </div>
     </details>
 
-    <!-- Projekt 2: WM 2026 DreamTeam ------------------------------------ -->
+    <!-- Projekt 2: DreamTeam --------------------------------------------
+         Hiess bis nach dem Turnier „WM 2026 DreamTeam". Die App ist an kein
+         einzelnes Turnier gebunden und läuft weiter, aktuell mit den Spielern
+         der Champions League – daher der neutrale Name und zwei Bilder statt
+         einem: die Rangliste aus der WM und die heutige Teamansicht. -->
     <details class="proj reveal">
       <summary>
         <div>
-          <p class="proj-title">WM 2026 DreamTeam</p>
-          <p class="proj-sum">Fantasy-Tippspiel zur Fussball-WM: Team zusammenstellen statt Resultate tippen.</p>
+          <p class="proj-title">DreamTeam</p>
+          <p class="proj-sum">Fantasy-Tippspiel: Team zusammenstellen statt Resultate tippen – von der WM 2026 zur Champions League.</p>
         </div>
         <span class="proj-toggle" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -930,7 +946,7 @@ form .btn{width:100%; justify-content:center}
         <div class="proj-cols">
           <div class="proj-block">
             <h4>Ausgangslage</h4>
-            <p>Eine Gruppe Fussballfans wollte für die WM ein Tippspiel mit mehr Spieltiefe: kein reines Resultatetippen, sondern ein Fantasy-Spiel, bei dem man Spieler auswählt und Punkte danach sammelt, wie diese im Turnier abschneiden.</p>
+            <p>Eine Gruppe Fussballfans wollte für die WM 2026 ein Tippspiel mit mehr Spieltiefe: kein reines Resultatetippen, sondern ein Fantasy-Spiel, bei dem man Spieler auswählt und Punkte danach sammelt, wie diese im Turnier abschneiden.</p>
           </div>
           <div class="proj-block">
             <h4>Problem</h4>
@@ -938,15 +954,20 @@ form .btn{width:100%; justify-content:center}
           </div>
           <div class="proj-block">
             <h4>Umgesetzte Lösung</h4>
-            <p>Eine eigene Web-App mit genau den gewünschten Spielregeln: Jede Person stellt ihr DreamTeam aus Turnierspielern zusammen und bestimmt einen Captain. Die Punkte entstehen aus den Leistungen der gewählten Spieler, die Rangliste der Top Manager aktualisiert sich für alle gleichzeitig.</p>
+            <p>Eine eigene Web-App mit genau den gewünschten Spielregeln: Jede Person stellt ihr DreamTeam aus den Spielern des laufenden Wettbewerbs zusammen und bestimmt einen Captain. Die Punkte entstehen aus den Leistungen der gewählten Spieler, die Rangliste der Top Manager aktualisiert sich für alle gleichzeitig.</p>
+          </div>
+          <div class="proj-block">
+            <h4>Nach der WM</h4>
+            <p>Entstanden ist die App für die WM 2026 – gebunden ist sie an dieses Turnier aber nicht. Nach dem Final lief sie deshalb einfach weiter: Heute spielt die Gruppe damit die Champions League, mit denselben Regeln, aber den Spielern und Wappen der Klubs. Für ein neues Turnier braucht es keine neue App, nur neue Daten.</p>
           </div>
           <div class="proj-block">
             <h4>Wichtigste Funktionen</h4>
             <ul>
-              <li>Kader aus Turnierspielern zusammenstellen</li>
+              <li>Kader aus den Spielern des Wettbewerbs zusammenstellen</li>
               <li>Captain für das eigene Team bestimmen</li>
-              <li>Punkte pro Spieler aus den Turnierleistungen</li>
+              <li>Punkte pro Spieler aus den Spielleistungen</li>
               <li>Rangliste der Top Manager mit Gesamtpunkten</li>
+              <li>Für das nächste Turnier wiederverwendbar</li>
               <li>Auf dem Handy bedienbar, ohne App-Store</li>
             </ul>
           </div>
@@ -959,19 +980,29 @@ form .btn{width:100%; justify-content:center}
             <p>Läuft im Browser auf Handy und Computer, ohne Installation. Zugriff über den Link, Betrieb und Backups laufen automatisch.</p>
           </div>
 
-          <!-- Screenshot: Datei muss unter assets/dt-top-manager.png liegen.
-               Bei anderem Dateinamen oder Zuschnitt src, width und height anpassen. -->
-          <figure class="proj-shot">
-            <img src="assets/dt-top-manager.png" width="1101" height="831" loading="lazy"
-                 alt="Rangliste der Top Manager im WM 2026 DreamTeam: die drei besten Teams mit ihren Spielern, Captain-Markierung und Gesamtpunkten, darunter die Plätze vier bis sieben.">
-            <figcaption>Rangliste der Top Manager mit Kader, Captain und Gesamtpunkten.</figcaption>
-          </figure>
+          <!-- Zwei Bilder nebeneinander: links der Stand aus der WM 2026, rechts
+               der heutige Champions-League-Betrieb. Die Dateien müssen unter
+               assets/dt-top-manager.png und assets/dt-champions-league.webp
+               liegen; bei Austausch src, width, height und alt anpassen. -->
+          <div class="proj-shots">
+            <figure class="proj-shot">
+              <img src="assets/dt-top-manager.png" width="1101" height="831" loading="lazy"
+                   alt="Rangliste der Top Manager im DreamTeam zur WM 2026: die drei besten Teams mit ihren Spielern, Captain-Markierung und Gesamtpunkten, darunter die Plätze vier bis sieben.">
+              <figcaption>WM 2026: Rangliste der Top Manager mit Kader, Captain und Gesamtpunkten.</figcaption>
+            </figure>
+            <figure class="proj-shot">
+              <img src="assets/dt-champions-league.webp" width="1401" height="1192" loading="lazy"
+                   alt="Teamansicht im DreamTeam zur Champions League: Spielerkarten mit Foto, Name und Vereinswappen, in der Mitte die gewählten Spieler, am Rand die übrigen. Unten ein Knopf zum Bearbeiten des eigenen Teams.">
+              <figcaption>Champions League: das eigene Team als Spielerkarten – ein Knopf führt zum Bearbeiten.</figcaption>
+            </figure>
+          </div>
 
           <p class="proj-result">
             <strong>Ergebnis:</strong> Eine vollständig selbst konfigurierte Web-App für eine kleine
             Gruppe Fussballfans – genau auf deren Bedürfnisse zugeschnitten, statt an die Regeln
-            eines fremden Portals gebunden. Punkte und Rangliste wurden während der WM 2026 live und
-            vollautomatisch über eine Schnittstelle aktualisiert.
+            eines fremden Portals gebunden. Punkte und Rangliste wurden schon während der WM 2026
+            live und vollautomatisch über eine Schnittstelle aktualisiert; dieselbe App läuft heute
+            für die Champions League weiter.
           </p>
         </div>
       </div>
