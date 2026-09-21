@@ -44,7 +44,7 @@ const STANDARD_AUFBEWAHRUNG = 90;
 const VERDICHTUNG_LAEUFT = 'meta/verdichtung';
 const VERDICHTUNG_DAUER = 30000;
 
-/* Vermerk, an welchem Tag zuletzt aufgeräumt wurde. */
+/* Vermerk, in welcher Stunde zuletzt aufgeräumt wurde. */
 const AUFRAEUM_VERMERK = 'meta/aufgeraeumt';
 
 /* Wie viele Speicherzugriffe gleichzeitig laufen dürfen. Alles auf einmal
@@ -234,39 +234,36 @@ function gleich(a, b) {
  * vierzehn Tage entsprechend 336. Genau daher kamen die zweistelligen
  * Sekundenwerte.
  *
- * Wiederholbar: Diese Funktion LÖSCHT KEINE Einzeleinträge. Das erledigt
- * allein aufraeumen(), und zwar nach Alter. Der Unterschied ist der Grund,
- * warum zwei gleichzeitige Aufrufe hier nicht schaden können:
+ * Diese Funktion LÖSCHT KEINE Einzeleinträge – weder die, die sie gerade
+ * einrechnet, noch die eines früheren Laufs. Das tut allein aufraeumen(),
+ * und zwar erst, wenn der Tag vorbei ist.
  *
- *   Würde hier gelöscht, könnte ein Aufruf mit veraltetem Tageswert eine
- *   Stunde als leer vorfinden, die ein anderer gerade verdichtet und
- *   weggeräumt hat – und sie mit seinem alten Stand überschreiben. Die
- *   Einträge wären gezählt, dann wieder weg.
+ * Warum so umständlich: Netlify Blobs 8.2 kann nicht atomar schreiben
+ * (kein onlyIfNew, kein onlyIfMatch), es gibt also keine Möglichkeit, zwei
+ * gleichzeitige Aufrufe sauber auseinanderzuhalten. Ein Aufruf kann seinen
+ * Tageswert schreiben, nachdem ein anderer bereits einen neueren
+ * geschrieben hat, und dessen Arbeit damit zurückdrehen.
  *
- *   So herum liegen die Rohdaten für jeden Aufruf vollständig da. Beide
- *   rechnen dieselben Stunden ein und kommen auf dasselbe Ergebnis; wer
- *   zuletzt schreibt, schreibt einen Stand, der mindestens so vollständig
- *   ist wie der andere. Ein verlorener Zähler ist damit ausgeschlossen,
- *   ganz ohne Sperre – und das ist gut so, denn Netlify Blobs 8.2 kann
- *   gar nicht atomar sperren.
+ * Dagegen hilft hier nur eines: dass die Rohdaten liegen bleiben. Solange
+ * die Einzeleinträge eines Tages da sind, ist ein zurückgedrehter
+ * Tageswert kein Verlust, sondern nur Arbeit, die der nächste Aufruf
+ * nochmals macht. Erst wenn Löschen und Tageswert aneinander hängen, wird
+ * daraus ein echter Verlust – deshalb hängt hier nichts aneinander.
  *
- * Der Preis: Die Einzeleinträge bleiben bis zum Aufräumen liegen, also
- * etwa zwei Tage statt bis zum Ende ihrer Stunde. Sie werden nie zweimal
- * gezählt, weil die Stunde in `stundenFertig` steht und gar nicht mehr
- * gelesen wird.
+ * Was bleibt: Ein Aufruf, der genau im falschen Moment schreibt, kann
+ * Zahlen kurzzeitig zu niedrig anzeigen, bis der nächste sie wieder
+ * einrechnet. Das ist das Beste, was ohne atomare Schreibzugriffe zu
+ * haben ist, und für eine Besucherstatistik allemal genug.
+ *
+ * Der Preis: Die Einzeleinträge bleiben bis zum nächsten Kalendertag
+ * liegen statt bis zum Ende ihrer Stunde. Zweimal gezählt werden sie nie,
+ * weil ihre Stunde in `stundenFertig` steht und nicht mehr gelesen wird.
  *
  * @param zeit { jetzt, grenze } – beides { datum, stunde } in Schweizer Zeit.
  */
 async function tageswert(store, datum, zeit, verdichten) {
   const gespeichert = (await store.get(`tag/${datum}`, { type: 'json' })) || leererTag(datum);
   const fertig = new Set(gespeichert.stundenFertig || []);
-
-  // Stunden, die ein FRÜHERER Aufruf festgeschrieben hat und deren
-  // Einzeleinträge noch liegen. Sie stehen dauerhaft im Tageswert, sind
-  // also gezählt – jetzt dürfen sie weg.
-  const nachzuholen = Array.isArray(gespeichert.stundenZuLoeschen)
-    ? gespeichert.stundenZuLoeschen
-    : [];
 
   const offen = [];
   for (let i = 0; i < 24; i++) {
@@ -288,10 +285,7 @@ async function tageswert(store, datum, zeit, verdichten) {
   );
 
   const anzeige = kopie(gespeichert);
-  // Auch das Nachholen ist Verdichtungsarbeit: Wer sich nicht angemeldet
-  // hat, liest und zeigt nur an.
-  let gespeichertGeaendert = verdichten && nachzuholen.length > 0;
-  const neuFertig = [];
+  let gespeichertGeaendert = false;
 
   for (const { stunde, vollstaendig, werte } of gelesen) {
     // Angezeigt wird alles, auch die laufende Stunde.
@@ -313,33 +307,17 @@ async function tageswert(store, datum, zeit, verdichten) {
     // Auch ohne Einträge vermerken – sonst wird die leere Stunde für immer
     // wieder abgefragt.
     fertig.add(stunde);
-    if (werte.length) neuFertig.push(stunde);
     gespeichertGeaendert = true;
   }
 
   if (gespeichertGeaendert) {
     gespeichert.stundenFertig = [...fertig].sort();
-    // Was dieser Aufruf gerade festgeschrieben hat, wird erst beim nächsten
-    // Mal gelöscht – dann steht es sicher im gespeicherten Tageswert.
-    gespeichert.stundenZuLoeschen = neuFertig;
     aufraeumenListen(gespeichert);
     await store.setJSON(`tag/${datum}`, gespeichert);
-
-    // Jetzt die Stunden aus früheren Aufrufen. Geht dabei etwas schief,
-    // bleiben die Einträge liegen und das altersbasierte Aufräumen holt
-    // sie – gezählt sind sie längst, doppelt gezählt werden sie nie, weil
-    // ihre Stunde in `stundenFertig` steht und nicht mehr gelesen wird.
-    await Promise.all(nachzuholen.map((stunde) => stundeLoeschen(store, datum, stunde)));
   }
 
   aufraeumenListen(anzeige);
   return anzeige;
-}
-
-/** Entfernt die Einzeleinträge einer Stunde, die bereits verdichtet ist. */
-async function stundeLoeschen(store, datum, stunde) {
-  const { blobs } = await store.list({ prefix: `roh/${datum}/${stunde}/` });
-  await Promise.all(blobs.map((blob) => store.delete(blob.key).catch(() => {})));
 }
 
 /**
@@ -368,7 +346,6 @@ function leererTag(datum) {
     auffaellig: 0,
     robots: 0,
     stundenFertig: [],
-    stundenZuLoeschen: [],
     stunden: Array(24).fill(0),
     laender: {},
     pfade: {},
@@ -473,19 +450,24 @@ function kopie(objekt) {
  * Löscht Tageswerte, die älter sind als die Aufbewahrungsfrist, und
  * Einzeleinträge von Tagen, die längst verdichtet sein müssten.
  *
- * Läuft höchstens einmal pro Tag. Vorher geschah das bei JEDEM Aufruf des
- * Adminbereichs – und dazu gehört ein `list` über sämtliche Einzeleinträge.
- * Bei ein paar tausend Scanner-Anfragen am Tag ist das die mit Abstand
- * teuerste Stelle der ganzen Funktion, und sie hat fast nie etwas zu tun.
+ * Läuft höchstens einmal pro Stunde. Vorher geschah das bei JEDEM Aufruf
+ * des Adminbereichs – und dazu gehört ein `list` über sämtliche
+ * Einzeleinträge. Bei ein paar tausend Scanner-Anfragen am Tag ist das die
+ * teuerste Stelle der ganzen Funktion, und sie hat meist nichts zu tun.
+ *
+ * Stündlich statt täglich, damit die Einzeleinträge eines Tages bald nach
+ * Mitternacht verschwinden und nicht erst beim nächsten Besuch des
+ * Adminbereichs – die Datenschutzerklärung sagt "spätestens nach zwei
+ * Tagen", und daran soll reichlich Luft bleiben.
  */
 async function aufraeumen(store, jetzt) {
-  const heute = lokaleZeit(jetzt).datum;
+  const { datum: heute, stunde } = lokaleZeit(jetzt);
+  const jetztStunde = `${heute} ${stunde}`;
   const vermerk = await store.get(AUFRAEUM_VERMERK, { type: 'json' }).catch(() => null);
-  if (vermerk && vermerk.datum === heute) return;
+  if (vermerk && vermerk.stunde === jetztStunde) return;
 
   const frist = Number(process.env.STATISTIK_AUFBEWAHRUNG_TAGE) || STANDARD_AUFBEWAHRUNG;
   const grenze = lokaleZeit(new Date(jetzt.getTime() - frist * 86400000)).datum;
-  const vorgestern = lokaleZeit(new Date(jetzt.getTime() - 2 * 86400000)).datum;
 
   const { blobs } = await store.list({ prefix: 'tag/' });
   await Promise.all(
@@ -494,19 +476,29 @@ async function aufraeumen(store, jetzt) {
       .map((blob) => store.delete(blob.key)),
   );
 
-  // Einzeleinträge. Seit tageswert() nicht mehr löscht, ist das hier die
-  // einzige Stelle, die Rohdaten entfernt – nach Alter, nicht nach
-  // Verdichtungsstand. Zwei Tage Abstand, damit eine Stunde sicher
-  // verdichtet sein konnte. Was bis dahin keine Auswertung erreicht hat
-  // (etwa weil der Adminbereich tagelang nicht geöffnet wurde), verfällt.
+  // Einzeleinträge. Das hier ist die EINZIGE Stelle, die Rohdaten löscht,
+  // und sie geht nach dem Kalender, nicht nach dem Verdichtungsstand:
+  // Entfernt wird nur, was von einem früheren Tag stammt.
+  //
+  // Der Unterschied ist der ganze Punkt. Löschte man eine Stunde, sobald
+  // sie im Tageswert steht, hinge das Löschen an genau der Angabe, die
+  // ein veralteter Schreiber zurückdrehen kann – und dann wäre die Stunde
+  // weder im Tageswert noch aus den Rohdaten wiederherstellbar. So herum
+  // bleiben die Rohdaten eines Tages den ganzen Tag lang liegen und
+  // dienen als Rückfallebene: Was ein Aufruf versehentlich aus dem
+  // Tageswert kippt, rechnet der nächste aus ihnen wieder ein.
+  //
+  // Was hier verfällt, ohne je verdichtet worden zu sein – etwa weil der
+  // Adminbereich tagelang nicht geöffnet wurde –, ist verloren. Das war
+  // schon immer so und steht so auch in der Datenschutzerklärung.
   const roh = await store.list({ prefix: 'roh/' });
   await Promise.all(
     roh.blobs
-      .filter((blob) => blob.key.slice(4, 14) < vorgestern)
+      .filter((blob) => blob.key.slice(4, 14) < heute)
       .map((blob) => store.delete(blob.key)),
   );
 
-  await store.setJSON(AUFRAEUM_VERMERK, { datum: heute });
+  await store.setJSON(AUFRAEUM_VERMERK, { stunde: jetztStunde });
 }
 
 /* --- Kleinkram ----------------------------------------------------------- */
