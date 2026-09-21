@@ -32,15 +32,41 @@
   to = "/index.html"
   status = 404
 
+# Sicherheits-Kopfzeilen für jede Antwort.
+#
+# Die Seite ist statisch und lädt nichts von fremden Servern – keine
+# Schriften, keine Skripte, kein Analysewerkzeug. Genau das hält die
+# Content-Security-Policy fest: Alles kommt von alae.app selbst. Wird später
+# doch etwas Externes eingebunden, muss es hier eingetragen werden, sonst
+# blockiert der Browser es.
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "SAMEORIGIN"
-    Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=(), payment=(), usb=()"
+
+    # 'unsafe-inline' ist nötig, weil Skript und Gestaltung direkt in den
+    # HTML-Dateien stehen. Der Gewinn liegt trotzdem im Rest: Kein fremder
+    # Server darf Code liefern, kein Formular woanders hin abschicken, keine
+    # Plugins laufen. Sauberer wären Prüfsummen pro Block – die brechen aber
+    # bei jeder Textänderung unbemerkt, und die Seite hat keine Bauprüfung,
+    # die das auffangen würde.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+
+    # Ein Jahr HTTPS-Pflicht. Bewusst ohne includeSubDomains: Das würde auch
+    # dt., jass., kids. und pvt.alae.app auf HTTPS festnageln, und die werden
+    # hier nicht mitverwaltet.
+    Strict-Transport-Security = "max-age=31536000"
+
+    Cross-Origin-Opener-Policy = "same-origin"
+    X-Permitted-Cross-Domain-Policies = "none"
 
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
+    # Bilder sollen in Vorschauen fremder Dienste (Social, Messenger)
+    # erscheinen dürfen, deshalb hier ausdrücklich freigegeben.
+    Cross-Origin-Resource-Policy = "cross-origin"

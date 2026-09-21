@@ -137,3 +137,22 @@ function antwort(koerper, status) {
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
   });
 }
+
+/**
+ * Tempolimit für das Formular. Die Plattform zählt die Aufrufe und antwortet
+ * ab dem sechsten innerhalb einer Minute selbst mit 429 – die Funktion läuft
+ * dann gar nicht erst an, es geht also auch keine E-Mail raus.
+ *
+ * Fünf Versuche pro Minute reichen jedem Menschen, der sich vertippt hat.
+ * Für ein Programm, das das Formular als Versandkanal missbrauchen will, ist
+ * es zu wenig, um lohnend zu sein. Die versteckte Spam-Falle weiter oben
+ * bleibt zusätzlich bestehen: Sie fängt einzelne Einträge, das Tempolimit
+ * fängt die Masse.
+ */
+export const config = {
+  rateLimit: {
+    windowSize: 60,
+    windowLimit: 5,
+    aggregateBy: ['ip', 'domain'],
+  },
+};
