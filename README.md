@@ -14,11 +14,36 @@ Netlify-Funktionen (Speicher der Besucherstatistik).
 | --- | --- |
 | Hero | Nutzenversprechen, ein Handlungsaufruf, vier Vertrauenspunkte |
 | Motivation | Wie es angefangen hat, Porträt und vier Fixpunkte |
-| Referenzprojekte | Sieben echte Apps – zuoberst Gripszug –, einzeiliger Kurzbeschrieb, aufklappbar mit Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Ergebnis und einem Kurzfilm aus der App |
+| Referenzprojekte | Sieben echte Apps als Karussell, eine pro Ansicht – zuoberst Gripszug. Pro App nur der Titel (Name und was sie erreicht), der Kurzfilm, der Link zur App und der Schalter „Weitere Informationen zur App"; dahinter Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Technik und Ergebnis |
 | Ablauf | Vier Schritte vom Erstgespräch bis zur Betreuung |
 | Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl nach der Entwicklung |
 | FAQ | Unter „Fragen": Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
 | Kontakt | Formular über die volle Breite, unter der Frage „Was ist deine Idee?" |
+
+### Karussell der Referenzprojekte
+
+Die Sparte „Apps, die heute im Einsatz sind" zeigt eine App pro Ansicht, damit
+der Kurzfilm die Hauptsache ist. Unter dem Film stehen nur zwei Dinge: der Link
+zur App (wo es einen gibt) und „Weitere Informationen zur App". Erst dieser
+Schalter klappt die Einzelheiten auf – Ausgangslage, Problem, umgesetzte
+Lösung, Funktionen, Datenschutz, Technik, was im Kurzfilm zu sehen ist, und das
+Ergebnis. Standardmässig ist der Bereich zu.
+
+Geblättert wird mit dem roten Knopf „Nächste App", dem Pfeil zurück, den
+Punkten darunter, den Pfeiltasten oder einem Wisch. Technisch ist es waagrechtes
+Scrollen mit `scroll-snap` (CSS-Block „Apps im Einsatz"), kein Auf- und
+Abblenden von Folien:
+
+- Wischen, Trackpad und Tastatur funktionieren ohne eigenen Code.
+- Alle sieben Apps stehen im Quelltext – auch für Suchmaschinen und
+  Vorlesegeräte.
+- Welche App gerade steht, liest das Skript („App-Karussell") aus der
+  Scrollposition. Darum stimmen Zähler und Punkte auch nach einem Wisch.
+
+Beim Wechsel räumt das Skript auf: ein laufender Film hält an, ein offener
+Klappbereich geht zu. Standbild und Filmdatei werden erst geladen, wenn eine
+Karte in Sicht kommt – sonst lüde die Seite sieben Standbilder für sechs Apps,
+die niemand sieht.
 
 Die früheren Abschnitte Ausgangslage, Der Ansatz und Leistungen sind in
 „Motivation" aufgegangen (früher „Über mich", Anker `#motivation`). Damit ist
@@ -37,8 +62,8 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
 - [ ] **E-Mail-Adresse** – `kontakt@alae.app` (im Kontaktbereich, im Footer, in der
       Konstante `EMPFAENGER` im Skript und in den strukturierten Daten)
 - [x] **Bilder aller sieben Projekte und Porträt** – eingebunden; jede der sieben
-      Karten zeigt einen Kurzfilm in beiden Formaten (hoch und quer), beim DreamTeam
-      steht darunter zusätzlich die Rangliste der WM 2026 als Bild. Die Filme zeigen
+      Apps zeigt einen Kurzfilm in beiden Formaten (hoch und quer), beim DreamTeam steht
+      im Klappbereich zusätzlich die Rangliste der WM 2026 als Bild. Die Filme zeigen
       erfundene Daten; damit entfällt das Unkenntlichmachen, das die Screenshots der
       drei geschützten Apps nötig machte (Details in `assets/README.md`)
 - [ ] **Projekttexte prüfen** – bei allen sieben Apps stammen Ausgangslage und Problem

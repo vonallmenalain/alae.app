@@ -360,100 +360,122 @@ section{padding-block:var(--section-y)}
 }
 .trust-row li svg{width:.95rem; height:.95rem; color:var(--accent); flex:none}
 
-/* --- Projekte ----------------------------------------------------------- */
-.proj{
+/* --- Apps im Einsatz ----------------------------------------------------
+   Eine App pro Ansicht, der Kurzfilm als Hauptsache: Titel, Film, darunter
+   nur der Link zur App und der Schalter für die Einzelheiten.
+
+   Gewechselt wird über echtes Scrollen mit scroll-snap statt über ein- und
+   ausgeblendete Folien. Wischen, Trackpad und Tastatur funktionieren damit
+   von selbst, und alle sieben Apps stehen im Quelltext. Die Bedienung
+   (Pfeile, Punkte, Zähler) steht im Skript unter „App-Karussell".
+   ---------------------------------------------------------------------- */
+.apps{position:relative}
+
+/* Leiste über den Filmen: links wo man steht, rechts wie man weiterkommt */
+.apps-bar{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; margin-bottom:1rem;
+}
+.apps-count{
+  margin:0; font-family:var(--mono); font-size:.74rem; font-weight:600;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.apps-count b{color:var(--text)}
+.apps-nav{display:flex; align-items:center; gap:.55rem; flex:none}
+.apps-arrow{
+  display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
+  height:2.85rem; padding:0 1.15rem; border-radius:999px;
+  background:var(--surface); color:var(--text); border:1px solid var(--line-strong);
+  font:inherit; font-size:.88rem; font-weight:650; letter-spacing:-.01em;
+  cursor:pointer; white-space:nowrap;
+  transition:background .16s ease, border-color .16s ease, color .16s ease, opacity .16s ease;
+}
+.apps-arrow--icon{width:2.85rem; padding:0}
+.apps-arrow:hover:not(:disabled){border-color:var(--accent); color:var(--accent)}
+/* Am Anfang und am Ende gibt es nichts mehr zu holen – das zeigt der Knopf,
+   statt im Kreis zurück an den Anfang zu springen. */
+.apps-arrow:disabled{opacity:.3; cursor:default}
+/* Der Weg zur nächsten App ist der wichtigste Knopf der Sparte */
+.apps-arrow--next{
+  background:var(--accent); border-color:var(--accent); color:var(--accent-fg);
+}
+.apps-arrow--next:hover:not(:disabled){
+  background:var(--accent-hover); border-color:var(--accent-hover); color:var(--accent-fg);
+}
+/* Einmaliges Winken, bis zum ersten Wechsel: macht ohne Worte klar, dass es
+   nach rechts weitergeht. Danach nimmt das Skript .is-genutzt dazu. */
+@keyframes apps-winken{
+  0%, 55%, 100%{transform:translateX(0)}
+  70%{transform:translateX(.22rem)}
+  85%{transform:translateX(0)}
+}
+.apps.is-in:not(.is-genutzt) .apps-arrow--next svg{
+  animation:apps-winken 2.6s ease-in-out .9s 3;
+}
+@media (prefers-reduced-motion: reduce){
+  .apps .apps-arrow--next svg{animation:none}
+}
+
+/* Die Spur selbst: waagrecht scrollbar, je Folie ein Haltepunkt.
+   Das Polster links und rechts lässt die Nachbarkarte durchschauen – die
+   deutlichste Ansage, dass da noch mehr kommt. Auf breiten Bildschirmen
+   entfällt es, dort darf der Film die ganze Spalte haben. */
+.apps-viewport{
+  display:flex; gap:.65rem;
+  /* Auf schmalen Geräten läuft die Spur bis an den Bildschirmrand hinaus
+     (negativer Rand = Polster der Spalte). Das bringt zwei Dinge: Der Film
+     wird so breit wie möglich, und die Nachbarkarten schauen links und
+     rechts herein – die deutlichste Ansage, dass es weitergeht. */
+  margin-inline:calc(-1 * var(--pad));
+  padding-inline:calc(var(--pad) + .5rem);
+  /* overflow-y:hidden schneidet ab, darum ein wenig Luft oben und unten
+     für Schatten und Fokusringe der Karten */
+  padding-block:.4rem;
+  overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory; overscroll-behavior-x:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none; -ms-overflow-style:none;
+}
+.apps-viewport::-webkit-scrollbar{display:none}
+.apps-viewport:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:var(--r-lg)}
+/* Breite Bildschirme: keine Nachbarkarte nötig, dort zeigen Pfeile und
+   Punkte den Weg – und der Film darf die ganze Spalte haben. */
+@media (min-width: 56rem){ .apps-viewport{margin-inline:0; padding-inline:0} }
+
+/* Alle Karten gleich hoch (kein align-items:start an der Spur): So sitzen
+   die Punkte darunter fest, statt bei jeder App zu hüpfen. */
+.app{
+  flex:0 0 100%; scroll-snap-align:center; scroll-snap-stop:always;
   background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
-  box-shadow:var(--shadow-sm); overflow:hidden;
-  transition:border-color .2s ease, box-shadow .2s ease;
+  box-shadow:var(--shadow-sm);
+  padding:clamp(.95rem,2.2vw,1.7rem);
 }
-.proj[open]{border-color:var(--line-strong); box-shadow:var(--shadow-md)}
-.proj + .proj{margin-top:1rem}
-.proj summary{
-  display:grid; grid-template-columns:1fr auto; gap:1rem 1.5rem; align-items:center;
-  padding:clamp(1.25rem,2.4vw,1.65rem); cursor:pointer; list-style:none;
+/* Titel = Name plus der Satz, was die App erreicht. Der Gedankenstrich hängt
+   am Namen, damit er beim Umbruch nicht allein auf einer Zeile landet. */
+.app-title{
+  margin:0 0 clamp(.9rem,2vw,1.35rem);
+  font-size:clamp(1.2rem, 1.02rem + .85vw, 1.75rem);
 }
-.proj summary::-webkit-details-marker{display:none}
-.proj summary:hover .proj-title{color:var(--accent)}
-.proj-title{font-size:clamp(1.1rem,1rem + .5vw,1.3rem); font-weight:650; letter-spacing:-.02em; transition:color .15s ease}
-.proj-sum{color:var(--muted); font-size:.95em; margin-top:.5rem}
-.proj-toggle{
-  display:grid; place-items:center; width:2.25rem; height:2.25rem; border-radius:50%;
-  border:1px solid var(--line); color:var(--muted); flex:none;
-  transition:transform .22s ease, border-color .15s ease, color .15s ease;
-}
-.proj summary:hover .proj-toggle{border-color:var(--accent); color:var(--accent)}
-.proj[open] .proj-toggle{transform:rotate(45deg); border-color:var(--accent); color:var(--accent)}
-.proj-detail{
-  padding:0 clamp(1.25rem,2.4vw,1.65rem) clamp(1.4rem,2.4vw,1.75rem);
-  border-top:1px solid var(--line); margin-top:.25rem; padding-top:1.4rem;
-}
-/* Link zur laufenden App – steht ganz oben im aufgeklappten Bereich */
-.proj-open{
-  display:flex; flex-wrap:wrap; align-items:center; gap:.75rem 1rem; margin-bottom:1.5rem;
-}
-.proj-open a{
-  display:inline-flex; align-items:center; gap:.5rem;
-  padding:.6rem 1.05rem; border-radius:999px;
-  background:var(--text); color:var(--bg); border:1px solid var(--text);
-  font-size:.88rem; font-weight:650; text-decoration:none;
-  transition:transform .16s ease, box-shadow .16s ease;
-}
-.proj-open a:hover{transform:translateY(-1px); box-shadow:var(--shadow-md)}
-.proj-open a svg{flex:none}
-.proj-open small{color:var(--muted); font-size:.82rem}
-@media (prefers-reduced-motion: reduce){ .proj-open a:hover{transform:none} }
+.app-title .app-pitch{color:var(--muted); font-weight:600}
 
-.proj-cols{display:grid; gap:1.5rem 2rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))}
-.proj-block h4{
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.11em; text-transform:uppercase;
-  color:var(--accent); margin-bottom:.5rem; font-weight:600;
-}
-.proj-block p, .proj-block li{color:var(--muted); font-size:.93em}
-.proj-block ul{display:grid; gap:.35rem}
-.proj-block li{padding-left:1rem; position:relative}
-.proj-block li::before{content:"–"; position:absolute; left:0; color:var(--line-strong)}
-/* Ergebnis-Kachel: gleiche Fläche wie der Screenshot daneben (--bg-2 auf der
-   --surface-Karte), damit in der Projektkarte nur eine Kachelfarbe vorkommt.
-   Rot bleibt der Überschrift „Ergebnis" vorbehalten. */
-.proj-result{
-  grid-column:1/-1; margin-top:.25rem; padding:1rem 1.2rem;
-  background:var(--bg-2); border:1px solid var(--line); border-radius:var(--r-md);
-  font-size:.95em;
-}
-.proj-result strong{color:var(--text)}
-
-/* Echter Screenshot in einer Projektkarte */
-.proj-shot{grid-column:1/-1; margin:0}
-.proj-shot img{
-  width:100%; height:auto; display:block;
-  border:1px solid var(--line); border-radius:var(--r-md);
-  background:var(--bg-2);
-}
-.proj-shot figcaption{
-  margin-top:.6rem; font-size:.8rem; color:var(--muted);
-}
-/* Videoclip statt Standbild in einer Projektkarte -------------------------
-   Aufbau: figure.proj-clip > .clip (Rahmen, fester Platz) > video + Knopf.
-   Das Seitenverhältnis steht hier im CSS und nicht als width/height am
-   <video>, weil preload="none" gilt: Vor dem ersten Klick sind die Masse
-   des Films unbekannt, ohne reservierten Platz würde die Karte springen.
-   Welche Fassung läuft, sagt data-format am figure – gesetzt wird es im
-   Skript, siehe „Videoclips" weiter unten. */
-.proj-clip{grid-column:1/-1; margin:0}
-.proj-clip .clip{
+/* Der Kurzfilm: volle Breite der Karte, das Hochformat mittig in
+   Handybreite. Das Seitenverhältnis steht hier im CSS und nicht als
+   width/height am <video>, weil preload="none" gilt: Vor dem ersten Klick
+   sind die Masse des Films unbekannt, ohne reservierten Platz würde die
+   Karte springen. Welche Fassung läuft, sagt data-format am figure –
+   gesetzt wird es im Skript, siehe „Videoclips". */
+.app-clip{margin:0}
+.app-clip .clip{
   position:relative; margin-inline:auto; overflow:hidden;
   border:1px solid var(--line); border-radius:var(--r-md);
   background:var(--bg-2);
 }
-/* Hochformat nicht über die ganze Kartenbreite ziehen – es würde turmhoch.
-   Stattdessen mittig in Handybreite, quer dagegen wie ein Screenshot. */
-.proj-clip[data-format="hoch"] .clip{aspect-ratio:9/16; max-width:20rem}
-.proj-clip[data-format="quer"] .clip{aspect-ratio:16/9; max-width:none}
-/* Beim schmalen Hochformat hängt die Bildzeile sonst weit links neben dem
-   Film; mittig unter ihm gehört sie sichtbar dazu. Quer bleibt es wie bei
-   den Screenshots: linksbündig unter dem Bild. */
-.proj-clip[data-format="hoch"] figcaption{max-width:28rem; margin-inline:auto; text-align:center}
-.proj-clip video{width:100%; height:100%; display:block; object-fit:cover}
+/* Die dritte Schranke rechnet aus der Fensterhöhe zurück: Auf flachen
+   Fenstern (Laptop, Handy mit viel Browserleiste) bleibt der Film so weit
+   im Bild, dass Link und Schalter darunter noch mitkommen. */
+.app-clip[data-format="hoch"] .clip{aspect-ratio:9/16; max-width:min(100%, 24rem, 72vh * 9 / 16)}
+.app-clip[data-format="quer"] .clip{aspect-ratio:16/9; max-width:min(100%, 56rem, 70vh * 16 / 9)}
+.app-clip video{width:100%; height:100%; display:block; object-fit:cover}
 
 /* Ein Knopf über dem ganzen Standbild: überall treffbar, auch mit dem
    Daumen. Sobald der Film läuft, übernimmt die Leiste des Browsers. */
@@ -478,7 +500,101 @@ section{padding-block:var(--section-y)}
 /* Dreieck sitzt optisch mittig, wenn es leicht nach rechts rückt */
 .clip-play svg{margin-left:.15rem}
 @media (prefers-reduced-motion: reduce){ .clip-play:hover .clip-icon{transform:none} }
-.proj-clip[data-laeuft] .clip-play{display:none}
+.app-clip[data-laeuft] .clip-play{display:none}
+/* Länge und Ton stehen im Bild statt als Zeile darunter – sonst käme unter
+   dem Film wieder Text. Klicks gehen durch auf den Abspielknopf. */
+.clip-meta{
+  position:absolute; top:.6rem; right:.6rem; margin:0; z-index:1;
+  padding:.2rem .6rem; border-radius:999px;
+  background:rgba(14,16,19,.55); color:#fff;
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.05em;
+  pointer-events:none;
+}
+.app-clip[data-laeuft] .clip-meta{display:none}
+
+/* Unter dem Film nur zwei Sachen: Link zur App und der Schalter für die
+   Einzelheiten. Offen nimmt sich der Schalter die ganze Zeile, damit der
+   Klappbereich die volle Kartenbreite hat. */
+.app-foot{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+  gap:.7rem .8rem; margin-top:clamp(1rem,2vw,1.4rem);
+}
+.app-link{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.65rem 1.15rem; border-radius:999px;
+  background:var(--text); color:var(--bg); border:1px solid var(--text);
+  font-size:.88rem; font-weight:650; text-decoration:none;
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+.app-link:hover{transform:translateY(-1px); box-shadow:var(--shadow-md)}
+.app-link svg{flex:none}
+@media (prefers-reduced-motion: reduce){ .app-link:hover{transform:none} }
+
+.app-more{flex:0 1 auto; text-align:center}
+.app-more[open]{flex:1 1 100%}
+.app-more > summary{
+  display:inline-flex; align-items:center; gap:.5rem; list-style:none; cursor:pointer;
+  padding:.65rem 1.15rem; border-radius:999px;
+  border:1px solid var(--line-strong); color:var(--text);
+  font-size:.88rem; font-weight:650;
+  transition:border-color .15s ease, color .15s ease;
+}
+.app-more > summary::-webkit-details-marker{display:none}
+.app-more > summary:hover{border-color:var(--accent); color:var(--accent)}
+.app-more-chev{flex:none; transition:transform .22s ease}
+.app-more[open] > summary{border-color:var(--accent); color:var(--accent)}
+.app-more[open] .app-more-chev{transform:rotate(180deg)}
+@media (prefers-reduced-motion: reduce){ .app-more-chev{transition:none} }
+.app-more-body{
+  margin-top:1.4rem; padding-top:1.4rem; border-top:1px solid var(--line);
+  text-align:left;
+}
+
+.app-cols{display:grid; gap:1.5rem 2rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))}
+.app-block h4{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:.5rem; font-weight:600;
+}
+.app-block p, .app-block li{color:var(--muted); font-size:.93em}
+.app-block ul{display:grid; gap:.35rem}
+.app-block li{padding-left:1rem; position:relative}
+.app-block li::before{content:"–"; position:absolute; left:0; color:var(--line-strong)}
+/* Ergebnis-Kachel: eigene Fläche (--bg-2 auf der --surface-Karte), damit im
+   Klappbereich nur eine Kachelfarbe vorkommt. Rot bleibt der Überschrift
+   „Ergebnis" vorbehalten. */
+.app-result{
+  grid-column:1/-1; margin-top:.25rem; padding:1rem 1.2rem;
+  background:var(--bg-2); border:1px solid var(--line); border-radius:var(--r-md);
+  font-size:.95em;
+}
+.app-result strong{color:var(--text)}
+/* Echter Screenshot im Klappbereich – nur noch beim DreamTeam */
+.app-shot{grid-column:1/-1; margin:0}
+.app-shot img{
+  width:100%; height:auto; display:block;
+  border:1px solid var(--line); border-radius:var(--r-md);
+  background:var(--bg-2);
+}
+.app-shot figcaption{margin-top:.6rem; font-size:.8rem; color:var(--muted)}
+
+/* Punkte und Hinweiszeile unter der Spur */
+.apps-dots{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.15rem; margin-top:1.1rem}
+.apps-dot{
+  appearance:none; -webkit-appearance:none; border:0; background:none;
+  padding:.6rem .3rem; line-height:0; cursor:pointer;
+}
+.apps-dot::before{
+  content:""; display:block; width:.55rem; height:.55rem; border-radius:999px;
+  background:var(--line-strong);
+  transition:width .22s ease, background .22s ease;
+}
+.apps-dot:hover::before{background:var(--muted)}
+.apps-dot[aria-current="true"]::before{width:1.6rem; background:var(--accent)}
+@media (prefers-reduced-motion: reduce){ .apps-dot::before{transition:none} }
+.apps-hint{
+  margin:.55rem 0 0; text-align:center;
+  font-size:.82rem; color:var(--muted);
+}
 
 /* --- Ablauf ------------------------------------------------------------- */
 .steps{display:grid; gap:0}
@@ -844,14 +960,29 @@ form .btn{width:100%; justify-content:center}
 <!-- =====================================================================
      REFERENZPROJEKTE
      ---------------------------------------------------------------------
-     Hier stehen nur echte, laufende Apps. Zwei Arten von Nachweis:
-       a) öffentlich erreichbar  -> Link zur App (.proj-open) + Badge "Live"
-       b) geschützt / mit Login  -> nur Kurzfilm + Badge "Geschützt"
+     Der Kurzfilm ist hier die Hauptsache. Darum eine App pro Ansicht:
+     Titel (Name und was die App erreicht), darunter der Film, darunter nur
+     der Link zur App und der Schalter "Weitere Informationen zur App".
+     Alles Weitere – Ausgangslage, Problem, Lösung, Funktionen,
+     Datenschutz, Technik, Ergebnis – steckt im Klappbereich und ist
+     standardmässig zu.
 
-     Jede der sieben Karten zeigt einen Kurzfilm aus der App selbst
-     (figure.proj-clip, je eine hohe und eine quere Fassung). Knopf und
-     Formatwahl stehen im Skript unter „Videoclips". Einzige Ausnahme ist
-     das DreamTeam: Dort steht unter dem Film zusätzlich ein Screenshot,
+     Gewechselt wird mit den Pfeilen, den Punkten, der Tastatur oder einem
+     Wisch. Technisch ist das echtes Scrollen mit scroll-snap (CSS-Block
+     "Apps im Einsatz", Bedienung im Skript unter "App-Karussell"), keine
+     ein- und ausgeblendeten Folien: Damit funktionieren Wischen, Trackpad
+     und Tastatur von selbst, und alle sieben Apps stehen im Quelltext –
+     auch für Suchmaschinen und Vorlesegeräte.
+
+     Zwei Arten von Nachweis:
+       a) öffentlich erreichbar  -> Link "App öffnen" unter dem Film
+       b) geschützt / mit Login  -> kein Link; warum, steht als erster
+          Block im Klappbereich
+
+     Jede der sieben Apps zeigt einen Kurzfilm aus der App selbst
+     (figure.app-clip, je eine hohe und eine quere Fassung). Knopf und
+     Formatwahl stehen im Skript unter "Videoclips". Einzige Ausnahme ist
+     das DreamTeam: Dort steht im Klappbereich zusätzlich ein Screenshot,
      weil der Film den heutigen Champions-League-Betrieb zeigt und die
      Rangliste aus der WM 2026 nur als Bild vorliegt.
      Bei einem Austausch daran denken: am figure data-hoch, data-quer und
@@ -864,7 +995,8 @@ form .btn{width:100%; justify-content:center}
      werden. Die Screenshots liegen weiterhin in assets/, eingebunden ist
      nur noch der eine beim DreamTeam – siehe assets/README.md.
 
-     Die Reihenfolge ist bewusst gewählt: Gripszug steht als neuste App zuoberst.
+     Die Reihenfolge ist bewusst gewählt: Gripszug steht als neuste App
+     zuoberst, also auf der ersten Ansicht.
 
      TODO: Ausgangslage und Problem stammen bei allen sieben Apps vom Betreiber,
      Lösung, Funktionsliste und Ergebnis sind daraus abgeleitet – bitte
@@ -890,68 +1022,33 @@ form .btn{width:100%; justify-content:center}
       <h2>Apps, die heute im Einsatz sind</h2>
     </div>
 
-    <!-- Projekt 1: Gripszug ---------------------------------------------
-         Steht bewusst an erster Stelle: neuste eigene App.
-         Das Bild ist kein Oberflächen-Screenshot, sondern die Illustration
-         der fünf Trainingsbereiche aus der App selbst. -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <p class="proj-title">Gripszug</p>
-          <p class="proj-sum">Lern-App für Kinder: fünf Trainingsbereiche, kein einziges Werbebanner.</p>
+    <div class="apps reveal" data-apps>
+      <!-- Leiste über den Filmen: wo man steht und wie man weiterkommt.
+           Der rote Knopf rechts ist der Weg zur nächsten App; er winkt
+           einmal kurz, bis zum ersten Wechsel. -->
+      <div class="apps-bar">
+        <p class="apps-count" role="status">App <b data-apps-index>1</b> von 7</p>
+        <div class="apps-nav">
+          <button class="apps-arrow apps-arrow--icon" type="button" data-apps-prev aria-label="Vorherige App">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button class="apps-arrow apps-arrow--next" type="button" data-apps-next aria-label="Nächste App">
+            <span class="apps-arrow-text" aria-hidden="true">Nächste App</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg>
+          </button>
         </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-open">
-          <a href="https://kids.alae.app" target="_blank" rel="noopener">
-            App öffnen
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
-          </a>
-          <small>kids.alae.app &middot; öffnet in einem neuen Tab</small>
-        </div>
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Als Vater von drei Kindern wollte ich, dass die Zeit am Bildschirm etwas bringt: eine App, die spielerisch fördert, in der die Kinder Fortschritte machen und tatsächlich etwas lernen.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Eine gute Kinder-App zu finden ist erstaunlich schwierig. Fast überall läuft Werbung mit, mitten im Spiel stehen Kaufaufforderungen, und ob dabei etwas gelernt wird, zeigt sich erst nach dem Installieren. Nach langem Suchen habe ich die App deshalb selbst programmiert.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Gripszug ist ein Zug mit fünf Wagen, und jeder Wagen steht für einen Trainingsbereich: Gedächtnis, Konzentration, Geschwindigkeit, Problemlösen sowie Zahl und Buchstabe. Dahinter stecken kurze Übungen, die ohne Erklärung der Eltern verständlich sind. Was gespielt wird, zahlt auf den jeweiligen Bereich ein – so wird sichtbar, wo ein Kind vorwärtskommt. Keine Werbung, keine Käufe im Spiel, keine Ablenkung.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Fünf Trainingsbereiche, dargestellt als Zugwagen</li>
-              <li>Kurze Übungen, für Kinder selbsterklärend</li>
-              <li>Sichtbarer Fortschritt je Bereich</li>
-              <li>Keine Werbung und keine Käufe im Spiel</li>
-              <li>Auf Tablet und Handy bedienbar, ohne App-Store</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <!-- Bewusst nur "Datenschutz": Zum Hosting steht bei dieser App
-                 nichts, die übrigen sechs Karten nennen es weiterhin. -->
-            <h4>Datenschutz</h4>
-            <p>Eine App für Kinder darf nicht mitschneiden: keine Werbung, kein Tracking zu Werbezwecken, keine Weitergabe an Dritte. Gespeichert wird nur, was für den Spielstand nötig ist.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Technik</h4>
-            <p>Läuft im Browser auf Tablet, Handy und Computer – ohne Installation und ohne App-Store. Aufruf über den Link, Betrieb und Updates laufen automatisch.</p>
-          </div>
+      </div>
 
-          <!-- Kurzfilm statt Standbild. Beide Fassungen desselben Films liegen
-               vor: data-hoch für stehende Bildschirme (Handy), data-quer für
-               liegende (Computer, gedrehtes Handy), je mit eigenem Standbild.
-               Das Skript wählt beim Laden und bei jeder Drehung die passende
-               aus, nie mitten im Abspielen. -->
-          <figure class="proj-shot proj-clip"
+      <div class="apps-viewport" data-apps-track tabindex="0"
+           role="group" aria-roledescription="Karussell"
+           aria-label="Apps im Einsatz – eine App pro Ansicht, 7 insgesamt">
+        <!-- App 1: Gripszug -->
+        <article class="app" id="app-gripszug">
+          <h3 class="app-title">
+            <span class="app-name">Gripszug&nbsp;–</span> <span class="app-pitch">Sinnvolle Bildschirmzeit für Kinder</span>
+          </h3>
+
+          <figure class="app-clip"
                   data-clip
                   data-hoch="assets/gripszug-hoch.mp4"
                   data-hoch-poster="assets/gripszug-hoch-poster.webp"
@@ -960,6 +1057,7 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <p class="clip-meta" aria-hidden="true">24 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -967,83 +1065,74 @@ form .btn{width:100%; justify-content:center}
                 <span class="visually-hidden">Kurzfilm über Gripszug abspielen, 24 Sekunden, mit Ton</span>
               </button>
             </div>
-            <figcaption>Kurzfilm (24 s, mit Ton): Der Zug wächst mit jedem gelösten Rätsel – drei Übungen aus drei Trainingsbereichen, dazu der Wagen, der Schritt für Schritt fertig wird. Fünf Wagen, 25 Spiele.</figcaption>
           </figure>
 
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Aus der erfolglosen Suche nach einer brauchbaren Lern-App
-            wurde eine eigene. Meine Kinder spielen heute in Gripszug, statt Werbebanner
-            wegzuklicken – und die Bildschirmzeit hinterlässt etwas. Die App ist unter
-            kids.alae.app offen erreichbar.
-          </p>
-        </div>
-      </div>
-    </details>
+          <div class="app-foot">
+            <a class="app-link" href="https://kids.alae.app" target="_blank" rel="noopener"
+               aria-label="App öffnen: kids.alae.app – öffnet in einem neuen Tab">
+              App öffnen
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
+            </a>
+            <details class="app-more">
+              <summary>
+                Weitere Informationen zur App
+                <svg class="app-more-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="app-more-body">
+                <div class="app-cols">
+                  <div class="app-block">
+                    <h4>Ausgangslage</h4>
+                    <p>Als Vater von drei Kindern wollte ich, dass die Zeit am Bildschirm etwas bringt: eine App, die spielerisch fördert, in der die Kinder Fortschritte machen und tatsächlich etwas lernen.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Problem</h4>
+                    <p>Eine gute Kinder-App zu finden ist erstaunlich schwierig. Fast überall läuft Werbung mit, mitten im Spiel stehen Kaufaufforderungen, und ob dabei etwas gelernt wird, zeigt sich erst nach dem Installieren. Nach langem Suchen habe ich die App deshalb selbst programmiert.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Umgesetzte Lösung</h4>
+                    <p>Gripszug ist ein Zug mit fünf Wagen, und jeder Wagen steht für einen Trainingsbereich: Gedächtnis, Konzentration, Geschwindigkeit, Problemlösen sowie Zahl und Buchstabe. Dahinter stecken kurze Übungen, die ohne Erklärung der Eltern verständlich sind. Was gespielt wird, zahlt auf den jeweiligen Bereich ein – so wird sichtbar, wo ein Kind vorwärtskommt. Keine Werbung, keine Käufe im Spiel, keine Ablenkung.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Wichtigste Funktionen</h4>
+                    <ul>
+                      <li>Fünf Trainingsbereiche, dargestellt als Zugwagen</li>
+                      <li>Kurze Übungen, für Kinder selbsterklärend</li>
+                      <li>Sichtbarer Fortschritt je Bereich</li>
+                      <li>Keine Werbung und keine Käufe im Spiel</li>
+                      <li>Auf Tablet und Handy bedienbar, ohne App-Store</li>
+                    </ul>
+                  </div>
+                  <div class="app-block">
+                    <h4>Datenschutz</h4>
+                    <p>Eine App für Kinder darf nicht mitschneiden: keine Werbung, kein Tracking zu Werbezwecken, keine Weitergabe an Dritte. Gespeichert wird nur, was für den Spielstand nötig ist.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Technik</h4>
+                    <p>Läuft im Browser auf Tablet, Handy und Computer – ohne Installation und ohne App-Store. Aufruf über den Link, Betrieb und Updates laufen automatisch.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Im Kurzfilm zu sehen</h4>
+                    <p>Der Zug wächst mit jedem gelösten Rätsel – drei Übungen aus drei Trainingsbereichen, dazu der Wagen, der Schritt für Schritt fertig wird. Fünf Wagen, 25 Spiele.</p>
+                  </div>
+                  <p class="app-result">
+                    <strong>Ergebnis:</strong> Aus der erfolglosen Suche nach einer brauchbaren
+                    Lern-App wurde eine eigene. Meine Kinder spielen heute in Gripszug, statt
+                    Werbebanner wegzuklicken – und die Bildschirmzeit hinterlässt etwas. Die App
+                    ist unter kids.alae.app offen erreichbar.
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
 
-    <!-- Projekt 2: DreamTeam --------------------------------------------
-         Hiess bis nach dem Turnier „WM 2026 DreamTeam". Die App ist an kein
-         einzelnes Turnier gebunden und läuft weiter, aktuell mit den Spielern
-         der Champions League – daher der neutrale Name und zwei Bilder statt
-         einem: die Rangliste aus der WM und die heutige Teamansicht. -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <p class="proj-title">DreamTeam</p>
-          <p class="proj-sum">Fantasy-Tippspiel: Team zusammenstellen statt Resultate tippen – von der WM 2026 zur Champions League.</p>
-        </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-open">
-          <a href="https://dt.alae.app" target="_blank" rel="noopener">
-            App öffnen
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
-          </a>
-          <small>dt.alae.app &middot; öffnet in einem neuen Tab</small>
-        </div>
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Eine Gruppe Fussballfans wollte für die WM 2026 ein Tippspiel mit mehr Spieltiefe: kein reines Resultatetippen, sondern ein Fantasy-Spiel, bei dem man Spieler auswählt und Punkte danach sammelt, wie diese im Turnier abschneiden.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Bestehende Tippportale treffen diese Vorstellung nicht: Sie lassen sich kaum konfigurieren, geben Regeln und Wertung vor und beschränken sich meist auf Resultatetipps.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Eine eigene Web-App mit genau den gewünschten Spielregeln: Jede Person stellt ihr DreamTeam aus den Spielern des laufenden Wettbewerbs zusammen und bestimmt einen Captain. Die Punkte entstehen aus den Leistungen der gewählten Spieler, die Rangliste der Top Manager aktualisiert sich für alle gleichzeitig.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Nach der WM</h4>
-            <p>Entstanden ist die App für die WM 2026 – gebunden ist sie an dieses Turnier aber nicht. Nach dem Final lief sie deshalb einfach weiter: Heute spielt die Gruppe damit die Champions League, mit denselben Regeln, aber den Spielern und Wappen der Klubs. Für ein neues Turnier braucht es keine neue App, nur neue Daten.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Kader aus den Spielern des Wettbewerbs zusammenstellen</li>
-              <li>Captain für das eigene Team bestimmen</li>
-              <li>Punkte pro Spieler aus den Spielleistungen</li>
-              <li>Rangliste der Top Manager mit Gesamtpunkten</li>
-              <li>Für das nächste Turnier wiederverwendbar</li>
-              <li>Auf dem Handy bedienbar, ohne App-Store</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <h4>Datenschutz &amp; Hosting</h4>
-            <p>Nur die Daten, die für das Spiel nötig sind: Anzeigename und Teamauswahl. Keine Weitergabe an Dritte, keine Werbung. Hosting in der Schweiz.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Technik</h4>
-            <p>Läuft im Browser auf Handy und Computer, ohne Installation. Zugriff über den Link, Betrieb und Backups laufen automatisch.</p>
-          </div>
+        <!-- App 2: DreamTeam -->
+        <article class="app" id="app-dreamteam">
+          <h3 class="app-title">
+            <span class="app-name">DreamTeam&nbsp;–</span> <span class="app-pitch">Ein Fantasy-Tippspiel nach eigenen Regeln</span>
+          </h3>
 
-          <!-- Kurzfilm aus dem heutigen Champions-League-Betrieb. Die Teamansicht
-               aus assets/dt-champions-league.webp zeigt er mit, deshalb ist
-               dieses Bild nicht mehr eingebunden. -->
-          <figure class="proj-shot proj-clip"
+          <figure class="app-clip"
                   data-clip
                   data-hoch="assets/dt-hoch.mp4"
                   data-hoch-poster="assets/dt-hoch-poster.webp"
@@ -1052,6 +1141,7 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <p class="clip-meta" aria-hidden="true">23 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1059,84 +1149,86 @@ form .btn{width:100%; justify-content:center}
                 <span class="visually-hidden">Kurzfilm über das DreamTeam abspielen, 23 Sekunden, mit Ton</span>
               </button>
             </div>
-            <figcaption>Kurzfilm (23 s, mit Ton): Kader zusammenstellen – 15 Spieler, höchstens einer pro Klub –, Punkte, die während der laufenden Spiele hereinkommen, und die Rangliste, die dabei live mitrechnet.</figcaption>
           </figure>
 
-          <!-- Einziger Screenshot, der neben einem Film stehen bleibt: Die
-               Rangliste stammt aus der WM 2026, der Film zeigt die Champions
-               League. Ohne ihn fehlte der Karte der Beleg für das Turnier,
-               von dem der Text erzählt. -->
-          <figure class="proj-shot">
-            <img src="assets/dt-top-manager.png" width="1101" height="831" loading="lazy"
-                 alt="Rangliste der Top Manager im DreamTeam zur WM 2026: die drei besten Teams mit ihren Spielern, Captain-Markierung und Gesamtpunkten, darunter die Plätze vier bis sieben.">
-            <figcaption>WM 2026: Rangliste der Top Manager mit Kader, Captain und Gesamtpunkten.</figcaption>
-          </figure>
+          <div class="app-foot">
+            <a class="app-link" href="https://dt.alae.app" target="_blank" rel="noopener"
+               aria-label="App öffnen: dt.alae.app – öffnet in einem neuen Tab">
+              App öffnen
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
+            </a>
+            <details class="app-more">
+              <summary>
+                Weitere Informationen zur App
+                <svg class="app-more-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="app-more-body">
+                <div class="app-cols">
+                  <div class="app-block">
+                    <h4>Ausgangslage</h4>
+                    <p>Eine Gruppe Fussballfans wollte für die WM 2026 ein Tippspiel mit mehr Spieltiefe: kein reines Resultatetippen, sondern ein Fantasy-Spiel, bei dem man Spieler auswählt und Punkte danach sammelt, wie diese im Turnier abschneiden.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Problem</h4>
+                    <p>Bestehende Tippportale treffen diese Vorstellung nicht: Sie lassen sich kaum konfigurieren, geben Regeln und Wertung vor und beschränken sich meist auf Resultatetipps.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Umgesetzte Lösung</h4>
+                    <p>Eine eigene Web-App mit genau den gewünschten Spielregeln: Jede Person stellt ihr DreamTeam aus den Spielern des laufenden Wettbewerbs zusammen und bestimmt einen Captain. Die Punkte entstehen aus den Leistungen der gewählten Spieler, die Rangliste der Top Manager aktualisiert sich für alle gleichzeitig.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Nach der WM</h4>
+                    <p>Entstanden ist die App für die WM 2026 – gebunden ist sie an dieses Turnier aber nicht. Nach dem Final lief sie deshalb einfach weiter: Heute spielt die Gruppe damit die Champions League, mit denselben Regeln, aber den Spielern und Wappen der Klubs. Für ein neues Turnier braucht es keine neue App, nur neue Daten.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Wichtigste Funktionen</h4>
+                    <ul>
+                      <li>Kader aus den Spielern des Wettbewerbs zusammenstellen</li>
+                      <li>Captain für das eigene Team bestimmen</li>
+                      <li>Punkte pro Spieler aus den Spielleistungen</li>
+                      <li>Rangliste der Top Manager mit Gesamtpunkten</li>
+                      <li>Für das nächste Turnier wiederverwendbar</li>
+                      <li>Auf dem Handy bedienbar, ohne App-Store</li>
+                    </ul>
+                  </div>
+                  <div class="app-block">
+                    <h4>Datenschutz &amp; Hosting</h4>
+                    <p>Nur die Daten, die für das Spiel nötig sind: Anzeigename und Teamauswahl. Keine Weitergabe an Dritte, keine Werbung. Hosting in der Schweiz.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Technik</h4>
+                    <p>Läuft im Browser auf Handy und Computer, ohne Installation. Zugriff über den Link, Betrieb und Backups laufen automatisch.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Im Kurzfilm zu sehen</h4>
+                    <p>Kader zusammenstellen – 15 Spieler, höchstens einer pro Klub –, Punkte, die während der laufenden Spiele hereinkommen, und die Rangliste, die dabei live mitrechnet. Gezeigt wird der heutige Champions-League-Betrieb.</p>
+                  </div>
+                  <figure class="app-shot">
+                    <img src="assets/dt-top-manager.png" width="1101" height="831" loading="lazy"
+                         alt="Rangliste der Top Manager im DreamTeam zur WM 2026: die drei besten Teams mit ihren Spielern, Captain-Markierung und Gesamtpunkten, darunter die Plätze vier bis sieben.">
+                    <figcaption>WM 2026: Rangliste der Top Manager mit Kader, Captain und Gesamtpunkten.</figcaption>
+                  </figure>
+                  <p class="app-result">
+                    <strong>Ergebnis:</strong> Eine vollständig selbst konfigurierte Web-App für
+                    eine kleine Gruppe Fussballfans – genau auf deren Bedürfnisse zugeschnitten,
+                    statt an die Regeln eines fremden Portals gebunden. Punkte und Rangliste
+                    wurden schon während der WM 2026 live und vollautomatisch über eine
+                    Schnittstelle aktualisiert; dieselbe App läuft heute für die Champions
+                    League weiter.
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
 
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Eine vollständig selbst konfigurierte Web-App für eine kleine
-            Gruppe Fussballfans – genau auf deren Bedürfnisse zugeschnitten, statt an die Regeln
-            eines fremden Portals gebunden. Punkte und Rangliste wurden schon während der WM 2026
-            live und vollautomatisch über eine Schnittstelle aktualisiert; dieselbe App läuft heute
-            für die Champions League weiter.
-          </p>
-        </div>
-      </div>
-    </details>
+        <!-- App 3: Jass App -->
+        <article class="app" id="app-jass">
+          <h3 class="app-title">
+            <span class="app-name">Jass App&nbsp;–</span> <span class="app-pitch">Das Familienturnier ohne Excel-Tabelle</span>
+          </h3>
 
-    <!-- Projekt 3: Jass App --------------------------------------------- -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <p class="proj-title">Jass App</p>
-          <p class="proj-sum">Familienturnier organisieren, Punkte zählen, Rangliste automatisch führen.</p>
-        </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-open">
-          <a href="https://jass.alae.app" target="_blank" rel="noopener">
-            App öffnen
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
-          </a>
-          <small>jass.alae.app &middot; öffnet in einem neuen Tab</small>
-        </div>
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Eine Familie trägt jedes Jahr ein Jassturnier aus. Organisiert wurde es bisher mit einer Excel-Tabelle, in der Spiele, Punkte und Rangliste zusammenliefen.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Die Tabelle war fehleranfällig: Während des Turniers musste immer wieder nachkorrigiert werden – mitten im Spielbetrieb, wo eigentlich niemand Zeit dafür hat.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Eine Web-App mit zwei Betriebsarten. Im Turniermodus organisiert sie das Familienturnier: Die Spielenden tragen ihre Punkte nach jedem Spiel selbst ein, Zwischenstand und Rangliste entstehen daraus automatisch. Daneben lässt sie sich als reiner Jass-Zähler für gewöhnliche Runden ausserhalb des Turniers verwenden.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Turnier anlegen und Spielende verwalten</li>
-              <li>Punkte nach jedem Spiel selbst eintragen</li>
-              <li>Rangliste, die sich automatisch aktualisiert</li>
-              <li>Zähler-Modus für Runden ohne Turnier</li>
-              <li>Auf dem Handy bedienbar, ohne Installation</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <h4>Datenschutz &amp; Hosting</h4>
-            <p>Es werden nur die Angaben gespeichert, die für den Spielstand nötig sind. Keine Werbung, keine Weitergabe an Dritte. Hosting in der Schweiz.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Technik</h4>
-            <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
-          </div>
-
-          <!-- Kurzfilm statt des früheren Startbildschirms (assets/jass-app.png):
-               Er zeigt beide Betriebsarten im Ablauf statt nur die zwei Knöpfe. -->
-          <figure class="proj-shot proj-clip"
+          <figure class="app-clip"
                   data-clip
                   data-hoch="assets/jass-hoch.mp4"
                   data-hoch-poster="assets/jass-hoch-poster.webp"
@@ -1145,6 +1237,7 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <p class="clip-meta" aria-hidden="true">23 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1152,72 +1245,74 @@ form .btn{width:100%; justify-content:center}
                 <span class="visually-hidden">Kurzfilm über die Jass App abspielen, 23 Sekunden, mit Ton</span>
               </button>
             </div>
-            <figcaption>Kurzfilm (23 s, mit Ton): Vom leeren Zettel zum laufenden Stand – Teams eintippen, Regeln einmal festlegen, Punkte erfassen. Dazu die Coiffeur-Tafel, die selber multipliziert, und ein ganzes Turnier mit Paarungen und Rangliste.</figcaption>
           </figure>
 
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Das Familienturnier läuft ohne Excel und ohne Korrekturrunden
-            mitten im Spielbetrieb. Jede Person trägt ihre Punkte selbst ein, die Rangliste stimmt
-            jederzeit – und ausserhalb des Turniers dient dieselbe App als Jass-Zähler.
-          </p>
-        </div>
-      </div>
-    </details>
+          <div class="app-foot">
+            <a class="app-link" href="https://jass.alae.app" target="_blank" rel="noopener"
+               aria-label="App öffnen: jass.alae.app – öffnet in einem neuen Tab">
+              App öffnen
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
+            </a>
+            <details class="app-more">
+              <summary>
+                Weitere Informationen zur App
+                <svg class="app-more-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="app-more-body">
+                <div class="app-cols">
+                  <div class="app-block">
+                    <h4>Ausgangslage</h4>
+                    <p>Eine Familie trägt jedes Jahr ein Jassturnier aus. Organisiert wurde es bisher mit einer Excel-Tabelle, in der Spiele, Punkte und Rangliste zusammenliefen.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Problem</h4>
+                    <p>Die Tabelle war fehleranfällig: Während des Turniers musste immer wieder nachkorrigiert werden – mitten im Spielbetrieb, wo eigentlich niemand Zeit dafür hat.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Umgesetzte Lösung</h4>
+                    <p>Eine Web-App mit zwei Betriebsarten. Im Turniermodus organisiert sie das Familienturnier: Die Spielenden tragen ihre Punkte nach jedem Spiel selbst ein, Zwischenstand und Rangliste entstehen daraus automatisch. Daneben lässt sie sich als reiner Jass-Zähler für gewöhnliche Runden ausserhalb des Turniers verwenden.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Wichtigste Funktionen</h4>
+                    <ul>
+                      <li>Turnier anlegen und Spielende verwalten</li>
+                      <li>Punkte nach jedem Spiel selbst eintragen</li>
+                      <li>Rangliste, die sich automatisch aktualisiert</li>
+                      <li>Zähler-Modus für Runden ohne Turnier</li>
+                      <li>Auf dem Handy bedienbar, ohne Installation</li>
+                    </ul>
+                  </div>
+                  <div class="app-block">
+                    <h4>Datenschutz &amp; Hosting</h4>
+                    <p>Es werden nur die Angaben gespeichert, die für den Spielstand nötig sind. Keine Werbung, keine Weitergabe an Dritte. Hosting in der Schweiz.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Technik</h4>
+                    <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Im Kurzfilm zu sehen</h4>
+                    <p>Vom leeren Zettel zum laufenden Stand – Teams eintippen, Regeln einmal festlegen, Punkte erfassen. Dazu die Coiffeur-Tafel, die selber multipliziert, und ein ganzes Turnier mit Paarungen und Rangliste.</p>
+                  </div>
+                  <p class="app-result">
+                    <strong>Ergebnis:</strong> Das Familienturnier läuft ohne Excel und ohne
+                    Korrekturrunden mitten im Spielbetrieb. Jede Person trägt ihre Punkte selbst
+                    ein, die Rangliste stimmt jederzeit – und ausserhalb des Turniers dient
+                    dieselbe App als Jass-Zähler.
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
 
-    <!-- Projekt 4: Volleyballturnier ------------------------------------ -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <p class="proj-title">Volleyballturnier</p>
-          <p class="proj-sum">Spielplan, Resultate und Rangliste live auf dem Handy – für jedes Team einzeln.</p>
-        </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-open">
-          <a href="https://pvt.alae.app" target="_blank" rel="noopener">
-            App öffnen
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
-          </a>
-          <small>pvt.alae.app &middot; öffnet in einem neuen Tab</small>
-        </div>
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Das Volleyballturnier wurde bisher mit einer Excel-Datei und auf Papier organisiert. Die Spielpläne wurden ausgedruckt und in der Halle aufgehängt – wer etwas wissen wollte, musste hingehen und ablesen.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Teams wussten dadurch oft nicht genau, wann sie als Nächstes spielen oder auf welchem Zwischenrang sie stehen. Der Informationsstand hing davon ab, wann jemand zuletzt beim Aushang war.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Eine Web-App, die den Turnierstand live abbildet. Jedes Team wählt sich im Dashboard aus und sieht dort alles, was es betrifft: die eigene Gruppentabelle, die nächsten Spiele mit Uhrzeit und Feld, bereits gespielte Resultate, die Finalrunde – und die Spiele, bei denen es zählen muss.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Dashboard mit den Spielen des eigenen Teams</li>
-              <li>Gruppentabelle mit Punkten und Verhältnis</li>
-              <li>Spielplan mit Uhrzeit, Feld und Turnierphase</li>
-              <li>Zuteilung der Spiele, bei denen ein Team zählt</li>
-              <li>Resultate und Schlussrangliste live für alle</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <h4>Datenschutz &amp; Hosting</h4>
-            <p>Nur die für die Durchführung nötigen Daten. Die öffentliche Ansicht zeigt Teams und Resultate, keine Kontaktdaten. Hosting in der Schweiz.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Technik</h4>
-            <p>Läuft im Browser auf Handy und Computer. Der Zugriff erfolgt über einen Link, Rollen trennen Organisation und Publikum.</p>
-          </div>
+        <!-- App 4: Volleyballturnier -->
+        <article class="app" id="app-volleyball">
+          <h3 class="app-title">
+            <span class="app-name">Volleyballturnier&nbsp;–</span> <span class="app-pitch">Der Turnierstand live auf jedem Handy</span>
+          </h3>
 
-          <!-- Kurzfilm statt des früheren Dashboard-Bildes (assets/pvt.png): Der Film
-               zeigt dieselbe Ansicht und zusätzlich, woher die Zahlen kommen. -->
-          <figure class="proj-shot proj-clip"
+          <figure class="app-clip"
                   data-clip
                   data-hoch="assets/pvt-hoch.mp4"
                   data-hoch-poster="assets/pvt-hoch-poster.webp"
@@ -1226,6 +1321,7 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <p class="clip-meta" aria-hidden="true">24 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1233,72 +1329,73 @@ form .btn{width:100%; justify-content:center}
                 <span class="visually-hidden">Kurzfilm über das Volleyballturnier abspielen, 24 Sekunden, mit Ton</span>
               </button>
             </div>
-            <figcaption>Kurzfilm (24 s, mit Ton): Ein Turniertag von der Ausschreibung bis zur Rangliste – 19 Teams in drei Kategorien, 72 Spiele auf drei Feldern, ein eingetipptes Resultat, das die Tabelle sofort nachrechnet, und das Dashboard, das jedem Team nur die eigenen Spiele zeigt.</figcaption>
           </figure>
 
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Alle Beteiligten haben denselben, aktuellen Stand auf dem
-            eigenen Handy statt am Aushang in der Halle. Als nächster Schritt soll auch die
-            Anmeldung zum Turnier direkt über die App laufen.
-          </p>
-        </div>
-      </div>
-    </details>
+          <div class="app-foot">
+            <a class="app-link" href="https://pvt.alae.app" target="_blank" rel="noopener"
+               aria-label="App öffnen: pvt.alae.app – öffnet in einem neuen Tab">
+              App öffnen
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></svg>
+            </a>
+            <details class="app-more">
+              <summary>
+                Weitere Informationen zur App
+                <svg class="app-more-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="app-more-body">
+                <div class="app-cols">
+                  <div class="app-block">
+                    <h4>Ausgangslage</h4>
+                    <p>Das Volleyballturnier wurde bisher mit einer Excel-Datei und auf Papier organisiert. Die Spielpläne wurden ausgedruckt und in der Halle aufgehängt – wer etwas wissen wollte, musste hingehen und ablesen.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Problem</h4>
+                    <p>Teams wussten dadurch oft nicht genau, wann sie als Nächstes spielen oder auf welchem Zwischenrang sie stehen. Der Informationsstand hing davon ab, wann jemand zuletzt beim Aushang war.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Umgesetzte Lösung</h4>
+                    <p>Eine Web-App, die den Turnierstand live abbildet. Jedes Team wählt sich im Dashboard aus und sieht dort alles, was es betrifft: die eigene Gruppentabelle, die nächsten Spiele mit Uhrzeit und Feld, bereits gespielte Resultate, die Finalrunde – und die Spiele, bei denen es zählen muss.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Wichtigste Funktionen</h4>
+                    <ul>
+                      <li>Dashboard mit den Spielen des eigenen Teams</li>
+                      <li>Gruppentabelle mit Punkten und Verhältnis</li>
+                      <li>Spielplan mit Uhrzeit, Feld und Turnierphase</li>
+                      <li>Zuteilung der Spiele, bei denen ein Team zählt</li>
+                      <li>Resultate und Schlussrangliste live für alle</li>
+                    </ul>
+                  </div>
+                  <div class="app-block">
+                    <h4>Datenschutz &amp; Hosting</h4>
+                    <p>Nur die für die Durchführung nötigen Daten. Die öffentliche Ansicht zeigt Teams und Resultate, keine Kontaktdaten. Hosting in der Schweiz.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Technik</h4>
+                    <p>Läuft im Browser auf Handy und Computer. Der Zugriff erfolgt über einen Link, Rollen trennen Organisation und Publikum.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Im Kurzfilm zu sehen</h4>
+                    <p>Ein Turniertag von der Ausschreibung bis zur Rangliste – 19 Teams in drei Kategorien, 72 Spiele auf drei Feldern, ein eingetipptes Resultat, das die Tabelle sofort nachrechnet, und das Dashboard, das jedem Team nur die eigenen Spiele zeigt.</p>
+                  </div>
+                  <p class="app-result">
+                    <strong>Ergebnis:</strong> Alle Beteiligten haben denselben, aktuellen Stand
+                    auf dem eigenen Handy statt am Aushang in der Halle. Als nächster Schritt
+                    soll auch die Anmeldung zum Turnier direkt über die App laufen.
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
 
-    <!-- Projekt 5: Fotoverkauf (geschützt) ------------------------------ -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <p class="proj-title">Fotoverkauf für eine Fotografin</p>
-          <p class="proj-sum">Onlineshop für Schulfotos: Eltern kaufen die Bilder ihres Kindes und laden sie sofort herunter.</p>
-        </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-open">
-          <small>
-            <strong>Kein öffentlicher Link:</strong> Die App enthält Fotos von Kindern und ist nur
-            über die hinterlegte E-Mail-Adresse erreichbar. Deshalb hier nur ein Screenshot.
-          </small>
-        </div>
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Eine Fotografin fotografiert in Kindergärten und Schulen. Die Bilder gingen bisher per E-Mail an die Eltern oder wurden ausgedruckt und per Post verschickt.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Der ganze Ablauf lief von Hand: Bestellt wurde über ein Word-Dokument, das ausgefüllt und per E-Mail zurückgeschickt wurde. Danach folgte eine Rechnung, und erst nach Zahlungseingang gingen die Fotos raus – für jede Familie einzeln.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Ein Onlineshop für Fotos, der den gesamten Ablauf übernimmt. Eltern hinterlegen ihre E-Mail-Adresse; nur mit dieser Adresse lassen sich die Bilder des eigenen Kindes ansehen, kaufen und herunterladen. Bezahlt wird direkt in der App, danach steht der Download sofort bereit. Wer Abzüge möchte, bestellt sie ebenfalls dort – produziert und verschickt wird nach Zahlungseingang.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Zugang nur über die hinterlegte E-Mail-Adresse</li>
-              <li>Galerie mit den Bildern des eigenen Kindes</li>
-              <li>Bezahlung direkt in der App</li>
-              <li>Sofortiger Download nach der Zahlung</li>
-              <li>Abzüge bestellen, Versand nach Zahlungseingang</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <h4>Datenschutz &amp; Hosting</h4>
-            <p>Der wichtigste Punkt bei diesem Projekt: Kinderfotos müssen sicher sein. Kein öffentlicher Zugriff, keine offenen Links, kein Auffinden über Suchmaschinen. Jede Familie sieht ausschliesslich die Bilder des eigenen Kindes. Hosting in der Schweiz.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Technik</h4>
-            <p>Läuft im Browser auf Handy und Computer. Vorschaubilder tragen ein Wasserzeichen, die gekauften Dateien werden in Originalqualität ausgeliefert.</p>
-          </div>
+        <!-- App 5: Fotoverkauf -->
+        <article class="app" id="app-fotoverkauf">
+          <h3 class="app-title">
+            <span class="app-name">Fotoverkauf&nbsp;–</span> <span class="app-pitch">Schulfotos verkaufen ohne Handarbeit</span>
+          </h3>
 
-          <!-- Kurzfilm mit einer Demo-Galerie: gezeichnete Bilder, erfundene Adresse.
-               Damit entfällt das Unkenntlichmachen, das der frühere Screenshot
-               assets/foto-app.png nötig machte. -->
-          <figure class="proj-shot proj-clip"
+          <figure class="app-clip"
                   data-clip
                   data-hoch="assets/foto-hoch.mp4"
                   data-hoch-poster="assets/foto-hoch-poster.webp"
@@ -1307,6 +1404,7 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <p class="clip-meta" aria-hidden="true">24 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1314,72 +1412,73 @@ form .btn{width:100%; justify-content:center}
                 <span class="visually-hidden">Kurzfilm über den Fotoverkauf abspielen, 24 Sekunden, mit Ton</span>
               </button>
             </div>
-            <figcaption>Kurzfilm (24 s, mit Ton): der Weg der Eltern – E-Mail bestätigen, danach nur die eigenen Fotos sehen, Vorschauen mit Wasserzeichen, Druck oder reine Datei bestellen und nach dem Kauf das Original herunterladen. Gezeigt wird eine Demo-Galerie mit gezeichneten Bildern.</figcaption>
           </figure>
 
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Aus Word-Formular, Rechnung und Postversand wurde ein Ablauf,
-            der ohne Zutun der Fotografin läuft: Eltern kaufen selbst, zahlen direkt und haben ihre
-            Bilder sofort – und trotzdem sieht niemand die Fotos eines fremden Kindes.
-          </p>
-        </div>
-      </div>
-    </details>
+          <div class="app-foot">
+            <details class="app-more">
+              <summary>
+                Weitere Informationen zur App
+                <svg class="app-more-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="app-more-body">
+                <div class="app-cols">
+                  <div class="app-block">
+                    <h4>Kein öffentlicher Link</h4>
+                    <p>Die App enthält Fotos von Kindern und ist nur über die hinterlegte E-Mail-Adresse erreichbar. Gezeigt wird deshalb nur der Kurzfilm, und der läuft mit einer Demo-Galerie aus gezeichneten Bildern.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Ausgangslage</h4>
+                    <p>Eine Fotografin fotografiert in Kindergärten und Schulen. Die Bilder gingen bisher per E-Mail an die Eltern oder wurden ausgedruckt und per Post verschickt.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Problem</h4>
+                    <p>Der ganze Ablauf lief von Hand: Bestellt wurde über ein Word-Dokument, das ausgefüllt und per E-Mail zurückgeschickt wurde. Danach folgte eine Rechnung, und erst nach Zahlungseingang gingen die Fotos raus – für jede Familie einzeln.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Umgesetzte Lösung</h4>
+                    <p>Ein Onlineshop für Fotos, der den gesamten Ablauf übernimmt. Eltern hinterlegen ihre E-Mail-Adresse; nur mit dieser Adresse lassen sich die Bilder des eigenen Kindes ansehen, kaufen und herunterladen. Bezahlt wird direkt in der App, danach steht der Download sofort bereit. Wer Abzüge möchte, bestellt sie ebenfalls dort – produziert und verschickt wird nach Zahlungseingang.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Wichtigste Funktionen</h4>
+                    <ul>
+                      <li>Zugang nur über die hinterlegte E-Mail-Adresse</li>
+                      <li>Galerie mit den Bildern des eigenen Kindes</li>
+                      <li>Bezahlung direkt in der App</li>
+                      <li>Sofortiger Download nach der Zahlung</li>
+                      <li>Abzüge bestellen, Versand nach Zahlungseingang</li>
+                    </ul>
+                  </div>
+                  <div class="app-block">
+                    <h4>Datenschutz &amp; Hosting</h4>
+                    <p>Der wichtigste Punkt bei diesem Projekt: Kinderfotos müssen sicher sein. Kein öffentlicher Zugriff, keine offenen Links, kein Auffinden über Suchmaschinen. Jede Familie sieht ausschliesslich die Bilder des eigenen Kindes. Hosting in der Schweiz.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Technik</h4>
+                    <p>Läuft im Browser auf Handy und Computer. Vorschaubilder tragen ein Wasserzeichen, die gekauften Dateien werden in Originalqualität ausgeliefert.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Im Kurzfilm zu sehen</h4>
+                    <p>Der Weg der Eltern – E-Mail bestätigen, danach nur die eigenen Fotos sehen, Vorschauen mit Wasserzeichen, Druck oder reine Datei bestellen und nach dem Kauf das Original herunterladen.</p>
+                  </div>
+                  <p class="app-result">
+                    <strong>Ergebnis:</strong> Aus Word-Formular, Rechnung und Postversand wurde
+                    ein Ablauf, der ohne Zutun der Fotografin läuft: Eltern kaufen selbst,
+                    zahlen direkt und haben ihre Bilder sofort – und trotzdem sieht niemand die
+                    Fotos eines fremden Kindes.
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
 
-    <!-- Projekt 6: Familien- und Ferien-Sharing (geschützt) ------------- -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <p class="proj-title">Familien- und Ferien-Sharing</p>
-          <p class="proj-sum">Fotos in Originalqualität teilen, dazu Finanzen, Einkauf, Notizen und Kalender.</p>
-        </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-open">
-          <small>
-            <strong>Kein öffentlicher Link:</strong> Die App enthält private Inhalte von Familien
-            und ist nur für eingeladene Mitglieder erreichbar. Deshalb hier nur ein Screenshot.
-          </small>
-        </div>
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Mehrere Haushalte verbringen gemeinsam Ferien. Fotos wurden einzeln untereinander verschickt oder in einer Chat-Gruppe geteilt; Finanzen, Einkaufslisten und Termine liefen über verschiedene Apps.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Über den Chat verschickte Bilder kommen stark komprimiert und unscharf an – von den Ferienfotos bleibt wenig übrig. Und weil jeder Bereich in einer anderen App lag, musste man ständig wechseln und am Schluss die Ausgaben von Hand zusammenrechnen.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Eine App für die ganze Reise. Fotos und Videos werden hochgeladen und in Originalqualität untereinander geteilt. Weitere Bereiche – Finanzen, Einkauf, Notizen, Kalender – lassen sich bei Bedarf zuschalten und stehen sofort allen zur Verfügung. Im Bereich Finanzen tragen alle ihre Ausgaben ein; am Ende der Ferien zeigt eine Schlussabrechnung, wer wem was schuldet.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Fotos und Videos in Originalqualität teilen</li>
-              <li>Bereiche zuschalten: Finanzen, Einkauf, Notizen, Kalender</li>
-              <li>Ausgaben erfassen und am Schluss abrechnen</li>
-              <li>Passwortschutz für den Ferienbereich</li>
-              <li>Auf dem Handy bedienbar, ohne App-Store</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <h4>Datenschutz &amp; Hosting</h4>
-            <p>Alle Dateien und auch die Finanzdaten liegen auf einem Server in der Schweiz – keine Fotos in einer Cloud, keine Weitergabe an Dritte, keine Werbung. Der Zugang zum Ferienbereich lässt sich zusätzlich mit einem Passwort schützen.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Technik</h4>
-            <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
-          </div>
+        <!-- App 6: Familien- und Ferien-Sharing -->
+        <article class="app" id="app-sharing">
+          <h3 class="app-title">
+            <span class="app-name">Familien- und Ferien-Sharing&nbsp;–</span> <span class="app-pitch">Eine App für Fotos, Kasse und Planung</span>
+          </h3>
 
-          <!-- Kurzfilm mit einer Demo-Gruppe: gezeichnete Bilder, erfundene Namen und
-               Beträge. Damit entfällt das Unkenntlichmachen, das der frühere
-               Screenshot assets/share.png nötig machte. -->
-          <figure class="proj-shot proj-clip"
+          <figure class="app-clip"
                   data-clip
                   data-hoch="assets/share-hoch.mp4"
                   data-hoch-poster="assets/share-hoch-poster.webp"
@@ -1388,6 +1487,7 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <p class="clip-meta" aria-hidden="true">23 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1395,73 +1495,73 @@ form .btn{width:100%; justify-content:center}
                 <span class="visually-hidden">Kurzfilm über das Familien-Sharing abspielen, 23 Sekunden, mit Ton</span>
               </button>
             </div>
-            <figcaption>Kurzfilm (23 s, mit Ton): ein Link für die ganze Gruppe – Bilder nach Tag oder Person sortiert, die Ferienkasse, die am Schluss auf zwei Zahlungen kommt, dazu Einkaufsliste, Notizen und Kalender. Gezeigt wird eine Demo-Gruppe mit erfundenen Namen.</figcaption>
           </figure>
 
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Ein Ort statt fünf Apps – mit Bildern in Originalqualität
-            statt in Chat-Qualität. Die Abrechnung am Ende der Ferien dauert Minuten, und niemand
-            muss mehr im Chat nach oben scrollen, um etwas zu finden.
-          </p>
-        </div>
-      </div>
-    </details>
+          <div class="app-foot">
+            <details class="app-more">
+              <summary>
+                Weitere Informationen zur App
+                <svg class="app-more-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="app-more-body">
+                <div class="app-cols">
+                  <div class="app-block">
+                    <h4>Kein öffentlicher Link</h4>
+                    <p>Die App enthält private Inhalte von Familien und ist nur für eingeladene Mitglieder erreichbar. Gezeigt wird deshalb nur der Kurzfilm, und der läuft mit einer Demo-Gruppe aus erfundenen Namen.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Ausgangslage</h4>
+                    <p>Mehrere Haushalte verbringen gemeinsam Ferien. Fotos wurden einzeln untereinander verschickt oder in einer Chat-Gruppe geteilt; Finanzen, Einkaufslisten und Termine liefen über verschiedene Apps.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Problem</h4>
+                    <p>Über den Chat verschickte Bilder kommen stark komprimiert und unscharf an – von den Ferienfotos bleibt wenig übrig. Und weil jeder Bereich in einer anderen App lag, musste man ständig wechseln und am Schluss die Ausgaben von Hand zusammenrechnen.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Umgesetzte Lösung</h4>
+                    <p>Eine App für die ganze Reise. Fotos und Videos werden hochgeladen und in Originalqualität untereinander geteilt. Weitere Bereiche – Finanzen, Einkauf, Notizen, Kalender – lassen sich bei Bedarf zuschalten und stehen sofort allen zur Verfügung. Im Bereich Finanzen tragen alle ihre Ausgaben ein; am Ende der Ferien zeigt eine Schlussabrechnung, wer wem was schuldet.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Wichtigste Funktionen</h4>
+                    <ul>
+                      <li>Fotos und Videos in Originalqualität teilen</li>
+                      <li>Bereiche zuschalten: Finanzen, Einkauf, Notizen, Kalender</li>
+                      <li>Ausgaben erfassen und am Schluss abrechnen</li>
+                      <li>Passwortschutz für den Ferienbereich</li>
+                      <li>Auf dem Handy bedienbar, ohne App-Store</li>
+                    </ul>
+                  </div>
+                  <div class="app-block">
+                    <h4>Datenschutz &amp; Hosting</h4>
+                    <p>Alle Dateien und auch die Finanzdaten liegen auf einem Server in der Schweiz – keine Fotos in einer Cloud, keine Weitergabe an Dritte, keine Werbung. Der Zugang zum Ferienbereich lässt sich zusätzlich mit einem Passwort schützen.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Technik</h4>
+                    <p>Web-App, die sich auf dem Handy wie eine installierte App verhält – ohne App-Store und ohne Update-Zwang.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Im Kurzfilm zu sehen</h4>
+                    <p>Ein Link für die ganze Gruppe – Bilder nach Tag oder Person sortiert, die Ferienkasse, die am Schluss auf zwei Zahlungen kommt, dazu Einkaufsliste, Notizen und Kalender.</p>
+                  </div>
+                  <p class="app-result">
+                    <strong>Ergebnis:</strong> Ein Ort statt fünf Apps – mit Bildern in
+                    Originalqualität statt in Chat-Qualität. Die Abrechnung am Ende der Ferien
+                    dauert Minuten, und niemand muss mehr im Chat nach oben scrollen, um etwas
+                    zu finden.
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
 
-    <!-- Projekt 7: Management Einzelfirma (geschützt) ------------------- -->
-    <details class="proj reveal">
-      <summary>
-        <div>
-          <p class="proj-title">Buchhaltung und Verwaltung einer Einzelfirma</p>
-          <p class="proj-sum">Buchhaltung, Verkäufe und Debitoren einer Einzelfirma statt Excel-Kassenbuch.</p>
-        </div>
-        <span class="proj-toggle" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </span>
-      </summary>
-      <div class="proj-detail">
-        <div class="proj-open">
-          <small>
-            <strong>Kein öffentlicher Link:</strong> Die App enthält die Geschäftszahlen einer
-            Firma und ist nur mit persönlichem Login erreichbar. Deshalb hier nur ein Screenshot.
-          </small>
-        </div>
-        <div class="proj-cols">
-          <div class="proj-block">
-            <h4>Ausgangslage</h4>
-            <p>Eine Einzelfirma führte ihr Kassenbuch in einer Excel-Datei. Verkäufe, Debitorenlisten und die Kostenkontrolle entstanden daneben von Hand in weiteren Dokumenten.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Problem</h4>
-            <p>Jeder Bereich lag für sich: Dieselben Angaben mussten mehrfach erfasst werden, Debitorenlisten wurden manuell nachgeführt, und für einen Abschluss war jedes Mal Handarbeit nötig.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Umgesetzte Lösung</h4>
-            <p>Eine App für die gesamte Firma statt einzelner Dateien: doppelte Buchhaltung mit Erfolgsrechnung, Bilanz und automatischem Abschluss. Verkäufe und Vermietungen werden ebenfalls dort organisiert, dazu die Debitorenbuchhaltung und eine Adressliste der Kundschaft.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Wichtigste Funktionen</h4>
-            <ul>
-              <li>Buchungen erfassen, Journal mit Filtern</li>
-              <li>Erfolgsrechnung, Bilanz und Kontenplan</li>
-              <li>Automatischer Abschluss</li>
-              <li>Verkäufe und Vermietungen verwalten</li>
-              <li>Debitorenbuchhaltung und Kundenadressen</li>
-            </ul>
-          </div>
-          <div class="proj-block">
-            <h4>Datenschutz &amp; Hosting</h4>
-            <p>Geschäftszahlen gehören nicht in fremde Hände: Alle Daten liegen auf einem Server in der Schweiz, ohne Anbindung an eine Cloud. Zugang nur mit persönlichem Login.</p>
-          </div>
-          <div class="proj-block">
-            <h4>Technik</h4>
-            <p>Läuft im Browser auf Computer und Handy, ohne Installation. Betrieb und Backups laufen automatisch.</p>
-          </div>
+        <!-- App 7: Buchhaltung einer Einzelfirma -->
+        <article class="app" id="app-buchhaltung">
+          <h3 class="app-title">
+            <span class="app-name">Buchhaltung einer Einzelfirma&nbsp;–</span> <span class="app-pitch">Abschluss auf Knopfdruck statt Excel</span>
+          </h3>
 
-          <!-- Kurzfilm mit erfundenen Daten: drei Objekte (Ferienhaus, Fotostudio,
-               Schreinerei), erfundene Buchungstexte und Beträge, kein Firmenname.
-               Damit entfällt das Unkenntlichmachen, das der frühere Screenshot
-               assets/buchhaltung.png nötig machte. -->
-          <figure class="proj-shot proj-clip"
+          <figure class="app-clip"
                   data-clip
                   data-hoch="assets/buchhaltung-hoch.mp4"
                   data-hoch-poster="assets/buchhaltung-hoch-poster.webp"
@@ -1470,6 +1570,7 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+              <p class="clip-meta" aria-hidden="true">25 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1477,18 +1578,85 @@ form .btn{width:100%; justify-content:center}
                 <span class="visually-hidden">Kurzfilm über die Buchhaltung abspielen, 25 Sekunden, mit Ton</span>
               </button>
             </div>
-            <figcaption>Kurzfilm (25 s, mit Ton): eine Buchung erfassen und zusehen, wie der Gewinn in der Erfolgsrechnung mitgeht – erst ein Ertrag, dann ein Aufwand –, dazu Journal und Bilanz. Gezeigt werden erfundene Objekte, Texte und Beträge.</figcaption>
           </figure>
 
-          <p class="proj-result">
-            <strong>Ergebnis:</strong> Ein System, das genau auf diese Firma zugeschnitten ist –
-            ohne Funktionen, die nie gebraucht werden. Der Abschluss entsteht auf Knopfdruck statt
-            in Handarbeit, und die Zahlen stehen nicht mehr über mehrere Dateien verteilt.
-          </p>
-        </div>
+          <div class="app-foot">
+            <details class="app-more">
+              <summary>
+                Weitere Informationen zur App
+                <svg class="app-more-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <div class="app-more-body">
+                <div class="app-cols">
+                  <div class="app-block">
+                    <h4>Kein öffentlicher Link</h4>
+                    <p>Die App enthält die Geschäftszahlen einer Firma und ist nur mit persönlichem Login erreichbar. Gezeigt wird deshalb nur der Kurzfilm, und der läuft mit erfundenen Objekten, Texten und Beträgen.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Ausgangslage</h4>
+                    <p>Eine Einzelfirma führte ihr Kassenbuch in einer Excel-Datei. Verkäufe, Debitorenlisten und die Kostenkontrolle entstanden daneben von Hand in weiteren Dokumenten.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Problem</h4>
+                    <p>Jeder Bereich lag für sich: Dieselben Angaben mussten mehrfach erfasst werden, Debitorenlisten wurden manuell nachgeführt, und für einen Abschluss war jedes Mal Handarbeit nötig.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Umgesetzte Lösung</h4>
+                    <p>Eine App für die gesamte Firma statt einzelner Dateien: doppelte Buchhaltung mit Erfolgsrechnung, Bilanz und automatischem Abschluss. Verkäufe und Vermietungen werden ebenfalls dort organisiert, dazu die Debitorenbuchhaltung und eine Adressliste der Kundschaft.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Wichtigste Funktionen</h4>
+                    <ul>
+                      <li>Buchungen erfassen, Journal mit Filtern</li>
+                      <li>Erfolgsrechnung, Bilanz und Kontenplan</li>
+                      <li>Automatischer Abschluss</li>
+                      <li>Verkäufe und Vermietungen verwalten</li>
+                      <li>Debitorenbuchhaltung und Kundenadressen</li>
+                    </ul>
+                  </div>
+                  <div class="app-block">
+                    <h4>Datenschutz &amp; Hosting</h4>
+                    <p>Geschäftszahlen gehören nicht in fremde Hände: Alle Daten liegen auf einem Server in der Schweiz, ohne Anbindung an eine Cloud. Zugang nur mit persönlichem Login.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Technik</h4>
+                    <p>Läuft im Browser auf Computer und Handy, ohne Installation. Betrieb und Backups laufen automatisch.</p>
+                  </div>
+                  <div class="app-block">
+                    <h4>Im Kurzfilm zu sehen</h4>
+                    <p>Eine Buchung erfassen und zusehen, wie der Gewinn in der Erfolgsrechnung mitgeht – erst ein Ertrag, dann ein Aufwand –, dazu Journal und Bilanz.</p>
+                  </div>
+                  <p class="app-result">
+                    <strong>Ergebnis:</strong> Ein System, das genau auf diese Firma
+                    zugeschnitten ist – ohne Funktionen, die nie gebraucht werden. Der Abschluss
+                    entsteht auf Knopfdruck statt in Handarbeit, und die Zahlen stehen nicht
+                    mehr über mehrere Dateien verteilt.
+                  </p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </article>
       </div>
-    </details>
 
+      <div class="apps-dots">
+        <button class="apps-dot" type="button" data-apps-dot aria-current="true"
+                aria-label="App 1 von 7: Gripszug"></button>
+        <button class="apps-dot" type="button" data-apps-dot
+                aria-label="App 2 von 7: DreamTeam"></button>
+        <button class="apps-dot" type="button" data-apps-dot
+                aria-label="App 3 von 7: Jass App"></button>
+        <button class="apps-dot" type="button" data-apps-dot
+                aria-label="App 4 von 7: Volleyballturnier"></button>
+        <button class="apps-dot" type="button" data-apps-dot
+                aria-label="App 5 von 7: Fotoverkauf"></button>
+        <button class="apps-dot" type="button" data-apps-dot
+                aria-label="App 6 von 7: Familien- und Ferien-Sharing"></button>
+        <button class="apps-dot" type="button" data-apps-dot
+                aria-label="App 7 von 7: Buchhaltung einer Einzelfirma"></button>
+      </div>
+      <p class="apps-hint">Mit dem Pfeil oder einem Wisch zur nächsten App.</p>
+    </div>
   </div>
 </section>
 
@@ -1960,36 +2128,67 @@ form .btn{width:100%; justify-content:center}
      Knopf startet die Übertragung, und weil die Dateien mit dem Index
      vorne liegen (ffmpeg -movflags +faststart), läuft der Film sofort los.
 
+     Im Karussell steht immer nur eine App im Bild. Darum kommt auch das
+     Standbild erst, wenn die Karte sich nähert: Das Seitenverhältnis steht
+     sofort (kostet nichts, hält den Platz frei), Standbild und Filmdatei
+     erst beim Sichtbarwerden. Sonst lüde die Seite sieben Standbilder für
+     sechs Karten, die niemand sieht.
+
      Bedienung bewusst knapp: ein grosser Knopf auf dem Standbild, danach
      die gewohnte Leiste des Browsers zum Pausieren. Ist der Film zu Ende,
-     kommt das Standbild mit dem Knopf zurück.
+     kommt das Standbild mit dem Knopf zurück. Wer weiterblättert, während
+     ein Film läuft, hält ihn damit an – das Karussell schickt dazu
+     „clip:anhalten".
      ---------------------------------------------------------------------- */
   var liegend = window.matchMedia('(orientation: landscape)');
+
+  /* Ein Beobachter für alle Clips: Er meldet, sobald eine Karte in Sicht
+     kommt – auch waagrecht im Karussell, denn was hinter dem Rand des
+     Scrollbereichs liegt, schneidet dieser weg und gilt als unsichtbar. */
+  var clipNah = ('IntersectionObserver' in window) ? new IntersectionObserver(function (eintraege, beob) {
+    eintraege.forEach(function (eintrag) {
+      if (!eintrag.isIntersecting) return;
+      beob.unobserve(eintrag.target);
+      eintrag.target.dispatchEvent(new Event('clip:laden'));
+    });
+  }, { rootMargin: '200px' }) : null;
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-clip]'), function (figur) {
     var video = figur.querySelector('video');
     var knopf = figur.querySelector('.clip-play');
     if (!video || !knopf) return;
 
-    function fassungWaehlen() {
+    var geladen = '';                  // Fassung, deren Dateien am <video> hängen
+
+    /* Ohne mitDatei wird nur data-format gesetzt – das reserviert im CSS den
+       Platz, ohne etwas zu übertragen. */
+    function fassungWaehlen(mitDatei) {
       var format = (liegend.matches && figur.dataset.quer) ? 'quer' : 'hoch';
-      if (figur.dataset.format === format) return;
       figur.dataset.format = format;
+      if (!mitDatei || geladen === format) return;
+      geladen = format;
       video.poster = figur.dataset[format + 'Poster'] || '';
       video.src = figur.dataset[format];
     }
 
-    function zurueckAufStandbild() {
-      var hatteFokus = document.activeElement === video;
+    /* fokusZurueck false, wenn die Karte gerade aus dem Bild gewandert ist:
+       Den Fokus auf den Knopf einer weggeblätterten App zu setzen, würde
+       das Karussell zurückholen. */
+    function zurueckAufStandbild(fokusZurueck) {
+      var hatteFokus = fokusZurueck !== false && document.activeElement === video;
       delete figur.dataset.laeuft;
       video.controls = false;
       video.load();                    // zeigt wieder das Standbild
       if (hatteFokus) knopf.focus();
     }
 
-    fassungWaehlen();
+    fassungWaehlen(false);
+    figur.addEventListener('clip:laden', function () { fassungWaehlen(true); });
+    if (clipNah) clipNah.observe(figur);
+    else fassungWaehlen(true);         // ohne Beobachter gleich alles laden
 
     knopf.addEventListener('click', function () {
+      fassungWaehlen(true);            // falls der Beobachter noch nicht dran war
       figur.dataset.laeuft = '';
       video.controls = true;
       video.focus();                   // Tastatur bedient ab jetzt den Film
@@ -2001,11 +2200,129 @@ form .btn{width:100%; justify-content:center}
 
     video.addEventListener('ended', zurueckAufStandbild);
 
+    /* Ein Film, den niemand mehr sieht, soll auch nicht weiterlaufen –
+       sonst tönt es aus einer App, die längst weggeblättert ist. */
+    figur.addEventListener('clip:anhalten', function () {
+      if (!('laeuft' in figur.dataset)) return;
+      video.pause();
+      zurueckAufStandbild(false);
+    });
+
     var beiDrehung = function () {
-      if (!('laeuft' in figur.dataset)) fassungWaehlen();
+      if (!('laeuft' in figur.dataset)) fassungWaehlen(geladen !== '');
     };
     if (liegend.addEventListener) liegend.addEventListener('change', beiDrehung);
     else if (liegend.addListener) liegend.addListener(beiDrehung);   // Safari < 14
+  });
+
+  /* --- App-Karussell ----------------------------------------------------
+     Die Sparte „Apps, die heute im Einsatz sind" zeigt eine App pro
+     Ansicht: Titel, Kurzfilm, Link, Klappbereich. Das Blättern selbst macht
+     das CSS (waagrechtes Scrollen mit scroll-snap), hier kommen nur die
+     Bedienelemente dazu – Pfeile, Punkte, Zähler und die Pfeiltasten.
+
+     Welche App gerade steht, wird nicht mitgezählt, sondern aus der
+     Scrollposition gelesen. So stimmt die Anzeige auch nach einem Wisch,
+     nach einem Sprung über die Punkte und nachdem die Tabulatortaste in
+     eine andere Karte gewandert ist.
+     ---------------------------------------------------------------------- */
+  var weichScrollen = 'scrollBehavior' in document.documentElement.style;
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-apps]'), function (karussell) {
+    var spur = karussell.querySelector('[data-apps-track]');
+    if (!spur) return;
+
+    var folien = Array.prototype.slice.call(spur.querySelectorAll('.app'));
+    if (folien.length < 2) return;
+
+    var zurueck = karussell.querySelector('[data-apps-prev]');
+    var weiter = karussell.querySelector('[data-apps-next]');
+    var zaehler = karussell.querySelector('[data-apps-index]');
+    var punkte = Array.prototype.slice.call(karussell.querySelectorAll('[data-apps-dot]'));
+    var aktiv = -1;
+
+    /* Alles über getBoundingClientRect: unabhängig von Polster, Abstand
+       zwischen den Karten und Schreibrichtung. */
+    function mitte() {
+      return spur.getBoundingClientRect().left + spur.clientWidth / 2;
+    }
+
+    function folieInDerMitte() {
+      var m = mitte(), beste = Infinity, treffer = 0;
+      folien.forEach(function (folie, i) {
+        var r = folie.getBoundingClientRect();
+        var abstand = Math.abs(r.left + r.width / 2 - m);
+        if (abstand < beste) { beste = abstand; treffer = i; }
+      });
+      return treffer;
+    }
+
+    function zuFolie(i) {
+      i = Math.max(0, Math.min(folien.length - 1, i));
+      var r = folien[i].getBoundingClientRect();
+      var ziel = spur.scrollLeft + (r.left + r.width / 2) - mitte();
+      if (weichScrollen) spur.scrollTo({ left: ziel, behavior: reduce ? 'auto' : 'smooth' });
+      else spur.scrollLeft = ziel;
+    }
+
+    /* Sobald einmal geblättert wurde, hört der Pfeil rechts auf zu winken */
+    function benutzt() { karussell.classList.add('is-genutzt'); }
+
+    function anzeigen(i) {
+      if (i === aktiv) return;
+      aktiv = i;
+      if (zaehler) zaehler.textContent = String(i + 1);
+      if (zurueck) zurueck.disabled = i === 0;
+      if (weiter) weiter.disabled = i === folien.length - 1;
+      punkte.forEach(function (punkt, n) {
+        if (n === i) punkt.setAttribute('aria-current', 'true');
+        else punkt.removeAttribute('aria-current');
+      });
+      /* Aufgeräumt wird bei den anderen: laufende Filme anhalten, offene
+         Einzelheiten zuklappen. Sonst tönte es aus einer App, die niemand
+         sieht, und die Spur bliebe so hoch wie die höchste Karte. */
+      folien.forEach(function (folie, n) {
+        if (n === i) return;
+        Array.prototype.forEach.call(folie.querySelectorAll('[data-clip]'), function (figur) {
+          figur.dispatchEvent(new Event('clip:anhalten'));
+        });
+        Array.prototype.forEach.call(folie.querySelectorAll('details[open]'), function (klapp) {
+          klapp.open = false;
+        });
+      });
+    }
+
+    if (zurueck) zurueck.addEventListener('click', function () { benutzt(); zuFolie(aktiv - 1); });
+    if (weiter) weiter.addEventListener('click', function () { benutzt(); zuFolie(aktiv + 1); });
+    punkte.forEach(function (punkt, n) {
+      punkt.addEventListener('click', function () { benutzt(); zuFolie(n); });
+    });
+
+    /* Pfeiltasten nur, solange die Spur selbst den Fokus hat: Steckt er im
+       Film, gehören die Pfeile dem Browser zum Spulen. */
+    spur.addEventListener('keydown', function (ev) {
+      if (ev.target !== spur) return;
+      if (ev.key === 'ArrowRight' || ev.key === 'Right') { ev.preventDefault(); benutzt(); zuFolie(aktiv + 1); }
+      else if (ev.key === 'ArrowLeft' || ev.key === 'Left') { ev.preventDefault(); benutzt(); zuFolie(aktiv - 1); }
+    });
+
+    /* Das Scrollen ist die einzige Wahrheit – gewischt, geklickt oder per
+       Tabulator gewandert, gelesen wird es gleich. Ein Blick pro Bild
+       genügt, deshalb requestAnimationFrame. */
+    var wartet = false;
+    spur.addEventListener('scroll', function () {
+      if (wartet) return;
+      wartet = true;
+      window.requestAnimationFrame(function () {
+        wartet = false;
+        var i = folieInDerMitte();
+        if (i !== aktiv) { benutzt(); anzeigen(i); }
+      });
+    }, { passive: true });
+
+    window.addEventListener('resize', function () { anzeigen(folieInDerMitte()); }, { passive: true });
+
+    anzeigen(folieInDerMitte());
   });
 
   /* --- Signet-Animation -------------------------------------------------
