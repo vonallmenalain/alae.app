@@ -87,6 +87,19 @@
   --pad:clamp(1.25rem, 4vw, 2.5rem);
   --maxw:1160px;
   --section-y:clamp(4rem, 9vw, 7.5rem);
+
+  /* Bewegung. Zwei Kurven für die ganze Seite:
+     --ease-out für alles, was kommt oder geht. Sie startet schnell und läuft
+     aus – genau umgekehrt wie die eingebauten Kurven von CSS, die am Anfang
+     bummeln. Und der Anfang ist der Moment, auf den man schaut: Dasselbe
+     Bild wirkt mit --ease-out schneller als mit ease, bei gleicher Dauer.
+     --ease-in-out für das, was auf dem Bildschirm bleibt und sich nur
+     verwandelt – ein Pfeil, der sich dreht, ein Feld, das wächst.
+     Faustregeln für die Dauer: Druck 80–160 ms, Hover 160 ms, Klappen und
+     Menüs 200–300 ms. Über 300 ms gerät Bedienung ins Zähe; länger darf nur,
+     was erzählt statt bedient – das Einblenden beim Scrollen. */
+  --ease-out:cubic-bezier(.23, 1, .32, 1);
+  --ease-in-out:cubic-bezier(.77, 0, .175, 1);
 }
 
 @media (prefers-color-scheme: dark){
@@ -210,10 +223,22 @@ section{padding-block:var(--section-y)}
   background:var(--btn-bg); color:var(--btn-fg); border:1px solid var(--btn-bd);
   font:inherit; font-weight:600; font-size:.97rem; letter-spacing:-.01em;
   text-decoration:none; cursor:pointer; white-space:nowrap;
-  transition:transform .16s ease, box-shadow .16s ease, background .16s ease, border-color .16s ease, color .16s ease;
+  transition:transform .2s var(--ease-out), box-shadow .16s ease, background .16s ease, border-color .16s ease, color .16s ease;
 }
-.btn:hover{transform:translateY(-1px); box-shadow:var(--shadow-md)}
-.btn:active{transform:translateY(0)}
+/* Das Anheben nur dort, wo es wirklich ein Zeigegerät gibt. Auf einem
+   Handy rastet :hover nach dem Antippen ein – der Knopf bliebe angehoben,
+   bis man irgendwo anders hintippt. Das Gatter steht bei jedem Hover
+   dieser Seite, der etwas bewegt; reine Farbwechsel dürfen bleiben, ein
+   eingerasteter Farbton fällt niemandem auf. */
+@media (hover: hover) and (pointer: fine){
+  .btn:hover{transform:translateY(-1px); box-shadow:var(--shadow-md)}
+}
+/* Antwort auf den Druck, nicht erst auf das Loslassen: 80 ms hinein,
+   200 ms zurück (die Dauer oben). Das ist die Asymmetrie echter Tasten –
+   sie geben sofort nach und kommen gelassen zurück. Vorher stand hier
+   translateY(0), was nur das Anheben aufhob: Auf dem Handy, wo es kein
+   Anheben gibt, passierte beim Drücken also gar nichts. */
+.btn:active{transform:scale(.97); transition:transform .08s var(--ease-out)}
 .btn--primary{--btn-bg:var(--accent); --btn-fg:var(--accent-fg); --btn-bd:var(--accent)}
 .btn--primary:hover{--btn-bg:var(--accent-hover); --btn-bd:var(--accent-hover)}
 .btn--ghost{--btn-bg:transparent; --btn-fg:var(--text); --btn-bd:var(--line-strong)}
@@ -242,11 +267,16 @@ section{padding-block:var(--section-y)}
 
 /* Filmrahmen: geteilt vom Aufmacher und den sieben Projektkarten ---------
    Jeder Film der Seite sitzt in einer figure[data-clip] mit einem .clip
-   darin. Gemeinsam sind Rahmen, Abspielknopf und die Bildzeile mit Länge
-   und Ton. Eigen ist jeder Stelle nur, wie gross der Film werden darf und
-   wie er gerahmt ist – siehe „Aufmacherfilm" und „Apps im Einsatz". Weil
-   beide Sektionen darauf aufbauen, steht der Rahmen hier bei den
-   Komponenten und nicht in einer der beiden.
+   darin. Gemeinsam sind Rahmen und Abspielknopf. Eigen ist jeder Stelle
+   nur, wie gross der Film werden darf und wie er gerahmt ist – siehe
+   „Aufmacherfilm" und „Apps im Einsatz". Weil beide Sektionen darauf
+   aufbauen, steht der Rahmen hier bei den Komponenten und nicht in einer
+   der beiden.
+
+   Länge und Ton stehen nirgends im Bild. Ein Abspielknopf sagt schon, dass
+   da ein Film ist, und eine zweite Auskunft daneben ist Text über einem
+   Bild, das für sich sprechen soll. Für Vorlesegeräte steht beides im
+   versteckten Satz des Knopfes.
 
    Das Seitenverhältnis steht im CSS und nicht als width/height am <video>,
    weil preload="none" gilt: Vor dem ersten Klick sind die Masse des Films
@@ -271,7 +301,9 @@ section{padding-block:var(--section-y)}
   color:inherit; font:inherit; cursor:pointer;
   transition:background .16s ease;
 }
-.clip-play:hover{background:rgba(14,16,19,.30)}
+@media (hover: hover) and (pointer: fine){
+  .clip-play:hover{background:rgba(14,16,19,.30)}
+}
 /* Der Rahmen schneidet ab, darum der Fokusring nach innen statt nach aussen */
 .clip-play:focus-visible{outline-offset:-5px}
 .clip-icon{
@@ -281,21 +313,51 @@ section{padding-block:var(--section-y)}
   box-shadow:var(--shadow-md);
   transition:transform .16s ease, background .16s ease;
 }
-.clip-play:hover .clip-icon{background:var(--accent-hover); transform:scale(1.06)}
+@media (hover: hover) and (pointer: fine){
+  .clip-play:hover .clip-icon{background:var(--accent-hover); transform:scale(1.06)}
+}
+/* Gedrückt wird der ganze Rahmen, nachgeben darf nur der Knopf darin –
+   eine Fläche von Filmgrösse zu stauchen sähe nach Fehler aus. */
+.clip-play:active .clip-icon{transform:scale(.94); transition:transform .08s var(--ease-out)}
 /* Dreieck sitzt optisch mittig, wenn es leicht nach rechts rückt */
 .clip-play svg{margin-left:.15rem}
 @media (prefers-reduced-motion: reduce){ .clip-play:hover .clip-icon{transform:none} }
 [data-clip][data-laeuft] .clip-play{display:none}
-/* Länge und Ton stehen im Bild statt als Zeile darunter – sonst käme unter
-   dem Film wieder Text. Klicks gehen durch auf den Abspielknopf. */
-.clip-meta{
-  position:absolute; top:.6rem; right:.6rem; margin:0; z-index:1;
-  padding:.2rem .6rem; border-radius:999px;
-  background:rgba(14,16,19,.55); color:#fff;
-  font-family:var(--mono); font-size:.68rem; letter-spacing:.05em;
-  pointer-events:none;
+
+/* Klappbereiche sanft auf und zu ----------------------------------------
+   Betrifft „Weitere Informationen zur App" und die FAQ.
+
+   Wie hoch ein Klappbereich wird, steht erst fest, wenn er offen ist – und
+   bis vor kurzem liess sich das gar nicht animieren, darum sprangen solche
+   Bereiche auf. Genau das können interpolate-size und ::details-content
+   jetzt: von null auf die tatsächliche Höhe. Chrome kann beides, Safari und
+   Firefox noch nicht; dort klappt es wie bisher. Deshalb steht alles in
+   @supports, und ohne diese Regeln funktioniert die Seite unverändert.
+
+   Das ist bewusst die einzige Stelle, an der eine Layout-Eigenschaft
+   animiert wird. Höhe kostet Layout, Zeichnen und Zusammensetzen, während
+   transform nur das Letzte kostet – hier ist der Preis vertretbar: Es läuft
+   nur nach einem Klick, nie während des Scrollens, und für „so hoch, wie
+   der Inhalt eben ist" gibt es keinen Weg über die Grafikkarte. Kurz
+   gehalten ist es trotzdem.
+
+   content-visibility muss mit: Zu ist der Bereich damit ausgeblendet, und
+   ohne allow-discrete wäre er beim Zuklappen sofort weg – die Höhe liefe
+   dann gegen einen leeren Kasten. */
+@supports (interpolate-size: allow-keywords) and selector(::details-content){
+  :root{interpolate-size:allow-keywords}
+  .app-more::details-content,
+  .faq details::details-content{
+    block-size:0; overflow:clip;
+    transition:block-size .28s var(--ease-out), content-visibility .28s allow-discrete;
+  }
+  .app-more[open]::details-content,
+  .faq details[open]::details-content{block-size:auto}
+  @media (prefers-reduced-motion: reduce){
+    .app-more::details-content,
+    .faq details::details-content{transition:none}
+  }
 }
-[data-clip][data-laeuft] .clip-meta{display:none}
 
 /* --- Header ------------------------------------------------------------- */
 .site-header{
@@ -308,6 +370,16 @@ section{padding-block:var(--section-y)}
 }
 @supports not (background: color-mix(in srgb, red, blue)){
   .site-header{background:var(--bg)}
+}
+/* Wer im Betriebssystem weniger Transparenz eingestellt hat, bekommt eine
+   deckende Kopfzeile ohne Weichzeichner. Das ist der dritte Schalter neben
+   prefers-reduced-motion und prefers-contrast – und der einzige, der hier
+   etwas zu melden hat, weil nur die Kopfzeile durchscheint. */
+@media (prefers-reduced-transparency: reduce){
+  .site-header{
+    background:var(--bg);
+    backdrop-filter:none; -webkit-backdrop-filter:none;
+  }
 }
 .site-header.is-stuck{border-bottom-color:var(--line)}
 .header-inner{
@@ -350,9 +422,11 @@ section{padding-block:var(--section-y)}
 .icon-btn{
   display:grid; place-items:center; width:2.35rem; height:2.35rem;
   border-radius:999px; border:1px solid var(--line); background:transparent; color:var(--text);
-  cursor:pointer; transition:border-color .15s ease, background .15s ease;
+  cursor:pointer;
+  transition:transform .2s var(--ease-out), border-color .15s ease, background .15s ease;
 }
 .icon-btn:hover{border-color:var(--line-strong); background:var(--bg-2)}
+.icon-btn:active{transform:scale(.92); transition:transform .08s var(--ease-out)}
 .icon-btn svg{width:1.05rem; height:1.05rem}
 
 /* Der Umschalter zeigt, wohin er führt: im Dunkelmodus die Sonne, im hellen
@@ -372,9 +446,18 @@ section{padding-block:var(--section-y)}
     padding:.9rem var(--pad) 1.35rem;
     box-shadow:var(--shadow-lg);
     transform:translateY(-135%); opacity:0; pointer-events:none;
-    transition:transform .28s cubic-bezier(.4,0,.2,1), opacity .2s ease;
+    /* Die Kurve am geschlossenen Zustand gilt fürs Schliessen, die am
+       offenen fürs Öffnen. Vorher stand hier cubic-bezier(.4,0,.2,1) für
+       beides – eine Ein-und-aus-Kurve, die am Anfang bummelt, während man
+       genau dort hinschaut. Jetzt Ease-out, und das Schliessen knapper als
+       das Öffnen: Aufmachen ist die Absicht, Zumachen bloss das Aufräumen
+       danach. */
+    transition:transform .2s var(--ease-out), opacity .15s ease;
   }
-  .nav[data-open="true"]{transform:translateY(0); opacity:1; pointer-events:auto}
+  .nav[data-open="true"]{
+    transform:translateY(0); opacity:1; pointer-events:auto;
+    transition:transform .28s var(--ease-out), opacity .2s ease;
+  }
   .nav a{padding:.7rem .25rem; font-size:1.05rem; border-bottom:1px solid var(--line)}
   .nav a.is-active::after{display:none}
   .nav a.is-active{color:var(--accent)}
@@ -386,7 +469,11 @@ section{padding-block:var(--section-y)}
   .burger{display:grid}
   .header-cta{display:none}
 }
-@media (prefers-reduced-motion: reduce){ .nav{transition:none} }
+/* „Sanfter, nicht gar nichts": Die Verschiebung fällt weg, die Blende
+   bleibt. Vorher stand hier transition:none – das Menü blitzte auf. */
+@media (prefers-reduced-motion: reduce){
+  .nav, .nav[data-open="true"]{transform:none; transition:opacity .15s ease}
+}
 
 /* --- Hero --------------------------------------------------------------- */
 .hero{
@@ -487,8 +574,7 @@ section{padding-block:var(--section-y)}
    Die Aufschrift sitzt auf einer dunklen Kapsel, nicht auf blankem Bild.
    Sie muss über jedem Standbild lesbar sein, auch über dem hellen Himmel
    der Illustration – und ein Schleier über dem ganzen Bild nähme diesem
-   genau die Farbe, für die es hier steht. Die Kapsel ist dieselbe wie bei
-   der Bildzeile oben rechts, das kennt die Seite also schon.
+   genau die Farbe, für die es hier steht.
 
    Treffbar ist immer die ganze Fläche. Wo die Bedienung sichtbar sitzt,
    hängt an der Lage des Bildschirms. */
@@ -503,10 +589,10 @@ section{padding-block:var(--section-y)}
 .hero-clip .clip-play{grid-auto-flow:row; align-content:center; gap:.9rem}
 
 /* Liegend: Der Film steht ganz im Bild. Dann darf die Bedienung dorthin,
-   wo sie nicht mit dem Standbild kollidiert – unten links, gegenüber der
-   Bildzeile oben rechts. Das Standbild hat seine eigene Komposition
-   (Aussage links, App rechts), mittig fiele der Knopf mitten hinein. Der
-   Verlauf trägt ihn und lässt das übrige Bild unangetastet. */
+   wo sie nicht mit dem Standbild kollidiert – in die leere untere linke
+   Ecke. Das Standbild hat seine eigene Komposition (Aussage links, App
+   rechts), mittig fiele der Knopf mitten hinein. Der Verlauf trägt ihn und
+   lässt das übrige Bild unangetastet. */
 @media (orientation: landscape){
   .hero-clip .clip-play{
     grid-auto-flow:column; gap:.85rem;
@@ -558,8 +644,9 @@ section{padding-block:var(--section-y)}
   background:var(--surface); color:var(--text); border:1px solid var(--line-strong);
   font:inherit; font-size:.88rem; font-weight:650; letter-spacing:-.01em;
   cursor:pointer; white-space:nowrap;
-  transition:background .16s ease, border-color .16s ease, color .16s ease, opacity .16s ease;
+  transition:transform .2s var(--ease-out), background .16s ease, border-color .16s ease, color .16s ease, opacity .16s ease;
 }
+.apps-arrow:active:not(:disabled){transform:scale(.96); transition:transform .08s var(--ease-out)}
 .apps-arrow--icon{width:2.85rem; padding:0}
 .apps-arrow:hover:not(:disabled){border-color:var(--accent); color:var(--accent)}
 /* Am Anfang und am Ende gibt es nichts mehr zu holen – das zeigt der Knopf,
@@ -572,15 +659,17 @@ section{padding-block:var(--section-y)}
 .apps-arrow--next:hover:not(:disabled){
   background:var(--accent-hover); border-color:var(--accent-hover); color:var(--accent-fg);
 }
-/* Einmaliges Winken, bis zum ersten Wechsel: macht ohne Worte klar, dass es
-   nach rechts weitergeht. Danach nimmt das Skript .is-genutzt dazu. */
+/* Winken bis zum ersten Wechsel: macht ohne Worte klar, dass es nach rechts
+   weitergeht. Danach nimmt das Skript .is-genutzt dazu. Zwei Runden, nicht
+   drei – nach rund fünf Sekunden ist der Hinweis angekommen, und ein Knopf,
+   der acht Sekunden zappelt, wirkt nicht hilfsbereit, sondern unruhig. */
 @keyframes apps-winken{
   0%, 55%, 100%{transform:translateX(0)}
   70%{transform:translateX(.22rem)}
   85%{transform:translateX(0)}
 }
 .apps.is-in:not(.is-genutzt) .apps-arrow--next svg{
-  animation:apps-winken 2.6s ease-in-out .9s 3;
+  animation:apps-winken 2.6s ease-in-out .9s 2;
 }
 @media (prefers-reduced-motion: reduce){
   .apps .apps-arrow--next svg{animation:none}
@@ -630,8 +719,8 @@ section{padding-block:var(--section-y)}
 
 /* Der Kurzfilm: volle Breite der Karte, das Hochformat mittig in
    Handybreite. Welche Fassung läuft, sagt data-format am figure – gesetzt
-   wird es im Skript, siehe „Videoclips". Rahmen, Knopf und Bildzeile
-   stehen bei den Komponenten unter „Filmrahmen".
+   wird es im Skript, siehe „Videoclips". Rahmen und Knopf stehen bei den
+   Komponenten unter „Filmrahmen".
 
    Die dritte Schranke rechnet aus der Fensterhöhe zurück: Auf flachen
    Fenstern (Laptop, Handy mit viel Browserleiste) bleibt der Film so weit
@@ -651,9 +740,12 @@ section{padding-block:var(--section-y)}
   padding:.65rem 1.15rem; border-radius:999px;
   background:var(--text); color:var(--bg); border:1px solid var(--text);
   font-size:.88rem; font-weight:650; text-decoration:none;
-  transition:transform .16s ease, box-shadow .16s ease;
+  transition:transform .2s var(--ease-out), box-shadow .16s ease;
 }
-.app-link:hover{transform:translateY(-1px); box-shadow:var(--shadow-md)}
+@media (hover: hover) and (pointer: fine){
+  .app-link:hover{transform:translateY(-1px); box-shadow:var(--shadow-md)}
+}
+.app-link:active{transform:scale(.97); transition:transform .08s var(--ease-out)}
 .app-link svg{flex:none}
 @media (prefers-reduced-motion: reduce){ .app-link:hover{transform:none} }
 
@@ -664,9 +756,10 @@ section{padding-block:var(--section-y)}
   padding:.65rem 1.15rem; border-radius:999px;
   border:1px solid var(--line-strong); color:var(--text);
   font-size:.88rem; font-weight:650;
-  transition:border-color .15s ease, color .15s ease;
+  transition:transform .2s var(--ease-out), border-color .15s ease, color .15s ease;
 }
 .app-more > summary::-webkit-details-marker{display:none}
+.app-more > summary:active{transform:scale(.97); transition:transform .08s var(--ease-out)}
 .app-more > summary:hover{border-color:var(--accent); color:var(--accent)}
 .app-more-chev{flex:none; transition:transform .22s ease}
 .app-more[open] > summary{border-color:var(--accent); color:var(--accent)}
@@ -713,8 +806,9 @@ section{padding-block:var(--section-y)}
 .apps-dot::before{
   content:""; display:block; width:.55rem; height:.55rem; border-radius:999px;
   background:var(--line-strong);
-  transition:width .22s ease, background .22s ease;
+  transition:width .22s var(--ease-out), background .22s ease, transform .2s var(--ease-out);
 }
+.apps-dot:active::before{transform:scale(.78); transition:transform .08s var(--ease-out)}
 .apps-dot:hover::before{background:var(--muted)}
 .apps-dot[aria-current="true"]::before{width:1.6rem; background:var(--accent)}
 @media (prefers-reduced-motion: reduce){ .apps-dot::before{transition:none} }
@@ -834,7 +928,10 @@ section{padding-block:var(--section-y)}
   font-weight:600; letter-spacing:-.01em;
 }
 .faq summary::-webkit-details-marker{display:none}
-.faq summary:hover{color:var(--accent)}
+/* Eine Zeile über die volle Breite zu stauchen sieht nach Gummi aus. Hier
+   ist die Farbe die Rückmeldung – auf dem Handy die einzige, denn dort
+   gibt es kein Hover. */
+.faq summary:hover, .faq summary:active{color:var(--accent)}
 .faq summary .plus{
   flex:none; width:1.15rem; height:1.15rem; margin-top:.2rem; color:var(--accent);
   transition:transform .22s ease;
@@ -849,9 +946,13 @@ section{padding-block:var(--section-y)}
   flex:0 1 auto;
   display:flex; align-items:center; gap:.85rem; padding:.95rem 1.15rem;
   border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface);
-  text-decoration:none; transition:border-color .15s ease, transform .15s ease;
+  text-decoration:none;
+  transition:transform .2s var(--ease-out), border-color .15s ease;
 }
-.contact-direct a:hover{border-color:var(--accent); transform:translateX(2px)}
+@media (hover: hover) and (pointer: fine){
+  .contact-direct a:hover{border-color:var(--accent); transform:translateX(2px)}
+}
+.contact-direct a:active{transform:scale(.98); transition:transform .08s var(--ease-out)}
 .contact-direct svg{width:1.1rem; height:1.1rem; color:var(--accent); flex:none}
 .contact-direct b{display:block; font-size:.95rem}
 .contact-direct small{color:var(--muted); font-size:.82em}
@@ -903,11 +1004,41 @@ form .btn{width:100%; justify-content:center}
 }
 
 /* --- Utilities ---------------------------------------------------------- */
-.reveal{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.6,.2,1)}
+/* Einblenden beim Scrollen. Eine Kurve für beide Eigenschaften und für
+   beide dieselbe Dauer: Vorher lief die Deckkraft auf `ease` und der
+   Aufstieg auf einer eigenen Kurve – die Fläche hinkte der Bewegung nach,
+   und `ease` bummelt genau am Anfang, wo man hinschaut. 450 ms statt 600:
+   Das darf länger dauern als Bedienung, weil es erzählt und nicht
+   antwortet, aber 600 ms sind an der Grenze zum Zähen. */
+.reveal{
+  opacity:0; transform:translateY(14px);
+  transition:opacity .45s var(--ease-out), transform .45s var(--ease-out);
+  transition-delay:var(--reveal-verzug, 0ms);
+}
 .reveal.is-in{opacity:1; transform:none}
+
+/* Nachbarn, die gleichzeitig ins Bild kommen, blenden versetzt ein. Die vier
+   Schritte im Ablauf stehen zu zweit nebeneinander, die zwei Preiskarten
+   auch, Porträt und Text ebenso – alles auf einmal wirkt wie ein Sprung,
+   ein Versatz von 60 ms liest sich als Reihenfolge. Jede Karte hat ihren
+   eigenen Beobachter, der Verzug kommt darum aus dem CSS und nicht aus dem
+   Skript. */
+.steps > .step:nth-child(2){--reveal-verzug:60ms}
+.steps > .step:nth-child(3){--reveal-verzug:120ms}
+.steps > .step:nth-child(4){--reveal-verzug:180ms}
+.price-card:nth-child(2){--reveal-verzug:80ms}
+.about > .about-text{--reveal-verzug:80ms}
+
 @media (prefers-reduced-motion: reduce){
-  .reveal{opacity:1; transform:none; transition:none}
-  .btn:hover, .card--hover:hover, .contact-direct a:hover{transform:none}
+  .reveal{opacity:1; transform:none; transition:none; --reveal-verzug:0ms}
+  .btn:hover, .contact-direct a:hover{transform:none}
+  /* Der Druck bleibt spürbar, nur ohne Bewegung: kurz abgeblendet statt
+     gestaucht. Gar keine Rückmeldung liesse den Knopf tot wirken. */
+  .btn:active, .icon-btn:active, .app-link:active, .contact-direct a:active,
+  .apps-arrow:active:not(:disabled), .apps-dot:active::before,
+  .clip-play:active .clip-icon, .app-more > summary:active{
+    transform:none; opacity:.72;
+  }
 }
 .visually-hidden{
   position:absolute; width:1px; height:1px; margin:-1px; padding:0;
@@ -1029,7 +1160,6 @@ form .btn{width:100%; justify-content:center}
       <div class="clip">
         <video class="clip-video" preload="none" playsinline
                controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
-        <p class="clip-meta" aria-hidden="true">45 s &middot; mit Ton</p>
         <button class="clip-play" type="button">
           <span class="clip-icon" aria-hidden="true">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1215,7 +1345,6 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
-              <p class="clip-meta" aria-hidden="true">24 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1299,7 +1428,6 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
-              <p class="clip-meta" aria-hidden="true">23 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1395,7 +1523,6 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
-              <p class="clip-meta" aria-hidden="true">23 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1479,7 +1606,6 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
-              <p class="clip-meta" aria-hidden="true">24 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1562,7 +1688,6 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
-              <p class="clip-meta" aria-hidden="true">24 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1645,7 +1770,6 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
-              <p class="clip-meta" aria-hidden="true">23 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
@@ -1728,7 +1852,6 @@ form .btn{width:100%; justify-content:center}
             <div class="clip">
               <video class="clip-video" preload="none" playsinline
                      controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
-              <p class="clip-meta" aria-hidden="true">25 s &middot; mit Ton</p>
               <button class="clip-play" type="button">
                 <span class="clip-icon" aria-hidden="true">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>

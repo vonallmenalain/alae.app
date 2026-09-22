@@ -45,11 +45,11 @@ Bildmitte dort nicht frei ist, spielt hier keine Rolle – anders als bei den
 Karten sitzt die Bedienung nicht mittig, quer sogar unten links (CSS-Block
 „Aufmacherfilm").
 
-**Wird der Film ersetzt**, sind Länge und Standbild an drei Stellen
-nachzuführen: die Bildzeile `45 s · mit Ton` und der versteckte Satz im
-Abspielknopf in `index.html`, dazu die Tabelle hier. Und wenn die neue Fassung
-mit einer anderen Aussage beginnt als die Überschrift, ist der Grund für das
-Standbild aus der Mitte neu zu prüfen.
+**Wird der Film ersetzt**, sind Länge und Standbild an zwei Stellen
+nachzuführen: der versteckte Satz im Abspielknopf in `index.html` („45
+Sekunden, mit Ton") und die Tabelle hier. Und wenn die neue Fassung mit einer
+anderen Aussage beginnt als die Überschrift, ist der Grund für das Standbild
+aus der Mitte neu zu prüfen.
 
 **Zwei Fassungen pro Film.** Das Skript wählt nach der Lage des Bildschirms aus:
 `data-hoch` für stehende (Handy), `data-quer` für liegende (Computer, gedrehtes

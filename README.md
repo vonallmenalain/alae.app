@@ -26,7 +26,9 @@ Unter Überschrift, Knopf und der Zeile „Erstgespräch kostenlos und
 unverbindlich" steht der Film, der die Seite erklärt – 45 s, in zwei Fassungen
 wie die Projektfilme: hoch fürs Handy, quer für den Computer. Er läuft nie von
 selbst, und vor dem ersten Klick wird kein Byte Film geladen; zu sehen ist ein
-Standbild mit einem Knopf „Film ansehen" und der Bildzeile `45 s · mit Ton`.
+Standbild mit einem Knopf „Film ansehen". Länge und Ton stehen nirgends im
+Bild – ein Abspielknopf sagt schon, dass da ein Film ist. Für Vorlesegeräte
+steht beides im versteckten Satz des Knopfes.
 
 Drei Entscheide, die man beim Ändern kennen sollte:
 
@@ -296,6 +298,58 @@ Functions und `netlify.toml` gibt es dort. Bei einem Wechsel müsste das
 Gegenstück der neuen Plattform eingerichtet werden – sonst steht die Seite
 wieder offen.
 
+## Bewegung
+
+Zwei Kurven für die ganze Seite, als Tokens in `:root`:
+
+| Token | Kurve | Wofür |
+| --- | --- | --- |
+| `--ease-out` | `cubic-bezier(.23, 1, .32, 1)` | alles, was kommt oder geht |
+| `--ease-in-out` | `cubic-bezier(.77, 0, .175, 1)` | was bleibt und sich nur verwandelt |
+
+`--ease-out` startet schnell und läuft aus – genau umgekehrt wie die
+eingebauten Kurven von CSS, die am Anfang bummeln. Und der Anfang ist der
+Moment, auf den man schaut: Dasselbe Bild wirkt mit `--ease-out` schneller als
+mit `ease`, bei gleicher Dauer.
+
+Dauer nach Aufgabe: **Druck 80 ms**, Loslassen 200 ms, Hover 160 ms, Klappen
+und Menüs 200–300 ms. Über 300 ms gerät Bedienung ins Zähe; länger darf nur,
+was erzählt statt bedient – das Einblenden beim Scrollen mit 450 ms.
+
+Vier Regeln, die überall gelten:
+
+- **Jede Bedienung antwortet auf den Druck, nicht auf das Loslassen.** Knöpfe,
+  Links, Blätterpfeile, Punkte, Klappschalter und der Abspielknopf gehen beim
+  Drücken leicht nach (`scale(.97)`, 80 ms) und kommen gelassen zurück
+  (200 ms). Das ist die Asymmetrie echter Tasten. Bei breiten Zeilen wie im
+  FAQ übernimmt die Farbe – eine Zeile über die volle Breite zu stauchen sieht
+  nach Gummi aus.
+- **Bewegung auf Hover nur hinter `@media (hover: hover) and (pointer: fine)`.**
+  Auf einem Handy rastet `:hover` nach dem Antippen ein; ohne Gatter bliebe
+  ein Knopf angehoben, bis man woanders hintippt. Reine Farbwechsel dürfen
+  ungegattert bleiben, ein eingerasteter Farbton fällt niemandem auf.
+- **Nur `transform` und `opacity`.** Beides kostet den Browser bloss das
+  Zusammensetzen, nicht Layout und Zeichnen. Zwei bewusste Ausnahmen: die
+  Breite des aktiven Karussell-Punkts (mit `transform` würden die runden Enden
+  verzerren, und es sind sieben winzige Flächen) und die Höhe der
+  Klappbereiche – dafür gibt es keinen Weg über die Grafikkarte.
+- **Rücksicht heisst sanfter, nicht gar nichts.** Bei
+  `prefers-reduced-motion` fällt jede Verschiebung weg, die Blende bleibt; der
+  Druck wird kurz abgeblendet statt gestaucht. Ein Knopf ganz ohne Rückmeldung
+  wirkt tot.
+
+Die Klappbereiche („Weitere Informationen zur App", FAQ) gehen sanft auf und
+zu, wo der Browser es kann: `interpolate-size` und `::details-content` können
+von null auf die tatsächliche Höhe animieren. Chrome kann beides, Safari und
+Firefox noch nicht – dort klappt es wie bisher. Alles steht in `@supports`,
+nichts hängt davon ab.
+
+**Bewusst keine Federn (Springs).** Sie wären für gestenhafte Bewegung das
+richtige Werkzeug, brauchen aber eine JS-Bibliothek – und damit fiele „kein
+Build-Schritt, keine externen Skripte". Die eine Stelle, wo die Physik wirklich
+zählt, löst das Karussell schon mit nativem `scroll-snap`: Es läuft 1:1 am
+Finger mit, trägt Impuls und ist jederzeit unterbrechbar.
+
 ## Technische Eigenschaften
 
 - Dunkelmodus als Voreinstellung über `data-theme="dark"` am `<html>` jeder der
@@ -308,7 +362,8 @@ wieder offen.
   Browser-Speicher dazu, muss Ziffer 2 der Datenschutzerklärung ergänzt
   werden**
 - Responsiv ab 320 px, keine horizontale Scrollleiste
-- Tastaturbedienbar, „Direkt zum Inhalt“-Link, sichtbarer Fokus, `prefers-reduced-motion`
+- Tastaturbedienbar, „Direkt zum Inhalt“-Link, sichtbarer Fokus,
+  `prefers-reduced-motion`, `prefers-reduced-transparency`
 - Semantisches HTML mit strukturierten Daten (`ProfessionalService`) für Suchmaschinen
 - Keine Cookies, keine fremden Analyse- oder Werbedienste, keine externen
   Anfragen – damit auch kein Cookie-Banner nötig. Die eigene Besucherstatistik
