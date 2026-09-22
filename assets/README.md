@@ -82,7 +82,8 @@ Worauf es ankommt:
 
 `dt-top-manager.png` ist der einzige Screenshot, der noch eingebunden ist: Der
 Film des DreamTeam zeigt den heutigen Champions-League-Betrieb, die Rangliste
-aus der WM 2026 gibt es nur als Bild.
+aus der WM 2026 gibt es nur als Bild. Sie steht im Klappbereich „Weitere
+Informationen zur App", nicht mehr direkt in der Ansicht.
 
 Beim Austauschen darauf achten, dass `width` und `height` am `<img>` in
 `index.html` zur neuen Bildgrösse passen – die beiden Angaben verhindern, dass
@@ -90,7 +91,7 @@ die Seite beim Laden springt.
 
 ### Nicht mehr eingebunden, bleiben als Reserve liegen
 
-Seit die Kurzfilme da sind, zeigen die Karten keine Screenshots mehr. Die
+Seit die Kurzfilme da sind, zeigen die Apps keine Screenshots mehr. Die
 Dateien bleiben liegen, falls ein Film einmal ersetzt werden muss.
 
 | Datei | Projekt | Grösse |
