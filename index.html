@@ -16,15 +16,27 @@
 <link rel="canonical" href="https://alae.app/">
 
 <!-- Open Graph / Social ------------------------------------------------------
-     TODO: og:image ergänzen (1200x630 px, z.B. /assets/og-alae.png), sobald ein
-     Vorschaubild vorhanden ist. Ohne Bild zeigen Social-Netzwerke nur Text. -->
+     Das Vorschaubild ist die Endtafel des Aufmacherfilms (Sekunde 44,5):
+     Signet, Name und das Angebot, mittig auf dunklem Grund. Genau das
+     braucht eine Vorschau – sie erscheint als Briefmarke in einem Chat, wo
+     feine Schrift und Bildschirmfotos zu Matsch werden.
+
+     Als JPEG und nicht als WebP: Die Seite selbst nutzt WebP, aber nicht
+     jeder Dienst, der Vorschauen zieht, kann es anzeigen. Die Adressen
+     müssen absolut sein, relative wertet kein Netzwerk aus. -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="de_CH">
 <meta property="og:url" content="https://alae.app/">
 <meta property="og:site_name" content="alae.app">
 <meta property="og:title" content="alae.app – Individuelle Apps, die zu deinem Alltag passen">
 <meta property="og:description" content="Individuelle Web-Apps für Abläufe, die heute über Excel, E-Mail, Papier oder WhatsApp laufen.">
+<meta property="og:image" content="https://alae.app/assets/og-alae.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="alae.app – Individuelle Web-Apps. Erstgespräch kostenlos und unverbindlich.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://alae.app/assets/og-alae.jpg">
 
 <!-- Favicon: inline SVG, keine zusätzliche Datei nötig -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314171B'/%3E%3Cpath d='M4.2 21.4 10 10.6l2.9 5.3' stroke='%23FBFAF8' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M16.1 21.4 21.9 10.6l5.9 10.8' stroke='%23C1272D' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
@@ -228,6 +240,63 @@ section{padding-block:var(--section-y)}
 }
 .check li strong{color:var(--text)}
 
+/* Filmrahmen: geteilt vom Aufmacher und den sieben Projektkarten ---------
+   Jeder Film der Seite sitzt in einer figure[data-clip] mit einem .clip
+   darin. Gemeinsam sind Rahmen, Abspielknopf und die Bildzeile mit Länge
+   und Ton. Eigen ist jeder Stelle nur, wie gross der Film werden darf und
+   wie er gerahmt ist – siehe „Aufmacherfilm" und „Apps im Einsatz". Weil
+   beide Sektionen darauf aufbauen, steht der Rahmen hier bei den
+   Komponenten und nicht in einer der beiden.
+
+   Das Seitenverhältnis steht im CSS und nicht als width/height am <video>,
+   weil preload="none" gilt: Vor dem ersten Klick sind die Masse des Films
+   unbekannt, ohne reservierten Platz würde die Seite springen. */
+[data-clip]{margin:0}
+[data-clip] .clip{
+  position:relative; margin-inline:auto; overflow:hidden;
+  border:1px solid var(--line); border-radius:var(--r-md);
+  /* Nur die Farbe, nicht die Kurzschreibweise: Der Aufmacher legt sein
+     Standbild als background-image darüber, und background:… setzte das
+     wieder auf none. */
+  background-color:var(--bg-2);
+}
+[data-clip] video{width:100%; height:100%; display:block; object-fit:cover}
+
+/* Ein Knopf über dem ganzen Standbild: überall treffbar, auch mit dem
+   Daumen. Sobald der Film läuft, übernimmt die Leiste des Browsers. */
+.clip-play{
+  position:absolute; inset:0; width:100%; height:100%;
+  display:grid; place-items:center;
+  background:rgba(14,16,19,.16); border:0; padding:0;
+  color:inherit; font:inherit; cursor:pointer;
+  transition:background .16s ease;
+}
+.clip-play:hover{background:rgba(14,16,19,.30)}
+/* Der Rahmen schneidet ab, darum der Fokusring nach innen statt nach aussen */
+.clip-play:focus-visible{outline-offset:-5px}
+.clip-icon{
+  display:grid; place-items:center;
+  width:4.25rem; height:4.25rem; border-radius:999px;
+  background:var(--accent); color:var(--accent-fg);
+  box-shadow:var(--shadow-md);
+  transition:transform .16s ease, background .16s ease;
+}
+.clip-play:hover .clip-icon{background:var(--accent-hover); transform:scale(1.06)}
+/* Dreieck sitzt optisch mittig, wenn es leicht nach rechts rückt */
+.clip-play svg{margin-left:.15rem}
+@media (prefers-reduced-motion: reduce){ .clip-play:hover .clip-icon{transform:none} }
+[data-clip][data-laeuft] .clip-play{display:none}
+/* Länge und Ton stehen im Bild statt als Zeile darunter – sonst käme unter
+   dem Film wieder Text. Klicks gehen durch auf den Abspielknopf. */
+.clip-meta{
+  position:absolute; top:.6rem; right:.6rem; margin:0; z-index:1;
+  padding:.2rem .6rem; border-radius:999px;
+  background:rgba(14,16,19,.55); color:#fff;
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.05em;
+  pointer-events:none;
+}
+[data-clip][data-laeuft] .clip-meta{display:none}
+
 /* --- Header ------------------------------------------------------------- */
 .site-header{
   position:sticky; top:0; z-index:100;
@@ -322,7 +391,10 @@ section{padding-block:var(--section-y)}
 /* --- Hero --------------------------------------------------------------- */
 .hero{
   position:relative;
-  padding-block:clamp(3rem, 7vw, 6rem) clamp(3.5rem, 7vw, 6rem);
+  /* Knapper als die übrigen Sektionen, und oben knapper als unten: Seit der
+     Aufmacherfilm hier steht, zählt jeder Pixel über der Überschrift – er
+     entscheidet, ob der Abspielknopf ohne Scrollen zu sehen ist. */
+  padding-block:clamp(2.5rem, 5.5vw, 4.5rem) clamp(3.5rem, 7vw, 6rem);
   overflow:hidden;
 }
 .hero::before{
@@ -349,6 +421,104 @@ section{padding-block:var(--section-y)}
 }
 .hero-cta{display:flex; flex-wrap:wrap; gap:.75rem; margin-top:2rem}
 .hero-note{margin-top:1.1rem; font-size:.87rem; color:var(--muted)}
+
+/* --- Aufmacherfilm ------------------------------------------------------
+   Der Film ist derselbe Pitch wie der Text über ihm: Er beginnt mit der
+   Schlagzeile „Web-App für deinen Alltag" und endet mit „Erstgespräch
+   kostenlos und unverbindlich" – Wort für Wort das, was hier als
+   Überschrift und als Zeile unter dem Knopf steht. Darum steht er hier und
+   nicht weiter unten.
+
+   Aus demselben Grund zeigt das Standbild bewusst nicht die Titeltafel des
+   Films, sondern eine App aus seiner Mitte (Sekunde 18). Der Text
+   verspricht die Idee, das Bild zeigt das Ergebnis; zweimal derselbe Satz
+   wäre der erste Eindruck verschenkt.
+
+   Anders als bei den Projektkarten hängt hier nichts am Skript: Masse und
+   Standbild kommen aus derselben Medienabfrage, nach der auch das Skript
+   die Fassung wählt (orientation). Damit steht der Platz schon beim ersten
+   Zeichnen, das Standbild ist ohne Umweg über JavaScript da, und fällt das
+   Skript aus, steht immer noch ein Bild statt eines leeren Kastens.
+   ---------------------------------------------------------------------- */
+.hero-clip{margin-top:clamp(2.25rem, 5vw, 3.25rem)}
+.hero-clip .clip{
+  /* Runder als die Karten: Der Aufmacher soll eine Bühne sein, kein
+     Vorschaubild. */
+  border-radius:var(--r-xl);
+  background-repeat:no-repeat; background-position:center; background-size:cover;
+  /* Der zweite Schatten ist ein warmer Schimmer unter dem Rahmen – dasselbe
+     Rot wie im Verlauf hinter der Überschrift, nur schwächer. Er hebt den
+     Film vom Grund ab, im Hellen wie im Dunkeln. */
+  box-shadow:var(--shadow-lg), 0 24px 70px -34px var(--accent-line);
+
+  /* Stehender Bildschirm (Handy): Der Film darf hoch sein, hier wird
+     ohnehin gescrollt. */
+  aspect-ratio:9/16;
+  max-width:min(100%, 21rem);
+  background-image:url("assets/intro-hoch-poster.webp");
+}
+/* Bis das Skript eine Datei gesetzt hat, ist das <video> unsichtbar: Sonst
+   legte Safari eine schwarze Fläche über das Standbild aus dem CSS. Danach
+   deckt es den Grund mit demselben Bild ab – aus dem Zwischenspeicher, das
+   kostet keine zweite Übertragung. */
+.hero-clip video:not([src]){visibility:hidden}
+
+/* Liegender Bildschirm: Die Schranke aus der Fensterhöhe hält Überschrift,
+   Knopf und Film zusammen im Bild. Ein Abspielknopf, den man erst
+   herunterscrollen muss, wird nicht gedrückt. */
+@media (orientation: landscape){
+  .hero-clip .clip{
+    aspect-ratio:16/9;
+    max-width:min(100%, 52rem, 46vh * 16 / 9);
+    background-image:url("assets/intro-quer-poster.webp");
+  }
+}
+/* Gedrehtes Handy: So flach, dass Überschrift und Film ohnehin nicht
+   zusammen ins Bild passen. Dann bringt die Schranke aus der Höhe nichts
+   mehr – und macht den Film bloss klein. Besser einer, der die Breite
+   nutzt, sobald man ihn erreicht; gedreht wird ja gerade seinetwegen. */
+@media (orientation: landscape) and (max-height: 34rem){
+  .hero-clip .clip{max-width:min(100%, 52rem, 72vh * 16 / 9)}
+}
+
+/* Der Knopf trägt hier eine Aufschrift statt nur ein Dreieck: Er ist das
+   erste Angebot der Seite, und ein blankes Dreieck übersieht man.
+
+   Die Aufschrift sitzt auf einer dunklen Kapsel, nicht auf blankem Bild.
+   Sie muss über jedem Standbild lesbar sein, auch über dem hellen Himmel
+   der Illustration – und ein Schleier über dem ganzen Bild nähme diesem
+   genau die Farbe, für die es hier steht. Die Kapsel ist dieselbe wie bei
+   der Bildzeile oben rechts, das kennt die Seite also schon.
+
+   Treffbar ist immer die ganze Fläche. Wo die Bedienung sichtbar sitzt,
+   hängt an der Lage des Bildschirms. */
+.hero-clip .clip-label{
+  padding:.45rem .9rem; border-radius:999px;
+  background:rgba(12,14,16,.62); color:#fff; font-weight:650;
+  font-size:clamp(.92rem, .86rem + .28vw, 1.06rem);
+}
+/* Stehend: mittig wie bei den Projektkarten. Unten wäre der Knopf nicht zu
+   sehen – hoch ist der Film länger als der erste Bildschirm, und ein
+   Abspielknopf, den man erst herunterscrollen muss, wird nicht gedrückt. */
+.hero-clip .clip-play{grid-auto-flow:row; align-content:center; gap:.9rem}
+
+/* Liegend: Der Film steht ganz im Bild. Dann darf die Bedienung dorthin,
+   wo sie nicht mit dem Standbild kollidiert – unten links, gegenüber der
+   Bildzeile oben rechts. Das Standbild hat seine eigene Komposition
+   (Aussage links, App rechts), mittig fiele der Knopf mitten hinein. Der
+   Verlauf trägt ihn und lässt das übrige Bild unangetastet. */
+@media (orientation: landscape){
+  .hero-clip .clip-play{
+    grid-auto-flow:column; gap:.85rem;
+    justify-content:start; align-content:end; align-items:center;
+    padding:clamp(1rem, 2.5vw, 1.6rem);
+    background:linear-gradient(rgba(12,14,16,0) 42%, rgba(12,14,16,.72));
+  }
+  .hero-clip .clip-play:hover{
+    background:linear-gradient(rgba(12,14,16,0) 35%, rgba(12,14,16,.82));
+  }
+  .hero-clip .clip-icon{width:3.5rem; height:3.5rem}
+}
 
 .trust-row{
   display:flex; flex-wrap:wrap; gap:.5rem .45rem; margin-top:2.25rem;
@@ -459,58 +629,15 @@ section{padding-block:var(--section-y)}
 .app-title .app-pitch{color:var(--muted); font-weight:600}
 
 /* Der Kurzfilm: volle Breite der Karte, das Hochformat mittig in
-   Handybreite. Das Seitenverhältnis steht hier im CSS und nicht als
-   width/height am <video>, weil preload="none" gilt: Vor dem ersten Klick
-   sind die Masse des Films unbekannt, ohne reservierten Platz würde die
-   Karte springen. Welche Fassung läuft, sagt data-format am figure –
-   gesetzt wird es im Skript, siehe „Videoclips". */
-.app-clip{margin:0}
-.app-clip .clip{
-  position:relative; margin-inline:auto; overflow:hidden;
-  border:1px solid var(--line); border-radius:var(--r-md);
-  background:var(--bg-2);
-}
-/* Die dritte Schranke rechnet aus der Fensterhöhe zurück: Auf flachen
+   Handybreite. Welche Fassung läuft, sagt data-format am figure – gesetzt
+   wird es im Skript, siehe „Videoclips". Rahmen, Knopf und Bildzeile
+   stehen bei den Komponenten unter „Filmrahmen".
+
+   Die dritte Schranke rechnet aus der Fensterhöhe zurück: Auf flachen
    Fenstern (Laptop, Handy mit viel Browserleiste) bleibt der Film so weit
    im Bild, dass Link und Schalter darunter noch mitkommen. */
 .app-clip[data-format="hoch"] .clip{aspect-ratio:9/16; max-width:min(100%, 24rem, 72vh * 9 / 16)}
 .app-clip[data-format="quer"] .clip{aspect-ratio:16/9; max-width:min(100%, 56rem, 70vh * 16 / 9)}
-.app-clip video{width:100%; height:100%; display:block; object-fit:cover}
-
-/* Ein Knopf über dem ganzen Standbild: überall treffbar, auch mit dem
-   Daumen. Sobald der Film läuft, übernimmt die Leiste des Browsers. */
-.clip-play{
-  position:absolute; inset:0; width:100%; height:100%;
-  display:grid; place-items:center;
-  background:rgba(14,16,19,.16); border:0; padding:0;
-  color:inherit; font:inherit; cursor:pointer;
-  transition:background .16s ease;
-}
-.clip-play:hover{background:rgba(14,16,19,.30)}
-/* Der Rahmen schneidet ab, darum der Fokusring nach innen statt nach aussen */
-.clip-play:focus-visible{outline-offset:-5px}
-.clip-icon{
-  display:grid; place-items:center;
-  width:4.25rem; height:4.25rem; border-radius:999px;
-  background:var(--accent); color:var(--accent-fg);
-  box-shadow:var(--shadow-md);
-  transition:transform .16s ease, background .16s ease;
-}
-.clip-play:hover .clip-icon{background:var(--accent-hover); transform:scale(1.06)}
-/* Dreieck sitzt optisch mittig, wenn es leicht nach rechts rückt */
-.clip-play svg{margin-left:.15rem}
-@media (prefers-reduced-motion: reduce){ .clip-play:hover .clip-icon{transform:none} }
-.app-clip[data-laeuft] .clip-play{display:none}
-/* Länge und Ton stehen im Bild statt als Zeile darunter – sonst käme unter
-   dem Film wieder Text. Klicks gehen durch auf den Abspielknopf. */
-.clip-meta{
-  position:absolute; top:.6rem; right:.6rem; margin:0; z-index:1;
-  padding:.2rem .6rem; border-radius:999px;
-  background:rgba(14,16,19,.55); color:#fff;
-  font-family:var(--mono); font-size:.68rem; letter-spacing:.05em;
-  pointer-events:none;
-}
-.app-clip[data-laeuft] .clip-meta{display:none}
 
 /* Unter dem Film nur zwei Sachen: Link zur App und der Schalter für die
    Einzelheiten. Offen nimmt sich der Schalter die ganze Zeile, damit der
@@ -887,6 +1014,37 @@ form .btn{width:100%; justify-content:center}
       </a>
     </div>
     <p class="hero-note">Erstgespräch kostenlos und unverbindlich</p>
+
+    <!-- Der Aufmacherfilm. Aufbau und data-Attribute sind dieselben wie bei
+         den sieben Projektkarten, damit das Skript ihn ohne Sonderfall
+         mitbedient: data-hoch für stehende Bildschirme, data-quer für
+         liegende, je mit eigenem Standbild. Gestalterisch ist er eine
+         eigene Nummer – siehe CSS-Block „Aufmacherfilm". -->
+    <figure class="hero-clip"
+            data-clip
+            data-hoch="assets/intro-hoch.mp4"
+            data-hoch-poster="assets/intro-hoch-poster.webp"
+            data-quer="assets/intro-quer.mp4"
+            data-quer-poster="assets/intro-quer-poster.webp">
+      <div class="clip">
+        <video class="clip-video" preload="none" playsinline
+               controlslist="nodownload noplaybackrate" disablepictureinpicture></video>
+        <p class="clip-meta" aria-hidden="true">45 s &middot; mit Ton</p>
+        <button class="clip-play" type="button">
+          <span class="clip-icon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2L19 12z"/></svg>
+          </span>
+          <!-- Die sichtbare Aufschrift bleibt Teil des Namens, den ein
+               Vorlesegerät ansagt; nur der Zusatz ist unsichtbar. Stünde
+               „Film ansehen" auf aria-hidden und der ganze Name im
+               versteckten Satz, hiesse der Knopf für die Tastatur anders
+               als für das Auge – und wer ihn per Sprache bedient, träfe
+               ihn nicht. -->
+          <span class="clip-label">Film ansehen</span>
+          <span class="visually-hidden"> – über alae.app, 45 Sekunden, mit Ton</span>
+        </button>
+      </div>
+    </figure>
 
     <ul class="trust-row">
       <li>
@@ -2118,6 +2276,9 @@ form .btn{width:100%; justify-content:center}
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* --- Videoclips -------------------------------------------------------
+     Acht Filme auf der Seite: der Aufmacher im Hero und einer je
+     Projektkarte. Alle laufen über denselben Code.
+
      Eine figure[data-clip] hält bis zu zwei Fassungen desselben Films:
      data-hoch für stehende Bildschirme, data-quer für liegende, dazu je ein
      Standbild. Gewählt wird beim Laden und bei jeder Drehung des Geräts,
@@ -2134,11 +2295,17 @@ form .btn{width:100%; justify-content:center}
      erst beim Sichtbarwerden. Sonst lüde die Seite sieben Standbilder für
      sechs Karten, die niemand sieht.
 
+     Der Aufmacher im Hero ist der eine Fall, der davon nichts braucht: Er
+     steht beim Laden ohnehin im Bild, und sein Standbild bringt schon das
+     CSS mit. Der Beobachter meldet ihn deshalb sofort, und video.poster
+     trifft danach den Zwischenspeicher.
+
      Bedienung bewusst knapp: ein grosser Knopf auf dem Standbild, danach
      die gewohnte Leiste des Browsers zum Pausieren. Ist der Film zu Ende,
      kommt das Standbild mit dem Knopf zurück. Wer weiterblättert, während
      ein Film läuft, hält ihn damit an – das Karussell schickt dazu
-     „clip:anhalten".
+     „clip:anhalten", und dasselbe schickt jeder Abspielknopf an alle
+     anderen Filme.
      ---------------------------------------------------------------------- */
   var liegend = window.matchMedia('(orientation: landscape)');
 
@@ -2188,6 +2355,14 @@ form .btn{width:100%; justify-content:center}
     else fassungWaehlen(true);         // ohne Beobachter gleich alles laden
 
     knopf.addEventListener('click', function () {
+      /* Es läuft immer nur ein Film. Ohne das spielten der Aufmacher und
+         eine Projektkarte gegeneinander, sobald jemand weiterscrollt und
+         dort ebenfalls startet – zwei Tonspuren, und der erste Film läuft
+         ungesehen weiter. */
+      Array.prototype.forEach.call(document.querySelectorAll('[data-clip]'), function (andere) {
+        if (andere !== figur) andere.dispatchEvent(new Event('clip:anhalten'));
+      });
+
       fassungWaehlen(true);            // falls der Beobachter noch nicht dran war
       figur.dataset.laeuft = '';
       video.controls = true;

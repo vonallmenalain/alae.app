@@ -12,13 +12,42 @@ Netlify-Funktionen (Speicher der Besucherstatistik).
 
 | Abschnitt | Zweck |
 | --- | --- |
-| Hero | Nutzenversprechen, ein Handlungsaufruf, vier Vertrauenspunkte |
+| Hero | Nutzenversprechen, ein Handlungsaufruf, der Aufmacherfilm (45 s), vier Vertrauenspunkte |
 | Motivation | Wie es angefangen hat, Porträt und vier Fixpunkte |
 | Referenzprojekte | Sieben echte Apps als Karussell, eine pro Ansicht – zuoberst Gripszug. Pro App nur der Titel (Name und was sie erreicht), der Kurzfilm, der Link zur App und der Schalter „Weitere Informationen zur App"; dahinter Ausgangslage, Problem, Lösung, Funktionen, Datenschutz, Technik und Ergebnis |
 | Ablauf | Vier Schritte vom Erstgespräch bis zur Betreuung |
 | Preise | Richtwert für kleine Projekte, Etappenmodell, Wahl nach der Entwicklung |
 | FAQ | Unter „Fragen": Preis, Dauer, Quellcode, Datenschutz, Ausfallrisiko, Übernahme |
 | Kontakt | Formular über die volle Breite, unter der Frage „Was ist deine Idee?" |
+
+### Der Aufmacherfilm im Hero
+
+Unter Überschrift, Knopf und der Zeile „Erstgespräch kostenlos und
+unverbindlich" steht der Film, der die Seite erklärt – 45 s, in zwei Fassungen
+wie die Projektfilme: hoch fürs Handy, quer für den Computer. Er läuft nie von
+selbst, und vor dem ersten Klick wird kein Byte Film geladen; zu sehen ist ein
+Standbild mit einem Knopf „Film ansehen" und der Bildzeile `45 s · mit Ton`.
+
+Drei Entscheide, die man beim Ändern kennen sollte:
+
+- **Er steht unter dem Handlungsaufruf, nicht darüber.** Wer gleich reden will,
+  findet den Knopf ohne Scrollen; wer Belege will, findet den Film direkt
+  darunter.
+- **Quer ist die Grösse aus der Fensterhöhe gerechnet** (`46vh`), damit
+  Überschrift, Knopf und Film zusammen ins Bild passen. Ein Abspielknopf, den
+  man erst herunterscrollen muss, wird nicht gedrückt. Hoch darf der Film
+  länger als der erste Bildschirm sein – dort sitzt die Bedienung deshalb
+  mittig statt unten.
+- **Am Skript hängt hier nichts.** Masse und Standbild kommen aus derselben
+  Medienabfrage (`orientation`), nach der auch das Skript die Fassung wählt.
+  Der Platz steht also beim ersten Zeichnen, und fällt das Skript aus, steht
+  immer noch ein Bild statt eines leeren Kastens.
+
+Es läuft immer nur ein Film: Jeder Abspielknopf hält die anderen sieben an.
+Sonst spielten der Aufmacher und eine Projektkarte gegeneinander, sobald
+jemand weiterscrollt und dort ebenfalls startet.
+
+Standbild, Länge und die Gründe dafür stehen in `assets/README.md`.
 
 ### Karussell der Referenzprojekte
 
@@ -77,7 +106,9 @@ Alle Stellen sind in `index.html` mit `TODO` markiert:
       Telefonnummer und UID bleiben bewusst weg, siehe Abschnitt „Rechtsseiten"
 - [ ] **Rechtsseiten prüfen lassen** – die Texte sind ein Entwurf, keine
       Rechtsberatung
-- [ ] **Vorschaubild für Social Media** – `og:image`, 1200 × 630 px
+- [x] **Vorschaubild für Social Media** – `assets/og-alae.jpg`, 1200 × 630 px,
+      die Endtafel des Aufmacherfilms; `og:image` und `twitter:image` im `<head>`
+      sind gesetzt (Einzelheiten in `assets/README.md`)
 - [ ] **Richtwert CHF 100 prüfen** – steht im Abschnitt „Preise" und in der FAQ-Antwort
       „Was kostet eine individuelle App?". Bei einer Änderung beide Stellen anpassen
 

@@ -4,12 +4,13 @@ Bilder und Kurzfilme für die Landingpage.
 
 ## Kurzfilme
 
-Jede der sieben Projektkarten zeigt einen Kurzfilm aus der App selbst. Zu jedem
-Film gehören vier Dateien: die hohe und die quere Fassung, je mit einem
-Standbild, das vor dem ersten Klick zu sehen ist.
+Acht Filme: der Aufmacher im Hero und einer je Projektkarte. Zu jedem gehören
+vier Dateien – die hohe und die quere Fassung, je mit einem Standbild, das vor
+dem ersten Klick zu sehen ist.
 
-| Projekt | Dateien (`…-hoch` / `…-quer`, je `.mp4` und `-poster.webp`) | Länge | Standbild ab |
+| Film | Dateien (`…-hoch` / `…-quer`, je `.mp4` und `-poster.webp`) | Länge | Standbild ab |
 | --- | --- | --- | --- |
+| **Aufmacher (Hero)** | `intro-…` | 45,3 s | Sekunde 18 |
 | Gripszug | `gripszug-…` | 24 s | Sekunde 3 |
 | DreamTeam | `dt-…` | 22,5 s | Sekunde 1,5 |
 | Jass App | `jass-…` | 23,4 s | Sekunde 4,5 |
@@ -18,8 +19,37 @@ Standbild, das vor dem ersten Klick zu sehen ist.
 | Familien-Sharing | `share-…` | 22,6 s | Sekunde 1,5 |
 | Einzelfirma | `buchhaltung-…` | 24,6 s | Sekunde 1,5 |
 
-Die hohen Fassungen messen 720 × 1280 px, die queren 1280 × 720 px; jede liegt
-bei 0,8 bis 1,2 MB, jedes Standbild bei 17 bis 41 KB.
+Die hohen Fassungen messen 720 × 1280 px, die queren 1280 × 720 px. Die sieben
+Projektfilme liegen bei 0,8 bis 1,2 MB, der Aufmacher bei 1,8 MB – er ist knapp
+doppelt so lang und eine Spur feiner kodiert. Jedes Standbild liegt bei 17 bis
+41 KB.
+
+### Der Aufmacher im Hero
+
+Er ist der Pitch der ganzen Seite und weicht in zwei Punkten vom Rezept unten
+ab:
+
+- **60 Bilder/s statt 30.** Die Aufnahmen kamen mit 60, und der Film ist
+  Bewegtgrafik: Text, der einfliegt, Bildschirme, die zur Seite gleiten. Das
+  läuft mit 60 sichtbar weicher, und es kostet nur 0,25 MB mehr – bei den
+  Projektfilmen gaben die Aufnahmen ohnehin nur 30 her.
+- **`-crf 26` statt 27.** Ein Unterschied von rund 0,1 MB, und es ist das erste,
+  was jemand von der Seite sieht.
+
+**Das Standbild ist bewusst nicht die Titeltafel.** Der Film beginnt mit
+„Web-App für deinen Alltag" und endet mit „Erstgespräch kostenlos und
+unverbindlich" – Wort für Wort die Überschrift und die Zeile unter dem Knopf.
+Als Standbild wäre das zweimal derselbe Satz. Sekunde 18 zeigt stattdessen eine
+App: Der Text verspricht die Idee, das Bild zeigt das Ergebnis. Dass die
+Bildmitte dort nicht frei ist, spielt hier keine Rolle – anders als bei den
+Karten sitzt die Bedienung nicht mittig, quer sogar unten links (CSS-Block
+„Aufmacherfilm").
+
+**Wird der Film ersetzt**, sind Länge und Standbild an drei Stellen
+nachzuführen: die Bildzeile `45 s · mit Ton` und der versteckte Satz im
+Abspielknopf in `index.html`, dazu die Tabelle hier. Und wenn die neue Fassung
+mit einer anderen Aussage beginnt als die Überschrift, ist der Grund für das
+Standbild aus der Mitte neu zu prüfen.
 
 **Zwei Fassungen pro Film.** Das Skript wählt nach der Lage des Bildschirms aus:
 `data-hoch` für stehende (Handy), `data-quer` für liegende (Computer, gedrehtes
@@ -60,6 +90,10 @@ Worauf es ankommt:
 - **`-ar 48000`** rechnet den Ton auf die übliche Abtastrate herunter. Die
   Aufnahmen der sechs neuen Filme kamen mit 96 kHz; das ist unnötig fein und
   nicht überall gern gesehen.
+- **Bildrate nicht anfassen.** Ohne `fps`-Filter übernimmt ffmpeg die der
+  Aufnahme – 30 bei den Projektfilmen, 60 beim Aufmacher. Herunterrechnen
+  spart bei diesen Filmen kaum etwas (0,25 MB bei 45 s) und kostet sichtbar
+  Weichheit, weil es Bewegtgrafik ist und keine Kameraaufnahme.
 - **Standbild aus dem Film selbst** schneiden. Genau in der Mitte sitzt der
   Play-Knopf, deshalb zählt, was dort liegt. Bei Gripszug trifft die Mitte in
   beiden Fassungen den Himmel über dem Zug – daher Sekunde 3. Die sechs neuen
@@ -79,6 +113,36 @@ Worauf es ankommt:
 | --- | --- | --- |
 | `dt-top-manager.png` | DreamTeam – Rangliste der Top Manager (WM 2026) | 1101 × 831 px |
 | `Alain.png` | Porträt für den Abschnitt „Motivation" | 630 × 633 px |
+| `og-alae.jpg` | Vorschaubild für Social Media und Messenger | 1200 × 630 px |
+
+### `og-alae.jpg` – das Vorschaubild
+
+Es steht nicht auf der Seite, sondern nur in den `og:`-Angaben im `<head>`. Zu
+sehen ist es, wenn jemand die Adresse in einem Chat, einer E-Mail oder einem
+Netzwerk teilt.
+
+Es ist die Endtafel des Aufmachers, Sekunde 44,5: Signet, Name und das Angebot,
+mittig auf dunklem Grund. Eine Vorschau erscheint als Briefmarke – feine
+Schrift und Bildschirmfotos werden darin zu Matsch, ein Signet mit drei Zeilen
+bleibt lesbar. 1200 × 630 px ist das Verhältnis 1,905 : 1, etwas breiter als
+16 : 9; aus dem queren Film sind darum oben und unten je 36 px weggeschnitten.
+
+```
+ffmpeg -ss 44.5 -i roh-quer.mp4 -frames:v 1 \
+       -vf "crop=1920:1008:0:36,scale=1200:630:flags=lanczos" \
+       -q:v 3 og-alae.jpg
+```
+
+**Als JPEG und nicht als WebP**, obwohl die Seite sonst WebP nutzt: Nicht jeder
+Dienst, der Vorschauen zieht, zeigt WebP an. Die 23 KB sind ohnehin klein, weil
+das Bild fast nur Fläche ist.
+
+**Die Adressen im `<head>` sind absolut** (`https://alae.app/assets/…`).
+Relative wertet kein Netzwerk aus – das ist der häufigste Grund, warum eine
+Vorschau leer bleibt. Wird die Datei umbenannt, sind `og:image` und
+`twitter:image` mit nachzuführen, bei anderen Massen auch `og:image:width` und
+`og:image:height`. Freigegeben ist der Zugriff von fremden Diensten über
+`Cross-Origin-Resource-Policy` für `/assets/*` in `netlify.toml`.
 
 `dt-top-manager.png` ist der einzige Screenshot, der noch eingebunden ist: Der
 Film des DreamTeam zeigt den heutigen Champions-League-Betrieb, die Rangliste
