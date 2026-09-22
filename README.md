@@ -4,7 +4,7 @@ Einseitige Website für alae.app: individuelle Web-Apps, genau nach den
 Bedürfnissen der Kundschaft.
 
 Alles steckt in **`index.html`** – kein Build-Schritt, keine externen Schriften
-oder Skripte. Datei auf einen Webserver kopieren, fertig. Die einzige
+oder Skripte ausser dem Google-Tag für Google Ads (siehe „Google Ads" unten). Datei auf einen Webserver kopieren, fertig. Die einzige
 Abhängigkeit in `package.json` gehört nicht zur Seite, sondern zu den beiden
 Netlify-Funktionen (Speicher der Besucherstatistik).
 
@@ -238,12 +238,32 @@ Postadresse. Ob eine reine Informationsseite ohne Bestellmöglichkeit darunter
 fällt, ist umstritten. Das gehört zu den Punkten, die eine juristische Prüfung
 der Rechtsseiten klären sollte.
 
-Die Datenschutzerklärung beschreibt den tatsächlichen Stand der Website: keine
-Cookies, keine externen Anfragen, als einziger Browser-Speicher der Eintrag
-`alae-theme` für das gewählte Farbschema, als Dienstleister nur Netlify,
-Resend, Cloudflare und Google. **Kommt ein weiterer Dienst dazu – etwa
-Terminbuchung, Newsletter oder Statistik –, muss die Tabelle in Ziffer 6 ergänzt
-und der Abschnitt „Keine Cookies, keine fremden Dienste" überprüft werden.**
+Die Datenschutzerklärung beschreibt den tatsächlichen Stand der Website:
+Cookies und externe Anfragen nur über den Google-Tag auf der Startseite
+(Ziffer 7), als eigener Browser-Speicher nur der Eintrag `alae-theme` für das
+gewählte Farbschema, als Dienstleister Netlify, Resend, Cloudflare und Google.
+**Kommt ein weiterer Dienst dazu – etwa Terminbuchung, Newsletter oder
+Statistik –, muss die Tabelle in Ziffer 6 ergänzt und Ziffer 2 „Cookies und
+fremde Dienste" überprüft werden.**
+
+## Google Ads
+
+Ganz oben im `<head>` von `index.html` steht der Google-Tag
+(`AW-18354022652`), unverändert wie von Google ausgegeben. Drei Dinge hängen
+daran:
+
+- **Conversion „Anfrage"** – gemeldet im Submit-Handler des Kontaktformulars,
+  erst nach erfolgreichem Versand und nicht bei ausgefüllter Spam-Falle. Das
+  Label `AW-18354022652/ZHNoCLvCuoEdEPzR8K9E` gehört zur Conversion-Aktion mit
+  Auswahl „Seitenaufbau". Bewusst nicht als Code im `<head>`, wie Google es
+  vorschlägt: Das ist für eine eigene Danke-Seite gedacht, hier zählte sonst
+  jeder Seitenaufruf als Anfrage.
+- **Content-Security-Policy** in `netlify.toml` – ohne die Google-Adressen dort
+  blockiert der Browser das Skript kommentarlos.
+- **Datenschutzerklärung Ziffer 7** – beschreibt, was der Tag tut.
+
+Wird der Tag entfernt, alle drei Stellen mitziehen. `<meta charset>` muss in
+den ersten 1024 Bytes der Datei bleiben; über ihm kommt nichts mehr dazu.
 
 ## Schutz vor automatisierten Anfragen
 
@@ -277,8 +297,9 @@ Dateien umbenannt, muss die Reihenfolge in `netlify.toml` unter
 `[[edge_functions]]` festgelegt werden** – sonst fehlen in der Statistik
 ausgerechnet die Anfragen, wegen denen sie gebaut wurde.
 
-Die Content-Security-Policy hält fest, dass die Seite nichts von fremden
-Servern lädt. **Wird später doch etwas Externes eingebunden** – eine Schrift,
+Die Content-Security-Policy hält fest, dass die Seite ausser dem Google-Tag
+nichts von fremden Servern lädt; die Google-Adressen stehen einzeln in
+`netlify.toml`. **Wird später weiteres Externes eingebunden** – eine Schrift,
 ein Analysewerkzeug, ein eingebettetes Video –, muss es in `netlify.toml`
 freigegeben werden, sonst blockiert der Browser es kommentarlos.
 
@@ -365,6 +386,7 @@ Finger mit, trägt Impuls und ist jederzeit unterbrechbar.
 - Tastaturbedienbar, „Direkt zum Inhalt“-Link, sichtbarer Fokus,
   `prefers-reduced-motion`, `prefers-reduced-transparency`
 - Semantisches HTML mit strukturierten Daten (`ProfessionalService`) für Suchmaschinen
-- Keine Cookies, keine fremden Analyse- oder Werbedienste, keine externen
-  Anfragen – damit auch kein Cookie-Banner nötig. Die eigene Besucherstatistik
+- Einziger fremder Dienst ist der Google-Tag für Google Ads auf der
+  Startseite (Cookies, Anfragen an Google, siehe „Google Ads"). Sonst keine
+  Cookies, keine externen Anfragen. Die eigene Besucherstatistik
   läuft auf dem Server und speichert keine IP-Adressen (siehe unten)
