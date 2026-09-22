@@ -46,11 +46,19 @@
 
 # Sicherheits-Kopfzeilen für jede Antwort.
 #
-# Die Seite ist statisch und lädt nichts von fremden Servern – keine
-# Schriften, keine Skripte, kein Analysewerkzeug. Genau das hält die
-# Content-Security-Policy fest: Alles kommt von alae.app selbst. Wird später
-# doch etwas Externes eingebunden, muss es hier eingetragen werden, sonst
-# blockiert der Browser es.
+# Die Seite ist statisch: Schriften, Bilder und Skripte kommen alle von
+# alae.app selbst. Die eine Ausnahme ist der Google-Tag von Google Ads ganz
+# oben in index.html. Er lädt sein Skript von googletagmanager.com und meldet
+# Besuche und Conversions an Google; seine Adressen stehen deshalb unten in
+# script-src, img-src, connect-src und frame-src. Es sind die, die Google für
+# Conversion-Tracking, Remarketing und den Conversion Linker vorgibt
+# (developers.google.com/tag-platform/security/guides/csp). Die Länderdomain
+# der Google-Suche ist mit www.google.ch für die Schweiz eingetragen; wird
+# auch im Ausland geworben, gehört die jeweilige dazu (www.google.de, …).
+#
+# Wird später weiteres Externes eingebunden, muss es ebenso hier eingetragen
+# werden, sonst blockiert der Browser es. Fliegt der Google-Tag wieder raus,
+# seine Adressen hier mit austragen.
 [[headers]]
   for = "/*"
   [headers.values]
@@ -60,12 +68,13 @@
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=(), payment=(), usb=()"
 
     # 'unsafe-inline' ist nötig, weil Skript und Gestaltung direkt in den
-    # HTML-Dateien stehen. Der Gewinn liegt trotzdem im Rest: Kein fremder
-    # Server darf Code liefern, kein Formular woanders hin abschicken, keine
-    # Plugins laufen. Sauberer wären Prüfsummen pro Block – die brechen aber
-    # bei jeder Textänderung unbemerkt, und die Seite hat keine Bauprüfung,
-    # die das auffangen würde.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+    # HTML-Dateien stehen – auch der Google-Tag ist ein solcher Block. Der
+    # Gewinn liegt trotzdem im Rest: Ausser Google darf kein fremder Server
+    # Code liefern, kein Formular woanders hin abschicken, keine Plugins
+    # laufen. Sauberer wären Prüfsummen pro Block – die brechen aber bei jeder
+    # Textänderung unbemerkt, und die Seite hat keine Bauprüfung, die das
+    # auffangen würde.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://google.com https://www.google.ch https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com; media-src 'self'; font-src 'self'; connect-src 'self' https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://google.com https://www.google.ch https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com; frame-src 'self' https://www.googletagmanager.com https://td.doubleclick.net https://bid.g.doubleclick.net; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
 
     # Ein Jahr HTTPS-Pflicht. Bewusst ohne includeSubDomains: Das würde auch
     # dt., jass., kids. und pvt.alae.app auf HTTPS festnageln, und die werden

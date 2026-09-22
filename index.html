@@ -2754,7 +2754,17 @@ form .btn{width:100%; justify-content:center}
           return daten;
         });
       }).then(function () {
-        form.innerHTML = '<p class="form-ok"><strong>Danke, deine Anfrage ist angekommen.</strong>' +
+        /* Conversion für Google Ads erst hier melden, nach erfolgreichem
+           Versand – nicht beim Klick, sonst zählten auch fehlgeschlagene
+           Versuche. Die Spam-Falle antwortet ebenfalls mit Erfolg, deshalb
+           nur, wenn das versteckte Feld leer ist. Die ID muss zum Google-Tag
+           ganz oben im <head> passen (AW-18354022652). */
+        if (typeof window.gtag === 'function' && !feld('website')) {
+          window.gtag('event', 'conversion', {
+            send_to: 'AW-18354022652/ZHNoCLvCuoEdEPzR8K9E'
+          });
+        }
+        form.innerHTML ='<p class="form-ok"><strong>Danke, deine Anfrage ist angekommen.</strong>' +
           ' Ich melde mich in der Regel innerhalb von 24 Stunden.</p>';
       }).catch(function (err) {
         if (submit) { submit.disabled = false; submit.style.opacity = ''; }
