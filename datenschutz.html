@@ -65,11 +65,13 @@
         Google-Tag von Google Ads eingebunden. Er misst, ob Besuche über eine
         Anzeige bei Google zustande kommen und zu einer Anfrage führen; dafür
         setzt er Cookies und übermittelt Angaben zu deinem Besuch an Google
-        (Ziffer 7). Darüber hinaus bindet die Website keine externen Schriften,
-        Karten oder Skripte ein und verwendet keine weiteren Analyse- oder
-        Werbewerkzeuge. Personendaten fallen sonst nur an, wenn du das
-        Kontaktformular benutzt oder eine E-Mail schreibst – und wenn der
-        Hosting-Anbieter den Aufruf technisch protokolliert.
+        (Ziffer 7). Remarketing ist ausgeschaltet, und bei Besuchen aus dem
+        Europäischen Wirtschaftsraum und dem Vereinigten Königreich setzt der
+        Tag keine Cookies. Darüber hinaus bindet die Website keine externen
+        Schriften, Karten oder Skripte ein und verwendet keine weiteren
+        Analyse- oder Werbewerkzeuge. Personendaten fallen sonst nur an, wenn
+        du das Kontaktformular benutzt oder eine E-Mail schreibst – und wenn
+        der Hosting-Anbieter den Aufruf technisch protokolliert.
       </p>
     </div>
 
@@ -92,12 +94,15 @@
 
     <h2>2. Cookies und fremde Dienste</h2>
     <p>
-      Cookies setzt auf dieser Website einzig der Google-Tag von Google Ads, und
-      nur auf der Startseite; was er bearbeitet und wie du ihn abstellen kannst,
-      steht in Ziffer 7. Sein Skript ist auch das einzige, das von einem fremden
-      Server geladen wird: Schriften, Bilder und alle übrigen Skripte liegen auf
-      dem eigenen Webserver, und weitere fremde Analyse-, Statistik- oder
-      Werbedienste kommen nicht zum Einsatz. Zur Beobachtung des Betriebs wird
+      Cookies setzt auf dieser Website einzig der Google-Tag von Google Ads, nur
+      auf der Startseite und nicht bei Besuchen aus dem Europäischen
+      Wirtschaftsraum und dem Vereinigten Königreich; was er bearbeitet und wie
+      du ihn abstellen kannst, steht in Ziffer 7. Er ist auch der einzige
+      Bestandteil, der Inhalte von fremden Servern lädt, und zwar
+      ausschliesslich von Servern von Google: Schriften, Bilder und alle
+      übrigen Skripte liegen auf dem eigenen Webserver, und weitere fremde
+      Analyse-, Statistik- oder Werbedienste kommen nicht zum Einsatz.
+      Zur Beobachtung des Betriebs wird
       eine eigene, bewusst anonyme Zugriffsstatistik geführt; sie ist in Ziffer 3
       beschrieben und kommt ohne Cookies und ohne Wiedererkennung einzelner
       Personen aus.
@@ -162,7 +167,9 @@
       verantwortlichen Person zugänglich und passwortgeschützt.
     </p>
 
-    <h2>4. Kontaktformular</h2>
+    <!-- Anker kontaktformular: Ziel des Hinweises über dem Absende-Knopf in
+         index.html. Beim Umbenennen dort mitändern. -->
+    <h2 id="kontaktformular">4. Kontaktformular</h2>
     <p>
       Wenn du das Formular auf der Startseite abschickst, werden die eingegebenen
       Angaben als E-Mail an das Postfach des Verantwortlichen weitergeleitet:
@@ -177,9 +184,9 @@
     <p>
       Die Angaben werden ausschliesslich verwendet, um deine Anfrage zu
       beantworten und ein allfälliges Projekt zu besprechen. Rechtsgrundlage nach
-      DSGVO ist deine Einwilligung, die du mit dem Häkchen im Formular gibst
-      (Art. 6 Abs. 1 lit. a), sowie die Anbahnung eines Vertragsverhältnisses
-      (Art. 6 Abs. 1 lit. b). Für die Übermittlung wird ein
+      DSGVO ist die Anbahnung eines Vertragsverhältnisses (Art. 6 Abs. 1 lit. b)
+      sowie das berechtigte Interesse, Anfragen zu beantworten
+      (Art. 6 Abs. 1 lit. f). Für die Übermittlung wird ein
       E-Mail-Versanddienstleister eingesetzt (siehe Ziffer 6).
     </p>
     <p>
@@ -267,12 +274,16 @@
       Dazu setzt der Tag Cookies auf alae.app, etwa „_gcl_au" mit einer Laufzeit
       von 90 Tagen, und Google kann auf eigenen Domains wie doubleclick.net
       weitere Cookies lesen und setzen. So lässt sich erkennen, ob ein Besuch
-      auf eine Anzeige zurückgeht und ob danach eine Anfrage folgt. Google kann
-      die Angaben ausserdem verwenden, um dir Anzeigen von alae.app später auf
-      anderen Websites oder bei Google erneut zu zeigen (Remarketing), und sie
-      mit deinem Google-Konto verbinden, wenn du dort angemeldet bist. alae.app
-      selbst sieht nur zusammengefasste Auswertungen, keine Angaben zu
-      einzelnen Personen.
+      auf eine Anzeige zurückgeht und ob danach eine Anfrage folgt. Remarketing –
+      also das erneute Einblenden von Anzeigen von alae.app auf anderen Websites
+      oder bei Google – ist ausgeschaltet, und der Tag teilt Google mit, dass die
+      Angaben nicht für personalisierte Werbung verwendet werden dürfen. Rufst
+      du alae.app aus einem Staat des Europäischen Wirtschaftsraums oder aus dem
+      Vereinigten Königreich auf, setzt der Tag keine Cookies; an Google gehen
+      dann nur technische Angaben zum Seitenaufruf ohne Cookie-Kennung. Google
+      kann übermittelte Angaben mit deinem Google-Konto verbinden, wenn du dort
+      angemeldet bist. alae.app selbst sieht nur zusammengefasste Auswertungen,
+      keine Angaben zu einzelnen Personen.
     </p>
     <p>
       Du kannst das verhindern: indem du in deinem Browser Cookies von
@@ -294,13 +305,12 @@
     <h2>8. Bekanntgabe von Daten ins Ausland</h2>
     <p>
       Die oben genannten Unternehmen haben ihren Sitz in den USA oder gehören
-      zu einem Konzern mit Sitz dort. Damit können
-      Personendaten in Länder gelangen, deren Datenschutzniveau nicht dem
-      schweizerischen oder europäischen entspricht. Die Übermittlung erfolgt auf
-      Grundlage der Standardvertragsklauseln der Europäischen Kommission
-      beziehungsweise gleichwertiger Garantien der jeweiligen Anbieter. Werden
-      Daten in andere Länder übermittelt, geschieht dies nur, soweit dies für die
-      Erbringung der Leistung erforderlich ist.
+      zu einem Konzern mit Sitz dort. Soweit sie nach dem Swiss-U.S.
+      beziehungsweise EU-U.S. Data Privacy Framework zertifiziert sind, gilt ihr
+      Datenschutzniveau als angemessen. Im Übrigen erfolgt die Übermittlung
+      gestützt auf die Standardvertragsklauseln der Europäischen Kommission mit
+      den für die Schweiz nötigen Anpassungen. Daten werden nur ins Ausland
+      übermittelt, soweit es für die jeweilige Leistung erforderlich ist.
     </p>
 
     <h2>9. Aufbewahrungsdauer</h2>

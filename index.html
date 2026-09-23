@@ -7,16 +7,47 @@
      datenschutz.html. -->
 <html lang="de-CH" data-theme="dark">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18354022652"></script>
+<meta charset="utf-8">
+<!-- Google-Tag (gtag.js) von Google Ads, nur auf dieser Seite. Er steht
+     hinter <meta charset>, weil der in den ersten 1024 Bytes bleiben muss.
+     Consent Mode v2 ohne Banner: Die Standardwerte gelangen vor js und
+     config in den dataLayer. Deshalb steht dieser Block vor dem Laden von
+     gtag.js, anders als in Googles Vorlage – so gelten sie, bevor der Tag
+     etwas sendet, auch wenn gtag.js schon im Cache liegt. Der Wert mit
+     region hat für diese Länder Vorrang vor dem allgemeinen; die beiden
+     Aufrufe nicht zusammenführen. Kurzfassung, Ziffer 2 und Ziffer 7 der
+     Datenschutzerklärung beschreiben genau diese Werte – bei einer Änderung
+     dort mitziehen. -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'AW-18354022652');
+  // 1) EWR + UK: ohne Einwilligung weder Cookies noch Personalisierung
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU',
+             'IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES',
+             'SE','IS','LI','NO','GB']
+  });
+
+  // 2) Alle übrigen Regionen inkl. CH: Conversion-Messung ja, Remarketing nein
+  gtag('consent', 'default', {
+    ad_storage: 'granted',
+    ad_user_data: 'granted',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+
+  // 3) Wo ad_storage verweigert ist: Anzeigen-Klick-Kennungen schwärzen
+  gtag('set', 'ads_data_redaction', true);
+
+  gtag('js', new Date());
+  gtag('config', 'AW-18354022652', { allow_ad_personalization_signals: false });
 </script>
-<meta charset="utf-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18354022652"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>alae.app – Individuelle Web-App für deinen Alltag</title>
 <meta name="description" content="alae.app entwickelt individuelle Web-Apps, genau nach deinen Bedürfnissen. Persönlich, transparent, Hosting in der Schweiz möglich.">
@@ -984,10 +1015,11 @@ form{
 .field textarea{min-height:7.5rem; resize:vertical}
 .field-row{display:grid; gap:1rem; grid-template-columns:1fr 1fr}
 @media (max-width: 30rem){ .field-row{grid-template-columns:1fr} }
-.consent{display:flex; gap:.65rem; align-items:flex-start; margin:1.25rem 0; font-size:.85rem; color:var(--muted)}
-.consent input{width:1.05rem; height:1.05rem; margin-top:.2rem; accent-color:var(--accent); flex:none}
 form .btn{width:100%; justify-content:center}
 .form-note{margin-top:.9rem; font-size:.78rem; color:var(--muted); text-align:center}
+/* Datenschutz-Hinweis über dem Absende-Knopf: derselbe Stil wie die Zeile
+   darunter, nur mit Abstand in beide Richtungen */
+.form-hint{margin:1.25rem 0}
 .form-ok{
   margin:0; padding:1.4rem 1.2rem; text-align:center;
   background:var(--bg-2); border:1px solid var(--line);
@@ -2234,11 +2266,8 @@ form .btn{width:100%; justify-content:center}
         <label for="f-msg">Kurzbeschrieb Idee</label>
         <textarea id="f-msg" name="nachricht" required></textarea>
       </div>
-      <label class="consent">
-        <input type="checkbox" name="einverstanden" required>
-        <span>Ich bin damit einverstanden, dass meine Angaben zur Bearbeitung meiner Anfrage verwendet werden. Es erfolgt keine Weitergabe an Dritte.</span>
-      </label>
-      <button class="btn btn--primary" type="submit" id="formSubmit">
+      <p class="form-note form-hint" id="formHint">Mit dem Absenden werden deine Angaben zur Beantwortung der Anfrage bearbeitet. Mehr dazu in der <a href="datenschutz.html#kontaktformular">Datenschutzerklärung</a>.</p>
+      <button class="btn btn--primary" type="submit" id="formSubmit" aria-describedby="formHint">
         Anfrage senden
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-7 7 7-7 7"/></svg>
       </button>

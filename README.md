@@ -136,6 +136,14 @@ Schlägt der Versand fehl, öffnet sich als Rückfall das E-Mail-Programm, damit
 keine Anfrage verloren geht. Ein verstecktes Feld (`website`) dient als
 Spam-Falle: Ist es ausgefüllt, verwirft die Funktion die Anfrage stillschweigend.
 
+Eine Einwilligungs-Checkbox gibt es nicht. Über dem Absende-Knopf steht
+stattdessen ein Hinweis mit Link auf Ziffer 4 der Datenschutzerklärung (Anker
+`#kontaktformular`); als Rechtsgrundlage nennt sie dort die Anbahnung eines
+Vertrags und das berechtigte Interesse. Kommt eine Checkbox zurück, muss
+Ziffer 4 mit. Die Funktion liest nur die bekannten Felder – zusätzliche, etwa
+ein `einverstanden` aus einer älteren Fassung der Seite, ignoriert sie, statt
+die Anfrage abzulehnen.
+
 Soll das Formular wieder ohne Server auskommen, genügt es, das Attribut
 `data-endpoint` am `<form>` zu entfernen.
 
@@ -222,8 +230,10 @@ Beide Seiten sind zusätzlich ohne Dateiendung erreichbar (`/impressum`,
 
 ### Angaben zur Person
 
-Impressum und Datenschutzerklärung nennen **Name, E-Mail und Website** – mehr
-nicht. Keine Postadresse, keine Telefonnummer, keine UID: Es besteht kein
+Impressum und Datenschutzerklärung nennen **Name, E-Mail und Website**, das
+Impressum zusätzlich die Rechtsform (Einzelunternehmen, nicht im
+Handelsregister eingetragen) – mehr nicht. Keine Postadresse, keine
+Telefonnummer, keine UID: Es besteht kein
 Eintrag im Handelsregister, und der Kontakt läuft ausschliesslich über
 `kontakt@alae.app`.
 
@@ -248,9 +258,33 @@ fremde Dienste" überprüft werden.**
 
 ## Google Ads
 
-Ganz oben im `<head>` von `index.html` steht der Google-Tag
-(`AW-18354022652`), unverändert wie von Google ausgegeben. Drei Dinge hängen
-daran:
+Ganz oben im `<head>` von `index.html`, direkt nach `<meta charset>`, steht
+der Google-Tag (`AW-18354022652`) – Googles Code, ergänzt um Standardwerte
+für den Consent Mode v2. Einen Einwilligungsdialog gibt es bewusst nicht; die
+Standardwerte gelten also dauerhaft:
+
+| Herkunft des Besuchs | `ad_storage` | `ad_user_data` | `ad_personalization` | `analytics_storage` |
+| --- | --- | --- | --- | --- |
+| EWR und Vereinigtes Königreich | verweigert | verweigert | verweigert | verweigert |
+| alle übrigen Länder, auch die Schweiz | erlaubt | erlaubt | verweigert | verweigert |
+
+Dazu kommen `ads_data_redaction` (wo keine Cookies erlaubt sind, werden
+Klick-Kennungen geschwärzt) und `allow_ad_personalization_signals: false` im
+`config`. Gemessen werden damit nur Conversions: Remarketing ist
+ausgeschaltet, und bei Besuchen aus dem EWR und dem Vereinigten Königreich
+setzt der Tag keine Cookies.
+
+- **Reihenfolge.** Beide `consent default` stehen vor `js` und `config`, der
+  ganze Block zudem vor dem Laden von gtag.js – anders als in Googles
+  Vorlage, damit die Werte gelten, bevor der Tag etwas sendet. Der Aufruf mit
+  `region` hat für diese Länder Vorrang vor dem allgemeinen; die beiden nicht
+  zusammenführen.
+- **Prüfen.** In den Entwicklerwerkzeugen unter „Netzwerk" tragen die
+  Anfragen an Google den Parameter `gcs`: aus der Schweiz `G110` (Anzeigen
+  erlaubt, Analyse verweigert), aus dem EWR `G100` – dann auch ohne Cookie
+  `_gcl_au`.
+
+Drei Dinge hängen am Tag:
 
 - **Conversion „Anfrage"** – gemeldet im Submit-Handler des Kontaktformulars,
   erst nach erfolgreichem Versand und nicht bei ausgefüllter Spam-Falle. Das
@@ -260,10 +294,14 @@ daran:
   jeder Seitenaufruf als Anfrage.
 - **Content-Security-Policy** in `netlify.toml` – ohne die Google-Adressen dort
   blockiert der Browser das Skript kommentarlos.
-- **Datenschutzerklärung Ziffer 7** – beschreibt, was der Tag tut.
+- **Datenschutzerklärung** – Ziffer 7 beschreibt, was der Tag tut; die
+  Kurzfassung und Ziffer 2 nennen die Consent-Werte (kein Remarketing, keine
+  Cookies aus dem EWR und dem Vereinigten Königreich). Werden die
+  Standardwerte geändert, müssen diese Stellen mit.
 
 Wird der Tag entfernt, alle drei Stellen mitziehen. `<meta charset>` muss in
-den ersten 1024 Bytes der Datei bleiben; über ihm kommt nichts mehr dazu.
+den ersten 1024 Bytes der Datei bleiben und steht deshalb vor dem Tag; über
+ihm kommt nichts dazu.
 
 ## Schutz vor automatisierten Anfragen
 
