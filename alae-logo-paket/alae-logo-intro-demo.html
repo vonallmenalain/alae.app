@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>alae.app — Logo Intro</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Source+Code+Pro:wght@500&display=swap">
+<style>
+  :root{
+    --alae-bg:#111015;
+    --alae-ink:#ECEDF2;
+    --alae-accent:#FE7971;    /* ggf. #F87171 */
+    --alae-muted:#9DA4B1;
+    --alae-ease:cubic-bezier(.65,0,.15,1);
+  }
+  body{margin:0;background:var(--alae-bg)}
+
+  .alae-logo{display:block;width:948px;height:280px}   /* frei skalierbar */
+
+  .alae-logo .stroke{
+    fill:none; stroke-width:12.2;
+    stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:100; stroke-dashoffset:100;
+  }
+  .alae-logo .w{stroke:var(--alae-ink)}
+  .alae-logo .r{stroke:var(--alae-accent)}
+
+  .alae-logo .word{
+    fill:var(--alae-ink);
+    font:800 86px/1 "Inter","Open Sans",system-ui,sans-serif;
+    letter-spacing:-.005em;
+  }
+  .alae-logo .claim{
+    fill:var(--alae-muted);
+    font:500 42px/1 "Source Code Pro","IBM Plex Mono",ui-monospace,monospace;
+    letter-spacing:6.5px;
+  }
+
+  /* Ausgangszustand im CSS – verhindert Aufblitzen vor dem Start */
+  .alae-logo .word,.alae-logo .claim{opacity:0;transform:translate3d(0,45px,0)}
+
+  .alae-logo.is-in .w    {animation:alae-draw 700ms var(--alae-ease)   0ms both}
+  .alae-logo.is-in .r    {animation:alae-draw 820ms var(--alae-ease) 350ms both}
+  .alae-logo.is-in .word {animation:alae-rise 660ms var(--alae-ease) 530ms both}
+  .alae-logo.is-in .claim{animation:alae-rise 700ms var(--alae-ease) 680ms both}
+
+  @keyframes alae-draw{ to{ stroke-dashoffset:0 } }
+  @keyframes alae-rise{
+    from{ opacity:0; transform:translate3d(0,45px,0) }
+    to  { opacity:1; transform:none }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .alae-logo .stroke{stroke-dashoffset:0!important;animation:none!important}
+    .alae-logo .word,.alae-logo .claim{
+      opacity:1!important;transform:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+
+<button id="replay" style="position:fixed;right:16px;top:16px;z-index:9;padding:8px 14px;border-radius:8px;border:1px solid #33323a;background:#1b1a21;color:#ECEDF2;font:500 13px system-ui;cursor:pointer">Nochmal abspielen</button>
+
+<svg class="alae-logo" viewBox="0 0 948 280"
+     role="img" aria-label="alae.app — individuelle Web-Apps">
+  <path class="stroke w" pathLength="100" d="M 48.2 179.6 L 81.2 118.1 L 97.7 148.85"/>
+  <path class="stroke r" pathLength="100" d="M 114.0 179.6 L 147.0 118.1 L 180.0 179.6"/>
+  <text class="word"  x="249.5" y="145.5">alae.app</text>
+  <text class="claim" x="249.5" y="230.5">INDIVIDUELLE WEB-APPS</text>
+</svg>
+
+<script>
+  const el = document.querySelector('.alae-logo');
+  // Erst starten, wenn die Schriften stehen – sonst springt der Text beim Swap.
+  (document.fonts ? document.fonts.ready : Promise.resolve())
+    .then(() => requestAnimationFrame(() => el.classList.add('is-in')));
+  document.getElementById('replay').addEventListener('click', () => {
+    el.classList.remove('is-in');
+    void el.getBoundingClientRect();
+    requestAnimationFrame(() => el.classList.add('is-in'));
+  });
+</script>
+</body>
+</html>

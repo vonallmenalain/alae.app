@@ -1,0 +1,42 @@
+alae.app – Logo-Paket
+=====================
+
+INHALT
+  svg/               Vektor-Master, 1200 x 1200, beliebig skalierbar (erste Wahl für Web & Druck)
+  png-1200/          1200 x 1200 px
+  png-2400/          2400 x 2400 px (Retina, Druck bis ca. 20 cm bei 300 dpi)
+  svg-freigestellt/  eng zugeschnitten, ohne Rand und ohne Hintergrund – für Website-Header, Rechnungen, Signaturen
+  uebersicht.png     alle Varianten auf einen Blick
+
+VARIANTEN
+  zeichen                nur das Zeichen (die zwei Chevrons)
+  quer-wortmarke         Zeichen + „alae.app“ nebeneinander
+  quer-komplett          Zeichen + „alae.app“ + „INDIVIDUELLE WEB-APPS“ – wie auf der Website
+  gestapelt-wortmarke    Zeichen oben, „alae.app“ darunter
+  gestapelt-komplett     Zeichen oben, „alae.app“ und Claim darunter
+
+HINTERGRÜNDE
+  dunkel                        Grund #111015
+  hell                          Grund #FFFFFF
+  transparent-helle-schrift     ohne Grund, zum Platzieren auf dunklen Flächen
+  transparent-dunkle-schrift    ohne Grund, zum Platzieren auf hellen Flächen
+
+FARBEN
+  Grund dunkel   #111015
+  Schrift hell   #ECEDF2        Schrift dunkel   #111015
+  Akzent (rot)   #FE7971        (aus der Bildschirmaufnahme gemessen – falls im CSS ein anderer Wert steht, z. B. #F87171, lässt er sich austauschen)
+  Claim          #9DA4B1 auf dunkel   ·   #6B7280 auf hell (dunkler, damit er auf Weiss lesbar bleibt)
+
+SCHRIFTEN
+  Wortmarke   Red Hat Text Bold, Laufweite -0,042 em
+  Claim       Source Code Pro Regular, Laufweite +0,081 em
+  Beide stehen unter der SIL Open Font License und dürfen kommerziell genutzt werden.
+  In allen SVG/PNG ist der Text bereits in Pfade umgewandelt: keine Schrift-Installation nötig.
+
+GEOMETRIE DES ZEICHENS
+  Strichstärke = 16,6 % der Zeichenhöhe, runde Enden und Ecken
+  Schenkel 28,2° zur Senkrechten
+  Rechter Schenkel des weissen Chevrons = halb so lang wie der linke
+
+SCHUTZZONE
+  Rund um das Logo mindestens die Höhe des Zeichens freilassen (in den quadratischen Dateien bereits eingehalten).
