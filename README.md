@@ -8,6 +8,9 @@ oder Skripte ausser dem Google-Tag für Google Ads (siehe „Google Ads" unten).
 Abhängigkeit in `package.json` gehört nicht zur Seite, sondern zu den beiden
 Netlify-Funktionen (Speicher der Besucherstatistik).
 
+Der Entwurf der neuen Startseite, eine Scroll-Story im Vollbild, steht
+getrennt davon in `story.html` (siehe „Story (Prototyp)").
+
 ## Aufbau der Seite
 
 | Abschnitt | Zweck |
@@ -85,6 +88,73 @@ Coaching zu KI-Werkzeugen.
 Pfade wie in der Kopfzeile, ohne Schriftzug. Es zeichnet sich, sobald der
 Abschnitt eingeblendet wird, und wiederholt sich beim Zeigen mit der Maus,
 höchstens aber alle drei Sekunden. Beim Wegfahren läuft bewusst nichts mehr.
+
+## Story (Prototyp)
+
+`story.html` ist der Entwurf für die neue Startseite: eine Geschichte im
+Vollbild, bei der beim Scrollen ein Bild ins nächste übergeht. Gebaut sind die
+Szenen 1–3 von 7. Die Seite ist nirgends verlinkt, trägt `noindex` und hat
+keinen Google-Tag – sie ist zum Anschauen da, nicht für Anzeigen.
+`index.html` bleibt unverändert, bis die Story fertig ist.
+
+| Szene | Text | Bild |
+| --- | --- | --- |
+| 1 | „Chaos, Zettel, Excel?" | Ein Knäuel aus Lichtfäden, darin sechs Zettel: Haftnotizen, eine Excel-Tabelle mit `#BEZUG!`, ein Ausdruck mit Kaffeerand |
+| 2 | „Massgeschneiderte Software statt Excel-Chaos" | Ordnung wandert von rechts durchs Knäuel, die Fäden werden zu einem Strahl und legen sich um die Kacheln eines Dashboards. Jeder Zettel landet als Kachel, der Bildschirm geht an, das Logo erscheint auf Milchglas |
+| 3 | „Exakt passend für deine Bedürfnisse" | Das Tablet dreht sich, eine Zahlung kommt herein, vier Hinweise zeigen auf die Stellen im Dashboard |
+
+Geplant sind noch: 4 die Schalter, die nacheinander auf „ON" springen,
+5 Vorher und Nachher, 6 die sieben Apps im Gerät, 7 das Erstgespräch. Die
+Vorlagen dafür liegen in `Bildvorlagen/`.
+
+Entscheide, die man beim Weiterbauen kennen sollte:
+
+- **Das Scrollen treibt die Story an, übernimmt aber nie.** Eine Zeitleiste
+  von 0 bis 100 folgt dem Scrollstand, mit 0,9 s Nachlauf, damit ein Mausrad
+  nicht ruckt. Rückwärts scrollen spielt rückwärts. Es gibt kein Einrasten und
+  kein automatisches Weiterlaufen.
+- **Die Bühne klebt per CSS** (`position: sticky`), nicht über das Pinning von
+  GSAP. Der Browser hält sie selbst fest, auch am iPhone, wenn die
+  Adressleiste ein- und ausfährt.
+- **Nichts davon ist ein Bild.** Zettel, Tablet und Dashboard sind HTML, die
+  Fäden ein Canvas. Das bleibt auf jedem Bildschirm scharf, der Text ist echt,
+  und jedes Teil kann sich einzeln bewegen. Die KI-Bilder in `Bildvorlagen/`
+  sind Stilvorgabe, nicht Inhalt: Ihr Text ist eingebacken, und in den
+  Dashboards stehen Fantasiewörter.
+- **Das Dashboard hat eine feste Auflösung:** quer 1180 px, hoch 820 px,
+  1em = 10 px. Die Schrift folgt über `cqw` der Breite des Bildschirms im
+  Gerät. Das Dashboard wächst und schrumpft also als Ganzes wie ein echter
+  Bildschirm und bricht nie um. Die Zahlen sind erfunden, passen aber
+  zueinander (September = August × 1,12), Datum und Monate kommen aus der Uhr
+  des Besuchers.
+- **Der Anfangszustand steht im CSS, nicht im Skript.** GSAP setzt beim
+  Neuberechnen (andere Fenstergrösse) seine Werte zurück. Stünde der Anfang
+  nur im Skript, tauchten Texte und Kacheln späterer Szenen kurz auf.
+- **Die Hinweislinien** in Szene 3 enden alle am linken Rand ihres Bausteins,
+  von oben nach unten in der Reihenfolge der Hinweise. So bleiben sie kurz und
+  kreuzen sich nie. Hoch gibt es keine Linien, nur vier Chips.
+- **Weniger Bewegung** (`prefers-reduced-motion`): drei stehende Bilder, die
+  ineinander überblenden. Nichts fliegt, nichts dreht sich, die Fäden bleiben
+  still.
+- **Ohne Skript oder ohne GSAP** steht eine ruhige Seite da: die drei Texte,
+  das eingeschaltete Tablet und die vier Punkte als Liste.
+
+Die Bibliothek ist **GSAP 3.15** (`gsap`, `ScrollTrigger`, `CustomEase`) in
+`assets/vendor/`, die Handschrift der Zettel **Caveat** in `assets/fonts/`
+(Einzelheiten in `assets/README.md`). Beides kommt von alae.app selbst. Darum
+braucht es keine Änderung an der Sicherheitsrichtlinie in `netlify.toml`, und
+es bleibt beim Grundsatz „keine externen Skripte". Die übrige Seite kommt
+weiter ohne Bibliothek aus. Komprimiert lädt die Story rund 90 KB, ganz ohne
+Bilder.
+
+Stellschrauben:
+
+- **Tempo:** `--len` an `.story` ist der Scrollweg in vh (heute 460). Mehr
+  heisst langsamer, die Abfolge bleibt dieselbe.
+- **Abfolge:** Der Zeitplan steht als Tabelle über `buildMotion` im Skript.
+  Wer dort Zahlen ändert, prüft auch `TILE_DELAY`, denn die Zettel landen
+  erst, wenn ihr Rahmen steht.
+- **Texte:** direkt im HTML der drei `.scene`-Blöcke und der `.callout`-Liste.
 
 ## Vor der Veröffentlichung anpassen
 
