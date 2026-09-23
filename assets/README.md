@@ -236,3 +236,37 @@ Menü mit den zuschaltbaren Bereichen, das die App ja gerade auszeichnet.
 **Wird eine dieser Dateien wieder eingebunden, muss die Weichzeichnung
 weiterhin stimmen.** Für den Fotoverkauf empfiehlt sich zusätzlich eine
 schriftliche Freigabe der Fotografin.
+
+## Bibliotheken und Schrift der Story
+
+`story.html` (siehe README, „Story (Prototyp)") braucht als einzige Seite eine
+Bibliothek und eine eigene Schrift. Beides liegt hier und wird von alae.app
+selbst ausgeliefert, nicht von einem fremden Server. Darum lässt die
+Sicherheitsrichtlinie in `netlify.toml` es ohne Änderung zu.
+
+| Datei | Was | Grösse (komprimiert) |
+| --- | --- | --- |
+| `vendor/gsap.min.js` | GSAP 3.15.0, der Kern | 73 KB (28 KB) |
+| `vendor/ScrollTrigger.min.js` | ScrollTrigger 3.15.0: Zeitleiste folgt dem Scrollstand | 45 KB (18 KB) |
+| `vendor/CustomEase.min.js` | CustomEase 3.15.0: dieselben Kurven wie im CSS | 7 KB (4 KB) |
+| `fonts/caveat-600.woff2` | Caveat SemiBold, Handschrift der Zettel | 17 KB |
+| `fonts/OFL-Caveat.txt` | Lizenz der Schrift (SIL Open Font License) | – |
+
+**GSAP** ist seit 2025 samt allen Plugins kostenlos, auch für kommerzielle
+Seiten. Die Bedingungen stehen unter <https://gsap.com/standard-license>, der
+Hinweis darauf im Kopf jeder Datei; der muss drinbleiben. Die Dateien sind
+unverändert aus dem npm-Paket `gsap@3.15.0` (Ordner `dist/`). Zum
+Aktualisieren alle drei aus derselben Version nehmen, sonst passen Kern und
+Plugins nicht zusammen.
+
+**Caveat** stammt aus dem npm-Paket `@fontsource/caveat@5.3.0`, Datei
+`caveat-latin-600-normal.woff2`. Sie ist auf die Zeichen verkleinert, die ein
+deutscher Text braucht: 51 → 17 KB, ohne die wechselnden Buchstabenformen
+(`calt`). Kommt auf einem Zettel ein neues Sonderzeichen dazu, fällt nur dieses
+eine auf eine Ersatzschrift zurück – dann neu zuschneiden:
+
+```
+pyftsubset caveat-latin-600-normal.woff2 \
+  --unicodes="U+0020-007E,U+00C4,U+00D6,U+00DC,U+00E4,U+00F6,U+00FC,U+00E0,U+00E8,U+00E9,U+00B7,U+2013,U+2019,U+201C,U+201E,U+2026" \
+  --flavor=woff2 --layout-features="kern" --output-file=caveat-600.woff2
+```

@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<!-- Prototyp der Scroll-Story, Szenen 1–3 von 7. Nirgends verlinkt und nicht
+     im Suchindex. index.html bleibt unberührt, bis die Story fertig ist.
+     Aufbau, Zeitplan und die Gründe für die Entscheide stehen im README
+     unter „Story (Prototyp)". -->
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>alae.app – Story (Prototyp)</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#111015">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314171B'/%3E%3Cpath d='M4.2 21.4 10 10.6l2.9 5.3' stroke='%23FBFAF8' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M16.1 21.4 21.9 10.6l5.9 10.8' stroke='%23FE7971' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="preload" href="assets/fonts/caveat-600.woff2" as="font" type="font/woff2" crossorigin>
+<!-- Die Klasse steht, bevor irgendetwas gezeichnet wird: Die Bühne braucht
+     ihr Layout ab dem ersten Bild, sonst springt die Seite, sobald das
+     Skript am Ende läuft. Fehlt GSAP, nimmt das Skript sie wieder weg, und
+     es bleibt die ruhige Fassung ohne Bühne (Block „Ohne Skript"). -->
+<script>document.documentElement.classList.add('js');</script>
+<style>
+/* =========================================================================
+   Story – Tokens → Basis → Kopfzeile → Bühne → Texte → Zettel → Tablet →
+   Dashboard → Plakette → Hinweise → Wegweiser → Weiter → Ohne Skript
+   ========================================================================= */
+
+/* --- Tokens --------------------------------------------------------------
+   Die Farben sind die des Logo-Pakets (LIESMICH.txt), nicht die der
+   Startseite: Die Story ist ein Film im Dunkeln und kennt keinen hellen
+   Modus. Wird sie später in index.html eingebaut, ist das zu entscheiden. */
+:root{
+  --bg:#111015;
+  --bg-deep:#08070B;
+  --ink:#ECEDF2;
+  --muted:#9DA4B1;
+  --coral:#FE7971;
+  --coral-hover:#FF9D96;
+  --coral-fg:#22100F;
+  --line:rgba(236,237,242,.10);
+
+  --font:-apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --hand:"Caveat", "Bradley Hand", "Segoe Print", cursive;
+
+  --pad:clamp(1.25rem, 4.5vw, 4rem);
+  /* Dieselben zwei Kurven wie auf der Startseite. */
+  --ease-out:cubic-bezier(.23, 1, .32, 1);
+  --ease-in-out:cubic-bezier(.77, 0, .175, 1);
+
+  /* Kleine Bildschirmhöhe: bleibt stehen, wenn die Adressleiste am Handy
+     ein- und ausfährt. Ältere Browser kennen svh nicht – ohne den
+     Rückfall wäre jede Rechnung damit ungültig und die Bühne leer. */
+  --svh:1svh;
+  color-scheme:dark;
+}
+@supports not (height: 1svh){ :root{ --svh:1vh } }
+
+@font-face{
+  font-family:"Caveat";
+  src:url("assets/fonts/caveat-600.woff2") format("woff2");
+  font-weight:600; font-style:normal; font-display:swap;
+}
+
+/* --- Basis -------------------------------------------------------------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; background:var(--bg)}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font);
+  font-size:clamp(1rem, .96rem + .18vw, 1.0625rem);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+p{margin:0}
+img,svg{display:block}
+::selection{background:var(--coral); color:var(--coral-fg)}
+:where(a,button):focus-visible{outline:2px solid var(--coral); outline-offset:3px; border-radius:4px}
+
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:100;
+  background:var(--ink); color:var(--bg); padding:.75rem 1.15rem; border-radius:0 0 8px 0;
+  font-weight:600; text-decoration:none;
+}
+.skip:focus{left:0}
+
+.btn{
+  display:inline-flex; align-items:center; gap:.6rem;
+  padding:.8rem 1.35rem; border-radius:999px; border:1px solid transparent;
+  background:var(--coral); color:var(--coral-fg);
+  font:inherit; font-weight:650; font-size:.95rem; letter-spacing:-.01em;
+  text-decoration:none; white-space:nowrap; cursor:pointer;
+  transition:transform .2s var(--ease-out), background .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+@media (hover: hover) and (pointer: fine){
+  .btn:hover{transform:translateY(-1px); background:var(--coral-hover); box-shadow:0 12px 30px -12px rgba(254,121,113,.6)}
+  .btn--ghost:hover{background:transparent; border-color:var(--ink); box-shadow:none}
+}
+.btn:active{transform:scale(.97); transition:transform .08s var(--ease-out)}
+.btn--ghost{background:transparent; color:var(--ink); border-color:rgba(236,237,242,.24)}
+
+.kicker{
+  display:flex; align-items:center; gap:.6rem;
+  font-family:var(--mono); font-size:.72rem; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--coral);
+  margin:0 0 1.15rem;
+}
+
+/* --- Kopfzeile -----------------------------------------------------------
+   Kein Balken, sondern ein Verlauf: Ein deckender Streifen würde das Bild
+   oben abschneiden. Signet, Schriftzug und Zeile sind dieselben wie in
+   index.html und zeichnen sich beim Laden genauso. */
+.bar{
+  position:fixed; inset:0 0 auto; z-index:40;
+  display:flex; align-items:center; gap:1rem;
+  padding:calc(.8rem + env(safe-area-inset-top)) var(--pad) .8rem;
+  background:linear-gradient(rgba(17,16,21,.82), rgba(17,16,21,0));
+  pointer-events:none;
+}
+.bar > *{pointer-events:auto}
+.bar .btn{padding:.62rem 1.1rem; font-size:.9rem}
+.brand{
+  display:inline-flex; align-items:center; gap:.6rem; margin-right:auto;
+  font-weight:700; letter-spacing:-.025em; font-size:1.1rem; line-height:1.65;
+  color:var(--ink); text-decoration:none;
+}
+.brand-mark{width:2.1rem; height:1.5rem; flex:none}
+.brand-mark path{stroke-dasharray:1; animation:brand-draw .69s cubic-bezier(.65,0,.15,1) both}
+.brand-mark path:nth-child(2){animation-duration:.81s; animation-delay:.35s}
+.brand-name{display:block; animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .53s both}
+.brand small{
+  display:block; font-family:var(--mono); font-size:.6rem; font-weight:500;
+  letter-spacing:.11em; text-transform:uppercase; color:var(--muted); line-height:1.4;
+  white-space:nowrap; animation:brand-rise .63s cubic-bezier(.65,0,.15,1) .68s both;
+}
+@media (max-width: 26rem){ .brand small{display:none} }
+@keyframes brand-draw{from{stroke-dashoffset:1} to{stroke-dashoffset:0}}
+@keyframes brand-rise{from{opacity:0; transform:translateY(9px)} to{opacity:1; transform:none}}
+
+/* --- Bühne ---------------------------------------------------------------
+   Die Sektion ist so hoch wie der ganze Scrollweg der Story, die Bühne
+   darin klebt oben (sticky) und bleibt stehen, während darunter gescrollt
+   wird. Das ist CSS, nicht GSAP-Pinning: Der Browser hält die Bühne selbst
+   fest, auch am iPhone ohne Ruckeln beim Ein- und Ausfahren der
+   Adressleiste. GSAP liest nur ab, wie weit gescrollt ist, und stellt die
+   Zeitleiste auf diesen Punkt (siehe Skript, „Zeitleiste").
+
+   --len ist der Scrollweg in vh. Mehr heisst langsamer, nicht länger zu
+   sehen: Die Zeitleiste ist immer dieselbe, sie wird nur gestreckt. */
+.story{position:relative; --len:460; height:calc(100 * var(--svh) + var(--len) * 1vh)}
+.stage{
+  position:sticky; top:0; overflow:hidden;
+  height:100vh; height:calc(100 * var(--svh));
+  perspective:1700px;
+  /* Masseinheit für die Zettel: quer an der Höhe gemessen, hoch an der
+     Breite – so bleiben sie auf beiden Formaten ungefähr gleich gewichtig. */
+  --u:min(1.25vw, 1.9vh);
+}
+@media (orientation: portrait){ .stage{--u:min(2.55vw, 1.55vh)} }
+
+.stage-bg{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(110% 85% at 68% 42%, #17161D 0%, var(--bg) 52%, var(--bg-deep) 100%);
+}
+/* Die Stimmung kippt mit der Geschichte: Szene 1 ist kalt, sobald Ordnung
+   entsteht, kommt warmes Licht von unten dazu. Nur die Deckkraft dieser
+   einen Fläche ändert sich – der Verlauf selbst wird nie neu gerechnet. */
+.haze{
+  position:absolute; inset:-10%; opacity:0; pointer-events:none;
+  background:
+    radial-gradient(42% 38% at 18% 96%, rgba(254,121,113,.22), transparent 70%),
+    radial-gradient(48% 36% at 62% 88%, rgba(254,121,113,.13), transparent 72%);
+}
+.threads{position:absolute; inset:0; width:100%; height:100%; z-index:1}
+
+/* --- Texte ---------------------------------------------------------------- */
+.scene{position:absolute; z-index:7; pointer-events:none}
+.s1{left:var(--pad); top:calc(26 * var(--svh)); width:min(46rem, 50vw)}
+.s2{left:var(--pad); right:var(--pad); top:calc(10.5 * var(--svh)); text-align:center}
+.s2 .headline, .s2 .sub{margin-inline:auto}
+.s2 .headline{max-width:30ch}
+.s2 .sub{max-width:44ch}
+.s3{left:var(--pad); top:calc(14.5 * var(--svh)); width:min(29rem, 34vw)}
+@media (orientation: portrait){
+  .s1{top:calc(13 * var(--svh)); right:var(--pad); width:auto}
+  .s2{top:calc(10.5 * var(--svh))}
+  .s2 .headline{max-width:18ch}
+  .s3{top:calc(10.5 * var(--svh)); right:var(--pad); width:auto}
+}
+/* Der Anfangszustand der Story steht im CSS, nicht im Skript: Was erst
+   später kommt, ist hier schon unsichtbar. GSAP setzt beim Neuberechnen
+   (Fenstergrösse) seine Werte zurück und fällt dann genau hierauf zurück –
+   stünde der Anfang nur im Skript, tauchten Texte und Kacheln kurz auf.
+   Die Überschriften von Szene 2 und 3 bleiben verborgen, bis das Skript
+   sie in Wörter aufgeteilt hat, sonst blitzten sie beim Laden auf. */
+.js .s2 .headline, .js .s3 .headline{visibility:hidden}
+.is-ready .s2 .headline, .is-ready .s3 .headline{visibility:visible}
+.js :is(.s2, .s3) :is(.w, .sub){opacity:0}
+
+.display{
+  margin:0; font-weight:760; letter-spacing:-.045em; line-height:.98;
+  font-size:clamp(2.8rem, 1.2rem + 5.4vw, 6.4rem); text-wrap:balance;
+}
+.headline{
+  margin:0; font-weight:730; letter-spacing:-.035em; line-height:1.03;
+  font-size:clamp(2rem, 1.15rem + 3.3vw, 4.4rem); text-wrap:balance;
+  max-width:18ch;
+}
+.hl{color:var(--coral)}
+.sub{
+  margin-top:1.25rem; max-width:34ch; color:var(--muted);
+  font-size:clamp(1.05rem, .98rem + .45vw, 1.35rem); line-height:1.5; text-wrap:pretty;
+}
+/* Einzelne Wörter, damit sie gestaffelt kommen und gehen können */
+.w{display:inline-block}
+
+/* --- Zettel ----------------------------------------------------------------
+   Drei Schichten pro Zettel: aussen bewegt ihn die Zeitleiste, in der
+   Mitte die Maus (Parallaxe), innen das Schweben. So kommen sich die drei
+   Bewegungen nie in die Quere. Grössen in --u, Schrift in cqw: Der Inhalt
+   wächst und schrumpft mit dem Zettel, statt umzubrechen. */
+.papers{position:absolute; inset:0; z-index:5; pointer-events:none}
+.paper{position:absolute; left:0; top:0; container-type:inline-size; will-change:transform}
+.pp, .pf{width:100%; height:100%}
+.face{
+  position:relative; width:100%; height:100%; overflow:hidden;
+  font-size:10cqw; color:#2A2A33;
+  box-shadow:0 22px 34px -16px rgba(0,0,0,.78), 0 4px 10px rgba(0,0,0,.35);
+}
+/* Licht von oben links, Schatten nach unten: Die Zettel liegen im selben
+   Raum wie das Tablet und nicht als helle Flecken davor. */
+.face::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(155deg, rgba(255,255,255,.16) 0%, transparent 38%, rgba(24,10,22,.24) 100%);
+}
+.hand{font-family:var(--hand); font-weight:600; line-height:1.02}
+
+.paper--sticky{width:calc(var(--u) * 8.6); aspect-ratio:1}
+.paper--sticky .face{
+  padding:.95em .9em;
+  background:linear-gradient(175deg, #FFD0DB, #FFB9CB 70%, #F7A8BD);
+  border-radius:.15em .15em .45em .15em;
+}
+.paper--yellow .face{background:linear-gradient(175deg, #FFEEA0, #FFE171 70%, #F4D059)}
+.paper--sticky .hand{font-size:1.72em}
+.paper--sticky u{text-decoration-thickness:.07em; text-underline-offset:.14em; text-decoration-color:#C9435D}
+
+.paper--note{width:calc(var(--u) * 10.6); aspect-ratio:.84}
+.paper--note .pf{filter:drop-shadow(0 16px 16px rgba(0,0,0,.6))}
+.paper--note .face{
+  padding:1.2em .8em .8em 1.8em; box-shadow:none;
+  background-color:#F6F4EE;
+  background-image:repeating-linear-gradient(transparent 0 1.28em, #C5D3EA 1.28em calc(1.28em + 1px));
+  background-position:0 1.02em;
+  /* Abgerissene Oberkante */
+  clip-path:polygon(0 2%, 6% 0, 12% 2.2%, 19% .4%, 26% 2%, 33% 0, 41% 2.4%, 48% .5%, 56% 2%, 63% 0, 71% 2.2%, 79% .4%, 86% 2%, 93% 0, 100% 1.6%, 100% 100%, 0 100%);
+}
+.paper--note .face::before{content:""; position:absolute; left:1.3em; top:0; bottom:0; width:1px; background:#EFA3A3}
+.paper--note .hand{font-size:1.36em; line-height:.94; color:#27408B}
+.paper--note .strike{text-decoration:line-through; text-decoration-color:#C0392B; text-decoration-thickness:.08em; color:#4A5A8C}
+
+.paper--card{width:calc(var(--u) * 10.8); aspect-ratio:1.5}
+.paper--card .face{
+  padding:.75em 1em; border-radius:.2em;
+  background-color:#E8F0FD;
+  background-image:
+    linear-gradient(#E27A7A, #E27A7A),
+    repeating-linear-gradient(transparent 0 1.18em, #BBCFEE 1.18em calc(1.18em + 1px));
+  background-size:100% 1px, 100% 100%;
+  background-position:0 1.75em, 0 1.75em;
+  background-repeat:no-repeat;
+}
+.paper--card .hand{font-size:1.46em; line-height:1.08}
+
+.paper--xls{width:calc(var(--u) * 17.5); aspect-ratio:1.62}
+.paper--xls .face{background:#FFFFFF; border-radius:.25em; font-family:var(--font)}
+.xls-bar{
+  display:flex; align-items:center; gap:.45em;
+  height:3em; padding:0 .9em; font-size:.4em; font-weight:600;
+  background:#1D6F42; color:#FFFFFF; white-space:nowrap; overflow:hidden;
+}
+.xls-bar b{
+  display:grid; place-items:center; width:1.5em; height:1.5em; border-radius:.2em;
+  background:#FFFFFF; color:#1D6F42; font-size:.9em;
+}
+.xls-grid{display:grid; grid-template-columns:1.7em repeat(4, 1fr); font-size:.36em; color:#333}
+.xls-grid span{
+  padding:.28em .45em; line-height:1.5; white-space:nowrap; overflow:hidden;
+  border-right:1px solid #E1E1E1; border-bottom:1px solid #E1E1E1; position:relative;
+}
+.xls-grid .h{background:#F3F3F3; color:#777; text-align:center; padding-inline:0}
+.xls-grid .err{color:#C00000; background:#FDECEC; font-weight:700}
+/* Das grüne Dreieck, mit dem Excel eine verdächtige Zelle markiert */
+.xls-grid .warn::before{
+  content:""; position:absolute; left:0; top:0;
+  border-top:.5em solid #1E8E3E; border-right:.5em solid transparent;
+}
+
+.paper--print{width:calc(var(--u) * 11.4); aspect-ratio:.77}
+.paper--print .face{padding:1em .9em; background:#F1EFEA}
+.print-h{font-family:var(--mono); font-size:.5em; font-weight:700; letter-spacing:.06em; margin:0 0 .9em; color:#333}
+.print-l{list-style:none; margin:0; padding:0; font-family:var(--mono); font-size:.44em; line-height:2.05; color:#444}
+.print-l li{border-bottom:1px dashed #CFCBC2; position:relative}
+.print-l .tick::after{
+  content:""; position:absolute; right:.5em; top:.35em; width:.45em; height:.85em;
+  border-right:.16em solid #2B4C9A; border-bottom:.16em solid #2B4C9A; transform:rotate(40deg);
+}
+.print-ring{
+  position:absolute; right:-1.2em; bottom:.8em; width:4.4em; height:4.4em; border-radius:50%;
+  border:.3em solid rgba(125,82,40,.30);
+  box-shadow:inset 0 0 .5em rgba(125,82,40,.18), 0 0 .3em rgba(125,82,40,.14);
+}
+.print-q{position:absolute; left:.9em; bottom:.55em; font-size:1.25em; color:#C0392B; transform:rotate(-6deg)}
+
+/* --- Tablet ----------------------------------------------------------------
+   Die Lage ohne Transformation ist die flache Pose aus Szene 2: mittig,
+   frontal, unter der Überschrift. Alle anderen Posen sind Transformationen
+   davon. Deshalb kann das Skript die Kacheln im Bildschirm mit offsetLeft
+   und offsetTop vermessen, egal wie das Tablet gerade gedreht ist. */
+.device{
+  --da:1.43;
+  --dw:min(54vw, calc(56 * var(--svh) * 1.43));
+  --dt:calc(36 * var(--svh));
+  position:absolute; z-index:4;
+  left:calc(50% - var(--dw) / 2); top:var(--dt);
+  width:var(--dw); height:calc(var(--dw) / var(--da));
+  transform-style:preserve-3d; will-change:transform;
+}
+@media (orientation: portrait){
+  .device{--da:.74; --dw:min(84vw, calc(51 * var(--svh) * .74)); --dt:calc(38.5 * var(--svh))}
+}
+.device-tilt{position:relative; width:100%; height:100%; transform-style:preserve-3d}
+/* Das Licht, das der Bildschirm auf den Tisch wirft. Ein vorgerechneter
+   Verlauf statt filter:blur() – ein Weichzeichner dieser Grösse kostet
+   Safari bei jedem Bild spürbar Zeit. */
+.device-glow{
+  position:absolute; left:-14%; right:-14%; top:35%; bottom:-34%; pointer-events:none;
+  background:radial-gradient(50% 42% at 50% 60%, rgba(254,121,113,.32), rgba(254,121,113,.08) 55%, transparent 72%);
+}
+.device-body{
+  position:absolute; inset:0; border-radius:calc(var(--dw) * .047);
+  background:linear-gradient(150deg, #36373E 0%, #17171C 20%, #0D0D11 62%, #1D1E23 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.10),
+    inset 0 1.5px 0 rgba(255,255,255,.14),
+    0 0 0 1px rgba(0,0,0,.7),
+    0 60px 90px -40px rgba(0,0,0,.9),
+    -24px 30px 70px -34px rgba(254,121,113,.42);
+}
+.device-cam{
+  position:absolute; left:50%; top:calc(var(--dw) * .0092);
+  width:calc(var(--dw) * .0062); height:calc(var(--dw) * .0062);
+  margin-left:calc(var(--dw) * -.0031); border-radius:50%;
+  background:#26262C; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);
+}
+.device-screen{
+  position:absolute; inset:calc(var(--dw) * .021);
+  border-radius:calc(var(--dw) * .027); overflow:hidden;
+  container-type:inline-size;
+}
+.screen-bg{position:absolute; inset:0; background:#F4F3F0}
+.screen-glare{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(118deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 30%);
+}
+
+/* --- Dashboard -------------------------------------------------------------
+   Gebaut in einer festen Bildschirmauflösung: quer 1180 px breit, hoch
+   820 px. 1em sind dort 10 px, alles darin ist in em. Die Schriftgrösse
+   folgt der Bildschirmbreite (cqw), das Dashboard wird also als Ganzes
+   grösser und kleiner wie ein echter Bildschirm und bricht nie um.
+   Regel: Behälter setzen keine eigene Schriftgrösse, nur Textblätter –
+   sonst multiplizieren sich die em. Die Inhalte sind erfunden: eine
+   Schreinerei, deren Zahlen zueinander passen (August × 1,12 = September). */
+.app{
+  position:absolute; inset:0; font-size:calc(100cqw / 118);
+  display:grid; grid-template-columns:19.5em 1fr;
+  color:#16181D; line-height:1.3; font-family:var(--font);
+}
+.app p{margin:0}
+.app-side{
+  background:#16171C; color:#AEB4BF;
+  padding:2.6em 1.7em 2.2em; display:flex; flex-direction:column;
+}
+.app-logo{display:flex; align-items:center; gap:.9em; padding:0 .6em; margin-bottom:2.6em}
+.app-logo svg{width:3em; height:2.2em; flex:none}
+.app-logo b{font-size:1.75em; color:#F2F3F6; letter-spacing:-.02em}
+.app-nav{display:grid; gap:.35em}
+.app-nav span{
+  position:relative; display:flex; align-items:center; gap:.85em;
+  padding:.85em .95em; border-radius:.75em; font-size:1.34em; color:#AEB4BF;
+}
+.app-nav .is-on{background:rgba(254,121,113,.14); color:#FF968E}
+.ic{flex:none; width:1.05em; height:1.05em; border:.13em solid currentColor; border-radius:.3em; opacity:.85}
+.ic--round{border-radius:50%}
+.app .app-host{
+  position:relative; margin-top:auto; display:flex; align-items:center; gap:.7em;
+  padding:0 .8em; font-size:1.12em; color:#8C93A0;
+}
+.ok{flex:none; width:.62em; height:.62em; border-radius:50%; background:#3DDC97; box-shadow:0 0 0 .3em rgba(61,220,151,.16)}
+.app-user{display:flex; align-items:center; gap:.9em; margin-top:1.5em; padding:1.3em .8em 0; border-top:1px solid rgba(255,255,255,.07)}
+.app-user b{display:block; font-size:1.2em; color:#E9EBEF}
+.app-user small{display:block; font-size:1.02em; color:#8C93A0}
+.av{
+  flex:none; display:grid; place-items:center; width:3.3em; height:3.3em; border-radius:50%;
+  font-style:normal; font-size:1.05em; font-weight:700; background:#2A2C33; color:#E9EBEF;
+}
+.av-top{display:none}
+
+.app-main{padding:2.6em 2.8em 2.6em; display:grid; grid-template-rows:auto auto 1fr auto; gap:1.9em; min-height:0}
+.app-top{display:flex; align-items:center; justify-content:space-between}
+.app-h{font-size:2.55em; font-weight:760; letter-spacing:-.03em; line-height:1.1}
+.app-date{font-size:1.28em; color:#7A808B; margin-top:.25em}
+.app-tools{display:flex; align-items:center; gap:1.2em}
+.app-search{
+  display:flex; align-items:center; gap:.8em; width:23em; height:4em; padding:0 1.4em;
+  border-radius:2em; background:#FFFFFF; box-shadow:0 0 0 1px #E6E3DD; color:#A0A5AE;
+}
+.app-search span{font-size:1.2em}
+.app-bell{position:relative; width:4em; height:4em; border-radius:50%; background:#FFFFFF; box-shadow:0 0 0 1px #E6E3DD}
+.app-bell::after{content:""; position:absolute; right:1.05em; top:1em; width:.8em; height:.8em; border-radius:50%; background:#FE7971; box-shadow:0 0 0 .22em #FFFFFF}
+.app-tabs{display:none}
+.app-tabs span{position:relative; font-size:1.35em; padding:.55em 1.1em; border-radius:2em; color:#6B717C; background:#FFFFFF; box-shadow:0 0 0 1px #E6E3DD}
+.app-tabs .is-on{background:#16181D; color:#FFFFFF; box-shadow:none}
+
+.app-kpis{position:relative; display:grid; grid-template-columns:repeat(4, 1fr); gap:1.8em}
+.app-card{
+  position:relative; min-width:0; padding:1.8em 2em;
+  background:#FFFFFF; border-radius:1.6em;
+  box-shadow:0 0 0 1px #ECE9E3, 0 .7em 1.8em -1em rgba(20,22,28,.2);
+}
+.kpi p{font-size:1.24em; color:#7A808B; white-space:nowrap}
+.kpi b{
+  display:block; margin:.22em 0 .18em; font-size:3.05em; font-weight:760;
+  letter-spacing:-.03em; line-height:1.12; font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.kpi small{display:block; font-size:1.1em; color:#7A808B; white-space:nowrap}
+.kpi small.up{color:#1F9D63}
+
+.app-row{display:grid; grid-template-columns:1.75fr 1fr; gap:1.8em; min-height:0}
+.card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:1.3em}
+.card-head p{font-size:1.45em; font-weight:720}
+.legend{display:flex; gap:1.4em; font-size:1.08em; color:#7A808B}
+.legend span{display:flex; align-items:center; gap:.45em}
+.legend i{width:.8em; height:.8em; border-radius:.22em}
+.l26{background:#F4675F}
+.l25{background:#DDD9D2}
+.link-txt{font-size:1.15em; color:#E0564E; font-weight:650}
+.chart{display:flex; flex-direction:column}
+.plot{flex:1; display:grid; grid-template-columns:auto 1fr; gap:1.2em; min-height:0}
+.axis{display:flex; flex-direction:column; justify-content:space-between; padding-bottom:2.3em; text-align:right}
+.axis span{font-size:1.02em; color:#A0A5AE; line-height:1; transform:translateY(-.5em)}
+.axis span:last-child{transform:translateY(.5em)}
+.bars{
+  display:grid; grid-template-columns:repeat(9, 1fr); gap:1.1em; min-height:0;
+  /* Hilfslinien bei 0, 20k, 40k und 60k: vier Linien, drei gleiche Abstände */
+  background:
+    linear-gradient(#ECE9E3, #ECE9E3) 0 0 / 100% 1px no-repeat,
+    linear-gradient(#ECE9E3, #ECE9E3) 0 calc((100% - 2.3em) / 3) / 100% 1px no-repeat,
+    linear-gradient(#ECE9E3, #ECE9E3) 0 calc((100% - 2.3em) / 3 * 2) / 100% 1px no-repeat,
+    linear-gradient(#D9D5CE, #D9D5CE) 0 calc(100% - 2.3em) / 100% 1px no-repeat;
+}
+.m{display:grid; grid-template-rows:1fr 2.3em; min-height:0}
+.col{display:flex; align-items:flex-end; gap:.3em; min-height:0}
+.col i{flex:1; height:calc(var(--h) * 100%); border-radius:.45em .45em .12em .12em; transform-origin:50% 100%}
+.b25{background:#DDD9D2}
+.b26{background:linear-gradient(#FF8C84, #EF5D55)}
+.m span{align-self:end; text-align:center; font-size:1.02em; color:#A0A5AE; line-height:1}
+
+.donut{display:flex; flex-direction:column; align-items:center; text-align:center}
+.donut-h{align-self:stretch; text-align:left; font-size:1.45em; font-weight:720}
+.ring{position:relative; width:14.5em; height:14.5em; margin:1.5em 0 1em}
+.ring svg{width:100%; height:100%}
+.ring circle{fill:none; stroke-width:10}
+.track{stroke:#F0EDE7}
+.arc{stroke:#FE7971; stroke-linecap:round; stroke-dasharray:100; stroke-dashoffset:14; transform:rotate(-90deg); transform-origin:50% 50%}
+.ring b{position:absolute; inset:0; display:grid; place-items:center; font-size:3em; font-weight:760; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.donut small{font-size:1.15em; color:#7A808B}
+
+.table{padding-bottom:1.2em}
+.tr{display:grid; grid-template-columns:1.6fr 1.2fr 1fr .9fr; align-items:center; gap:1em; padding:.8em 0; border-top:1px solid #F0EDE7}
+.tr > span{font-size:1.24em; display:flex; align-items:center; gap:.7em; white-space:nowrap; overflow:hidden}
+.tr .av{width:2.4em; height:2.4em; font-size:.82em; background:#EFEDE8; color:#59606B}
+.th{border-top:0; padding-top:0}
+.th > span{font-size:1em; text-transform:uppercase; letter-spacing:.07em; color:#9AA0AA; font-weight:650}
+.st{font-style:normal; padding:.28em .8em; border-radius:1em; font-size:.88em; font-weight:680}
+.st-work{background:#FFF1D6; color:#98690A}
+.st-offer{background:#E4EEFF; color:#2E5BBA}
+.st-new{background:#FFE3E1; color:#C8423A}
+.st-done{background:#DDF5E9; color:#1C8A57}
+.app .app-host--foot{display:none}
+/* Meldung in Szene 3: Die App arbeitet, während man hinschaut. Sie ist nie
+   ohne Skript zu sehen, darum ist sie auch im CSS von Anfang an aus. */
+.app-toast{
+  position:absolute; right:2.8em; top:2.2em; z-index:2; opacity:0;
+  display:flex; align-items:center; gap:1.1em; padding:1.1em 1.8em 1.1em 1.1em;
+  background:#16181D; color:#FFFFFF; border-radius:1.3em;
+  box-shadow:0 1.4em 3em -1em rgba(10,10,14,.5), 0 0 0 1px rgba(255,255,255,.06);
+}
+.app-toast b{display:block; font-size:1.3em; font-weight:700}
+.app-toast small{display:block; font-size:1.1em; color:#AEB4BF; margin-top:.15em}
+.chk{position:relative; flex:none; width:3em; height:3em; border-radius:50%; background:#1F9D63}
+.chk::after{
+  content:""; position:absolute; left:1.1em; top:.72em; width:.7em; height:1.25em;
+  border-right:.28em solid #FFFFFF; border-bottom:.28em solid #FFFFFF; transform:rotate(42deg);
+}
+.js :is(.app [data-slot], .app-chrome, .screen-bg, .device-body, .device-glow, .screen-glare){opacity:0}
+.js .col i{transform:scaleY(0)}
+.js .arc{stroke-dashoffset:100}
+
+/* Verankerungen der Hinweislinien aus Szene 3: unsichtbare Punkte, deren
+   Lage das Skript bei jedem Bild abfragt – auch wenn das Tablet gedreht
+   ist. Alle sitzen am linken Rand ihres Bausteins, von oben nach unten in
+   der Reihenfolge der Hinweise. So bleiben die Linien kurz und kreuzen
+   sich nie. Hoch gibt es keine Linien, nur die vier Punkte als Chips. */
+.anchor{position:absolute; width:2px; height:2px; pointer-events:none}
+.app-nav .anchor{left:.2em; top:50%}
+.app-kpis > .anchor{left:-.1em; top:50%}
+.chart > .anchor{left:-.1em; top:48%}
+.app-side > .app-host .anchor{left:-.1em; top:50%}
+
+@media (orientation: portrait){
+  .app{font-size:calc(100cqw / 82); grid-template-columns:1fr; grid-template-rows:auto 1fr}
+  .app-side{flex-direction:row; align-items:center; padding:2.2em 3em}
+  .app-logo{margin:0; flex:1}
+  .av-top{display:grid; margin-left:auto}
+  .app-nav, .app-side > .app-host, .app-user{display:none}
+  .app-main{padding:2.4em 3em 2.6em; grid-template-rows:auto auto auto 1fr auto auto; gap:1.8em}
+  .app-tools{display:none}
+  .app-tabs{position:relative; display:flex; gap:.8em}
+  .app-kpis{grid-template-columns:1fr 1fr; gap:1.6em}
+  .app-row{grid-template-columns:1fr}
+  .donut{display:none}
+  .table .tr:nth-child(n+5){display:none}
+  .app .app-host--foot{display:flex; margin:0; padding:0}
+  .app-toast{top:9.5em; right:3em}
+}
+
+/* --- Plakette -------------------------------------------------------------
+   Das Logo auf Milchglas, wie in den Vorlagen. Kommt als Material herein
+   (Unschärfe und Grösse zusammen), nicht als blosse Blende. */
+.badge{
+  position:absolute; left:0; top:0; z-index:6; opacity:0;
+  display:flex; align-items:center; gap:clamp(.8rem, 1.4vw, 1.3rem);
+  padding:clamp(.9rem, 1.6vw, 1.4rem) clamp(1.3rem, 2.3vw, 2.1rem) clamp(.9rem, 1.6vw, 1.4rem) clamp(1rem, 1.8vw, 1.6rem);
+  border-radius:clamp(1rem, 1.6vw, 1.5rem);
+  background:rgba(24,23,30,.62);
+  -webkit-backdrop-filter:blur(18px) saturate(1.5); backdrop-filter:blur(18px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 30px 70px -24px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.14);
+}
+.badge svg{width:clamp(2.6rem, 4.2vw, 4rem); height:auto; flex:none}
+.badge path{stroke-dasharray:1}
+.badge b{display:block; font-size:clamp(1.5rem, 2.6vw, 2.5rem); font-weight:760; letter-spacing:-.035em; line-height:1; color:var(--ink)}
+.badge small{
+  display:block; margin-top:.5rem; font-family:var(--mono); font-size:clamp(.52rem, .8vw, .7rem);
+  font-weight:500; letter-spacing:.17em; text-transform:uppercase; color:var(--muted); white-space:nowrap;
+}
+@media (prefers-reduced-transparency: reduce){
+  .badge{background:#1A1920; -webkit-backdrop-filter:none; backdrop-filter:none}
+}
+
+/* --- Hinweise (Szene 3) ---------------------------------------------------- */
+.callouts{position:absolute; inset:0; z-index:7; margin:0; padding:0; list-style:none; pointer-events:none}
+.callout{
+  position:absolute; left:var(--pad); max-width:16rem; opacity:0;
+  display:flex; align-items:center; gap:.75rem;
+  font-size:clamp(.95rem, .85rem + .3vw, 1.08rem); font-weight:600; line-height:1.3; color:var(--ink);
+}
+.callout::before{
+  content:""; flex:none; width:.5rem; height:.5rem; border-radius:50%;
+  background:var(--coral); box-shadow:0 0 0 .3rem rgba(254,121,113,.16);
+}
+.callout:nth-child(1){top:calc(49 * var(--svh))}
+.callout:nth-child(2){top:calc(59 * var(--svh))}
+.callout:nth-child(3){top:calc(69 * var(--svh))}
+.callout:nth-child(4){top:calc(79 * var(--svh))}
+@media (orientation: portrait){
+  .callout{
+    max-width:none; width:calc(50% - var(--pad) - .35rem); align-items:flex-start;
+    padding:.6rem .75rem; border-radius:.85rem; font-size:.86rem;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  }
+  .callout::before{margin-top:.4em}
+  .callout:nth-child(even){left:calc(50% + .35rem)}
+  .callout:nth-child(1), .callout:nth-child(2){top:calc(73.5 * var(--svh))}
+  .callout:nth-child(3), .callout:nth-child(4){top:calc(84 * var(--svh))}
+}
+.links{position:absolute; inset:0; width:100%; height:100%; z-index:7; overflow:visible; pointer-events:none}
+@media (orientation: portrait){ .links{display:none} }
+.link{fill:none; stroke:rgba(254,121,113,.85); stroke-width:1.4; stroke-dasharray:1; stroke-dashoffset:1; stroke-linejoin:round}
+.knot{fill:#ECEDF2; stroke:rgba(254,121,113,.9); stroke-width:3; opacity:0}
+
+/* --- Wegweiser ------------------------------------------------------------ */
+.chapter{position:absolute; right:calc(var(--pad) * .55); top:50%; z-index:8; display:grid; gap:.5rem; margin-top:-2.4rem}
+.chapter i{
+  display:block; width:4px; height:1.4rem; border-radius:2px;
+  background:rgba(236,237,242,.24); transform:scaleY(.3);
+  transition:transform .4s var(--ease-out), background .3s ease;
+}
+.chapter i.on{transform:none; background:var(--coral)}
+@media (orientation: portrait){ .chapter{display:none} }
+
+.cue{
+  position:absolute; left:50%; bottom:calc(3.5 * var(--svh)); z-index:8; transform:translateX(-50%);
+  display:grid; justify-items:center; gap:.7rem;
+  font-family:var(--mono); font-size:.66rem; font-weight:600; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--muted);
+}
+.cue i{position:relative; width:1px; height:2.8rem; overflow:hidden; background:linear-gradient(rgba(236,237,242,0), rgba(236,237,242,.45))}
+.cue i::after{
+  content:""; position:absolute; left:-1px; top:0; width:3px; height:.8rem; border-radius:2px;
+  background:var(--coral); animation:cue 2.2s var(--ease-in-out) infinite;
+}
+@keyframes cue{from{transform:translateY(-1rem)} to{transform:translateY(3rem)}}
+.skip-story{
+  position:absolute; right:var(--pad); bottom:calc(3.5 * var(--svh)); z-index:8;
+  font-family:var(--mono); font-size:.66rem; font-weight:600; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--muted); text-decoration:none;
+}
+.skip-story:hover{color:var(--ink)}
+@media (orientation: portrait){ .skip-story{display:none} }
+
+/* --- Weiter ------------------------------------------------------------- */
+.weiter{
+  position:relative; padding:clamp(5rem, 12vw, 9rem) var(--pad); text-align:center;
+  border-top:1px solid var(--line);
+  background:radial-gradient(60% 80% at 50% 0%, rgba(254,121,113,.08), transparent 70%), var(--bg);
+}
+.weiter .kicker{justify-content:center}
+.weiter h2{
+  max-width:24ch; margin:0 auto; font-size:clamp(1.7rem, 1.1rem + 2.2vw, 3rem);
+  line-height:1.1; letter-spacing:-.03em; font-weight:720; text-wrap:balance;
+}
+.weiter p{color:var(--muted); max-width:52ch; margin:1.2rem auto 0; text-wrap:pretty}
+.weiter .actions{display:flex; flex-wrap:wrap; gap:.8rem; justify-content:center; margin-top:2rem}
+
+/* --- Ohne Skript -----------------------------------------------------------
+   Fällt das Skript aus oder kommt GSAP nicht an, steht die Geschichte als
+   ruhige Seite da: drei Texte, das eingeschaltete Tablet, die vier Punkte.
+   Kein leerer Kasten, kein Text, der auf eine Animation wartet. */
+:root:not(.js) .story{height:auto}
+:root:not(.js) .stage{
+  position:relative; height:auto; overflow:hidden; perspective:none;
+  display:flex; flex-direction:column; gap:3rem; padding:8rem var(--pad) 5rem;
+}
+:root:not(.js) :is(.threads, .papers, .badge, .links, .chapter, .cue, .skip-story){display:none}
+:root:not(.js) .haze{opacity:1}
+:root:not(.js) .scene{position:relative; width:auto; left:auto; right:auto; top:auto; text-align:left}
+:root:not(.js) .s2 .headline, :root:not(.js) .s2 .sub{margin-inline:0}
+:root:not(.js) .s1{order:1}
+:root:not(.js) .s2{order:2}
+:root:not(.js) .device{order:3; position:relative; left:auto; top:auto; margin-inline:auto}
+:root:not(.js) .s3{order:4}
+:root:not(.js) .callouts{order:5; position:relative; inset:auto; display:grid; gap:.9rem}
+:root:not(.js) .callout{position:relative; left:auto; top:auto; opacity:1; width:auto}
+
+@media (prefers-reduced-motion: reduce){
+  .brand-mark path, .brand-name, .brand small{animation:none; stroke-dashoffset:0}
+  .cue i::after{animation:none; opacity:0}
+  .chapter i{transition:none}
+  .btn:hover{transform:none}
+  .btn:active{transform:none; opacity:.75}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#weiter">Story überspringen</a>
+
+<header class="bar">
+  <a class="brand" href="/" aria-label="alae.app – zur Startseite">
+    <svg class="brand-mark" viewBox="0 0 44 32" aria-hidden="true">
+      <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="currentColor"
+            stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="var(--coral)"
+            stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>
+      <span class="brand-name">alae.app</span>
+      <small>Individuelle Web-Apps</small>
+    </span>
+  </a>
+  <a class="btn" href="/#kontakt">Projekt besprechen</a>
+</header>
+
+<main>
+<!-- =====================================================================
+     STORY
+     ---------------------------------------------------------------------
+     Eine Bühne, drei Szenen. Was man sieht, sind Schichten übereinander,
+     von hinten nach vorn: Hintergrund, Lichtfäden (Canvas), Tablet,
+     Zettel, Plakette, Hinweislinien, Texte. Alle Texte sind echter Text,
+     das Tablet und die Zettel sind Illustration (aria-hidden).
+     ===================================================================== -->
+<section class="story" id="story" aria-label="Vom Chaos zur eigenen Web-App">
+  <div class="stage">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <div class="haze" aria-hidden="true"></div>
+    <canvas class="threads" aria-hidden="true"></canvas>
+
+    <div class="device" aria-hidden="true">
+      <div class="device-tilt">
+        <div class="device-glow"></div>
+        <div class="device-body"><i class="device-cam"></i></div>
+        <div class="device-screen">
+          <div class="screen-bg"></div>
+          <div class="app">
+            <aside class="app-side app-chrome">
+              <div class="app-logo">
+                <svg viewBox="0 0 44 32">
+                  <path d="M4 25.5 12.6 9.5l4.2 7.8" fill="none" stroke="#ECEDF2" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M21.5 25.5 30.1 9.5l8.6 16" fill="none" stroke="#FE7971" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <b>alae.app</b>
+                <i class="av av-top">SM</i>
+              </div>
+              <div class="app-nav">
+                <span class="is-on"><i class="ic"></i>Übersicht</span>
+                <span><i class="ic"></i>Offerten<i class="anchor" data-a="0"></i></span>
+                <span><i class="ic"></i>Aufträge</span>
+                <span><i class="ic ic--round"></i>Kunden</span>
+                <span><i class="ic"></i>Termine</span>
+                <span><i class="ic"></i>Rechnungen</span>
+              </div>
+              <p class="app-host"><i class="ok"></i>Gehostet in der Schweiz<i class="anchor" data-a="3"></i></p>
+              <div class="app-user"><i class="av">SM</i><span><b>Sandra Meier</b><small>Inhaberin</small></span></div>
+            </aside>
+
+            <div class="app-main">
+              <div class="app-top app-chrome">
+                <div>
+                  <p class="app-h">Übersicht</p>
+                  <p class="app-date" data-heute>Heute</p>
+                </div>
+                <div class="app-tools">
+                  <span class="app-search"><i class="ic ic--round"></i><span>Suchen …</span></span>
+                  <span class="app-bell"></span>
+                  <i class="av">SM</i>
+                </div>
+              </div>
+              <div class="app-tabs app-chrome">
+                <span class="is-on">Übersicht</span>
+                <span>Offerten</span>
+                <span>Aufträge</span>
+                <span>Termine</span>
+              </div>
+
+              <div class="app-kpis">
+                <i class="anchor" data-a="1"></i>
+                <div class="app-card kpi" data-slot="0">
+                  <p>Offene Offerten</p><b data-count="4">4</b><small class="up">2 warten auf Antwort</small>
+                </div>
+                <div class="app-card kpi" data-slot="1">
+                  <p>Umsatz <span data-monat>September</span></p><b data-count="48230" data-chf>CHF 48’230</b><small class="up">+12 % zum Vormonat</small>
+                </div>
+                <div class="app-card kpi" data-slot="2">
+                  <p>Offene Rechnungen</p><b data-count="3">3</b><small>CHF <span data-rest="4870">4’870</span> total</small>
+                </div>
+                <div class="app-card kpi" data-slot="3">
+                  <p>Termine heute</p><b data-count="5">5</b><small>Nächster: 10:30 Keller</small>
+                </div>
+              </div>
+
+              <div class="app-row">
+                <div class="app-card chart" data-slot="4">
+                  <i class="anchor" data-a="2"></i>
+                  <div class="card-head">
+                    <p>Umsatz</p>
+                    <span class="legend"><span><i class="l26"></i>Aktuell</span><span><i class="l25"></i>Vorjahr</span></span>
+                  </div>
+                  <div class="plot">
+                    <div class="axis"><span>60k</span><span>40k</span><span>20k</span><span>0</span></div>
+                    <!-- Die letzten neun Monate, der letzte ist der laufende.
+                         Beschriftung setzt das Skript; die Höhen sind
+                         Anteile von 60k. -->
+                    <div class="bars">
+                      <div class="m"><div class="col"><i class="b25" style="--h:.45"></i><i class="b26" style="--h:.52"></i></div><span>Jan</span></div>
+                      <div class="m"><div class="col"><i class="b25" style="--h:.43"></i><i class="b26" style="--h:.49"></i></div><span>Feb</span></div>
+                      <div class="m"><div class="col"><i class="b25" style="--h:.50"></i><i class="b26" style="--h:.60"></i></div><span>März</span></div>
+                      <div class="m"><div class="col"><i class="b25" style="--h:.55"></i><i class="b26" style="--h:.64"></i></div><span>Apr</span></div>
+                      <div class="m"><div class="col"><i class="b25" style="--h:.59"></i><i class="b26" style="--h:.68"></i></div><span>Mai</span></div>
+                      <div class="m"><div class="col"><i class="b25" style="--h:.55"></i><i class="b26" style="--h:.66"></i></div><span>Juni</span></div>
+                      <div class="m"><div class="col"><i class="b25" style="--h:.48"></i><i class="b26" style="--h:.57"></i></div><span>Juli</span></div>
+                      <div class="m"><div class="col"><i class="b25" style="--h:.60"></i><i class="b26" style="--h:.72"></i></div><span>Aug</span></div>
+                      <div class="m"><div class="col"><i class="b25" style="--h:.64"></i><i class="b26" style="--h:.80"></i></div><span>Sept</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="app-card donut app-chrome">
+                  <p class="donut-h">Auslastung</p>
+                  <div class="ring">
+                    <svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="40"/><circle class="arc" cx="50" cy="50" r="40" pathLength="100"/></svg>
+                    <b><span><span data-count="86">86</span>&#8201;%</span></b>
+                  </div>
+                  <small>Werkstatt, diese Woche</small>
+                </div>
+              </div>
+
+              <div class="app-card table" data-slot="5">
+                <div class="card-head"><p>Aufträge</p><span class="link-txt">Alle anzeigen</span></div>
+                <div class="tr th"><span>Kunde</span><span>Auftrag</span><span>Termin</span><span>Status</span></div>
+                <div class="tr"><span><i class="av">FH</i>Familie Huber</span><span>Einbauschrank</span><span>Heute</span><span><em class="st st-work">In Arbeit</em></span></div>
+                <div class="tr"><span><i class="av">CL</i>Café Linde</span><span>Theke</span><span>Morgen</span><span><em class="st st-offer">Offerte</em></span></div>
+                <div class="tr"><span><i class="av">PK</i>Praxis Keller</span><span>Empfang</span><span>In 3 Tagen</span><span><em class="st st-new">Neu</em></span></div>
+                <div class="tr"><span><i class="av">BS</i>B. Schneider</span><span>Küche</span><span>Vor 2 Tagen</span><span><em class="st st-done">Erledigt</em></span></div>
+              </div>
+              <p class="app-host app-host--foot app-chrome"><i class="ok"></i>Gehostet in der Schweiz</p>
+            </div>
+            <div class="app-toast"><i class="chk"></i><span><b>Zahlung eingegangen</b><small>Familie Huber · CHF 1’240</small></span></div>
+          </div>
+          <div class="screen-glare"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jeder Zettel wird zu einer Kachel: data-slot ist die Kachel im
+         Dashboard, auf der er landet. Die Frage auf dem Zettel beantwortet
+         die Kachel („Rg. Huber bezahlt???" → Offene Rechnungen). Die
+         Reihenfolge im Quelltext ist nur die Stapelung, hinten zuerst. -->
+    <div class="papers" aria-hidden="true">
+      <div class="paper paper--xls" data-slot="4"><div class="pp"><div class="pf"><div class="face">
+        <div class="xls-bar"><b>X</b>Umsatz_2026_final_v3.xlsx</div>
+        <div class="xls-grid">
+          <span class="h"></span><span class="h">A</span><span class="h">B</span><span class="h">C</span><span class="h">D</span>
+          <span class="h">1</span><span>Monat</span><span>Umsatz</span><span>Offen</span><span>Total</span>
+          <span class="h">2</span><span>Jan</span><span>31’420</span><span>2’100</span><span>33’520</span>
+          <span class="h">3</span><span>Feb</span><span>29’080</span><span>–</span><span class="err">#BEZUG!</span>
+          <span class="h">4</span><span>März</span><span class="warn">36’2??</span><span>1’870</span><span class="err">#WERT!</span>
+          <span class="h">5</span><span>Apr</span><span>38’150</span><span class="warn">??</span><span>38’150</span>
+          <span class="h">6</span><span>Mai</span><span>41’0..</span><span></span><span class="err">#DIV/0!</span>
+        </div>
+      </div></div></div></div>
+      <div class="paper paper--print" data-slot="5"><div class="pp"><div class="pf"><div class="face">
+        <p class="print-h">AUFTRÄGE · Stand ??</p>
+        <ul class="print-l">
+          <li class="tick">Huber ... Schrank</li>
+          <li>Linde ... Theke</li>
+          <li class="tick">Keller .. Empfang</li>
+          <li>Schneider Küche</li>
+          <li>Meier ... ???</li>
+        </ul>
+        <i class="print-ring"></i>
+        <p class="hand print-q">wer macht das??</p>
+      </div></div></div></div>
+      <div class="paper paper--card" data-slot="3"><div class="pp"><div class="pf"><div class="face">
+        <p class="hand">Termin Keller<br>Do oder Fr??</p>
+      </div></div></div></div>
+      <div class="paper paper--note" data-slot="1"><div class="pp"><div class="pf"><div class="face">
+        <p class="hand">Umsatz<br>diesen Monat?</p>
+        <p class="hand strike">48’2..</p>
+        <p class="hand strike">42’8..</p>
+        <p class="hand">im Excel prüfen!</p>
+      </div></div></div></div>
+      <div class="paper paper--sticky paper--yellow" data-slot="2"><div class="pp"><div class="pf"><div class="face">
+        <p class="hand">Rg. Huber<br>bezahlt???</p>
+      </div></div></div></div>
+      <div class="paper paper--sticky" data-slot="0"><div class="pp"><div class="pf"><div class="face">
+        <p class="hand">Offerte<br>Café Linde<br><u>nachfragen!!</u></p>
+      </div></div></div></div>
+    </div>
+
+    <div class="badge" aria-hidden="true">
+      <svg viewBox="0 0 44 32">
+        <path d="M4 25.5 12.6 9.5l4.2 7.8" pathLength="1" fill="none" stroke="#ECEDF2" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21.5 25.5 30.1 9.5l8.6 16" pathLength="1" fill="none" stroke="#FE7971" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span><b>alae.app</b><small>Individuelle Web-Apps</small></span>
+    </div>
+
+    <svg class="links" aria-hidden="true">
+      <path class="link" pathLength="1"/><path class="link" pathLength="1"/>
+      <path class="link" pathLength="1"/><path class="link" pathLength="1"/>
+      <circle class="knot" r="4.5"/><circle class="knot" r="4.5"/>
+      <circle class="knot" r="4.5"/><circle class="knot" r="4.5"/>
+    </svg>
+
+    <div class="scene s1">
+      <p class="kicker">Individuelle Web-Apps · Schweiz</p>
+      <h1 class="display">Chaos, Zettel, Excel?</h1>
+      <p class="sub">Zettel hier, Excel-Liste dort – und nichts ist auf dem neusten Stand.</p>
+    </div>
+    <div class="scene s2">
+      <h2 class="headline"><span class="hl">Massgeschneiderte Software</span> statt Excel-Chaos</h2>
+      <p class="sub">Eine Web-App, die genau zu deinen Abläufen passt.</p>
+    </div>
+    <div class="scene s3">
+      <h2 class="headline">Exakt passend für <span class="hl">deine Bedürfnisse</span></h2>
+      <p class="sub">Nur die Funktionen, die du wirklich brauchst – keine, die du nie benutzt.</p>
+    </div>
+    <ul class="callouts">
+      <li class="callout">Nur die Funktionen, die du brauchst</li>
+      <li class="callout">Alle Zahlen auf einen Blick</li>
+      <li class="callout">Keine fehlerhaften Excel-Listen mehr</li>
+      <li class="callout">Hosting in der Schweiz möglich</li>
+    </ul>
+
+    <div class="chapter" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+    <div class="cue" aria-hidden="true"><span>Scrollen</span><i></i></div>
+    <a class="skip-story" href="#weiter">Überspringen ↓</a>
+  </div>
+</section>
+
+<section class="weiter" id="weiter">
+  <p class="kicker">Prototyp · Szenen 1–3 von 7</p>
+  <h2>Als Nächstes: die Schalter, Vorher und Nachher, deine sieben Apps und das Erstgespräch.</h2>
+  <p>Diese Seite ist ein Entwurf und nirgends verlinkt. Die heutige Startseite bleibt, wie sie ist, bis die ganze Story steht.</p>
+  <div class="actions">
+    <a class="btn" href="/#kontakt">Projekt besprechen</a>
+    <a class="btn btn--ghost" href="/">Zur heutigen Startseite</a>
+  </div>
+</section>
+</main>
+
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/vendor/CustomEase.min.js"></script>
+<script>
+/* =========================================================================
+   Story – Skript
+   Aufbau: Heute → Aufteilen → Vermessen → Fäden → Schleife → Zeitleiste
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  var root = document.documentElement;
+  var story = document.getElementById('story');
+  if (!story) return;
+  var q = function (s) { return story.querySelector(s); };
+  var qa = function (s) { return [].slice.call(story.querySelectorAll(s)); };
+
+  /* --- Heute --------------------------------------------------------------
+     Datum, Monat und die Monate im Diagramm kommen aus der Uhr des
+     Besuchers. Ein Dashboard mit dem Datum von gestern sähe aus wie ein
+     Bildschirmfoto – und genau das soll es nicht sein. */
+  try {
+    var jetzt = new Date();
+    var tag = new Intl.DateTimeFormat('de-CH', { weekday: 'long', day: 'numeric', month: 'long' }).format(jetzt);
+    var monat = new Intl.DateTimeFormat('de-CH', { month: 'long' }).format(jetzt);
+    var kurz = new Intl.DateTimeFormat('de-CH', { month: 'short' });
+    qa('[data-heute]').forEach(function (el) { el.textContent = tag; });
+    qa('[data-monat]').forEach(function (el) { el.textContent = monat; });
+    var labels = qa('.m span');
+    labels.forEach(function (el, k) {
+      var d = new Date(jetzt.getFullYear(), jetzt.getMonth() - (labels.length - 1 - k), 1);
+      el.textContent = kurz.format(d).replace('.', '');
+    });
+  } catch (e) { /* ältere Browser: es bleibt beim Text im HTML */ }
+
+  if (!window.gsap || !window.ScrollTrigger || !window.CustomEase) {
+    root.classList.remove('js');
+    return;
+  }
+  gsap.registerPlugin(ScrollTrigger, CustomEase);
+  // Dieselben Kurven wie im CSS der Startseite, dazu die des Logos
+  CustomEase.create('aOut', '.23,1,.32,1');
+  CustomEase.create('aInOut', '.77,0,.175,1');
+  CustomEase.create('aLogo', '.65,0,.15,1');
+
+  var stage = q('.stage');
+  var canvas = q('.threads');
+  var ctx = canvas.getContext('2d');
+  var device = q('.device'), tiltEl = q('.device-tilt'), bodyEl = q('.device-body');
+  var glowEl = q('.device-glow'), glare = q('.screen-glare');
+  var screenEl = q('.device-screen'), screenBg = q('.screen-bg');
+  var papers = qa('.paper').sort(function (a, b) { return a.dataset.slot - b.dataset.slot; });
+  var tiles = papers.map(function (p) { return q('.app [data-slot="' + p.dataset.slot + '"]'); });
+  var chrome = qa('.app-chrome');
+  var bars = qa('.col i'), arc = q('.arc');
+  var badge = q('.badge'), badgePaths = qa('.badge path');
+  var links = qa('.link'), knots = qa('.knot'), callouts = qa('.callout');
+  var haze = q('.haze'), cue = q('.cue'), dots = qa('.chapter i');
+  var kpiNums = qa('.kpi [data-count]'), donutNum = q('.donut [data-count]');
+  var toast = q('.app-toast'), restEl = q('[data-rest]');
+  var anchors = [0, 1, 2, 3].map(function (k) { return qa('.anchor[data-a="' + k + '"]'); });
+
+  /* --- Aufteilen ------------------------------------------------------------
+     Überschriften in Wörter, damit sie gestaffelt kommen und gehen. Der
+     Text bleibt derselbe, nur jedes Wort steckt in einem eigenen span. */
+  function splitWords(el) {
+    var out = [];
+    (function walk(node) {
+      [].slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function (p) {
+            if (!p) return;
+            if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+            var s = document.createElement('span');
+            s.className = 'w'; s.textContent = p;
+            frag.appendChild(s); out.push(s);
+          });
+          node.replaceChild(frag, n);
+        } else if (n.nodeType === 1) walk(n);
+      });
+    })(el);
+    return out;
+  }
+  var s1 = q('.s1'), s2 = q('.s2'), s3 = q('.s3');
+  var W1 = splitWords(s1.querySelector('h1'));
+  var W2 = splitWords(s2.querySelector('h2'));
+  var W3 = splitWords(s3.querySelector('h2'));
+  var rest1 = [s1.querySelector('.kicker'), s1.querySelector('.sub')];
+  var sub2 = s2.querySelector('.sub'), sub3 = s3.querySelector('.sub');
+
+  /* --- Zustand ---------------------------------------------------------------
+     Die Fäden auf dem Canvas sind keine DOM-Elemente, die GSAP bewegen
+     könnte. Stattdessen bewegt die Zeitleiste diese Zahlen, und die
+     Zeichenschleife liest sie bei jedem Bild:
+       sweep  0 → 1  Ordnung wandert von rechts nach links durchs Knäuel
+       wrap   0 → 1  die Fäden legen sich um die Kacheln
+       lit    0 → 1  der Bildschirm geht an (kurzes Aufglühen)
+       calm   0 → 1  die Fäden lösen sich und fliessen ruhig hinter dem Tablet
+       float, tilt, links: Schweben der Zettel, Neigen mit der Maus,
+                           Hinweislinien nachführen
+       veil   0 → 1  der Fluss tritt links zurück, unter den Hinweisen */
+  var S = { sweep: 0, wrap: 0, lit: 0, calm: 0, alpha: 1, float: 1, tilt: 0, links: 0, veil: 0 };
+
+  /* --- Vermessen ------------------------------------------------------------ */
+  var L = {};
+  var W = 0, H = 0, DPR = 1, portrait = false;
+  var TAU = Math.PI * 2;
+  // Reihenfolge, in der sich die Fäden um die sechs Kacheln legen
+  var TILE_DELAY = [.22, .31, .40, .49, .58, .67];
+  // Zettel im Chaos: Mitte x, Mitte y (Anteile der Bühne), Drehung, Tiefe
+  var CHAOS_Q = [[.585, .23, -9, 1], [.875, .27, 7, .8], [.73, .74, 11, 1.1], [.955, .6, -7, .55], [.665, .5, -4, .9], [.87, .9, 5, .62]];
+  var CHAOS_H = [[.22, .53, -9, 1], [.8, .49, 8, .8], [.27, .8, 10, 1.1], [.83, .74, -7, .6], [.52, .65, -4, .9], [.77, .92, 5, .62]];
+  // Quer ordnen sich die Zettel erst in eine Reihe über dem Strahl
+  var ROW_Q = [.1, .255, .41, .59, .745, .9];
+
+  // Lage relativ zur Bühne, ohne Transformationen: offsetLeft und offsetTop
+  // kennen weder Drehung noch Skalierung.
+  function rel(el) {
+    var x = 0, y = 0, n = el;
+    while (n && n !== stage) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+    return { x: x, y: y, w: el.offsetWidth, h: el.offsetHeight };
+  }
+  function radius(el) { return parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0; }
+
+  function measure() {
+    W = stage.clientWidth; H = stage.clientHeight;
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+
+    var d = rel(device); d.cx = d.x + d.w / 2; d.cy = d.y + d.h / 2; L.dev = d;
+    L.slots = tiles.map(function (t) {
+      var r = rel(t); r.cx = r.x + r.w / 2; r.cy = r.y + r.h / 2; return r;
+    });
+
+    // Rahmen, um die sich die Fäden legen, mit Anzahl Fäden und Verzug
+    var list = [{ el: screenEl, n: portrait ? 8 : 10, d: 0 }];
+    if (!portrait) list.push({ el: q('.app-side'), n: 4, d: .12 });
+    tiles.forEach(function (t, k) {
+      list.push({ el: t, n: portrait ? (k < 4 ? 4 : 5) : (k < 4 ? 5 : 8), d: TILE_DELAY[k] });
+    });
+    if (!portrait) list.push({ el: q('.donut'), n: 6, d: .62 });
+    L.rects = list.map(function (r) {
+      var b = rel(r.el); b.r = radius(r.el); b.n = r.n; b.d = r.d; return b;
+    });
+
+    // Knäuel, Strahl, ruhiger Fluss
+    L.tx0 = -W * .08; L.tx1 = W * 1.08;
+    L.kx = W * (portrait ? .5 : .675); L.ky = H * (portrait ? .67 : .52);
+    L.krx = W * (portrait ? .5 : .31); L.kry = H * (portrait ? .2 : .37);
+    L.by = d.cy; L.bsp = portrait ? 18 : 26; L.bamp = portrait ? 6 : 9;
+    L.cy = d.cy + d.h * (portrait ? .04 : .08); L.csp = portrait ? 64 : 96; L.camp = portrait ? 10 : 16;
+    L.mask = portrait ? ctx.createLinearGradient(0, 0, 0, H * .44) : ctx.createLinearGradient(0, 0, W * .52, 0);
+    L.mask.addColorStop(0, 'rgba(0,0,0,1)'); L.mask.addColorStop(1, 'rgba(0,0,0,0)');
+    L.veil = ctx.createLinearGradient(0, 0, W * .5, 0);
+    L.veil.addColorStop(0, 'rgba(0,0,0,1)'); L.veil.addColorStop(.62, 'rgba(0,0,0,.72)'); L.veil.addColorStop(1, 'rgba(0,0,0,0)');
+
+    // Zettel: Chaos, geordnete Reihe, Landeplatz
+    var C = portrait ? CHAOS_H : CHAOS_Q;
+    var rowH = H * .13, rowY = L.by - H * .1;
+    L.papers = papers.map(function (p, i) {
+      var w = p.offsetWidth, h = p.offsetHeight, c = C[i], sl = L.slots[i];
+      var o = { w: w, h: h, x0: c[0] * W, y0: c[1] * H, r0: c[2], blur: c[3] < .7 ? 1.3 : 0 };
+      if (portrait) { o.x1 = o.x0 + (W * .5 - o.x0) * .12; o.y1 = o.y0 - H * .03; o.r1 = c[2] * .3; o.s1 = .92; }
+      else { o.x1 = ROW_Q[i] * W; o.y1 = rowY; o.r1 = i % 2 ? 1.5 : -1.5; o.s1 = rowH / h; }
+      o.s2 = Math.min(sl.w / w, sl.h / h) * .97;
+      return o;
+    });
+
+    L.badge = { x: d.cx - badge.offsetWidth / 2, y: d.y + d.h * .42 - badge.offsetHeight / 2 };
+    L.pose = portrait
+      ? { x: 0, y: H * .465 - d.cy, s: .72, rx: 9, ry: 7, rz: -1.2 }
+      : { x: W * .63 - d.cx, y: H * .585 - d.cy, s: .88, rx: 11, ry: 15, rz: -1.6 };
+  }
+
+  /* --- Fäden ----------------------------------------------------------------
+     Jeder Faden ist eine Kurve aus M Punkten, u läuft von 0 (links) bis 1
+     (rechts). Für jeden Punkt gibt es vier Lagen – Knäuel, Strahl, Rahmen
+     einer Kachel, ruhiger Fluss –, und die Zahlen aus S mischen zwischen
+     ihnen. Der Zufall ist geseedet: Das Knäuel sieht bei jedem Besuch
+     gleich aus, nur seine Bewegung lebt. */
+  function mulberry(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  var lines = [], N = 0, M = 0, pts = null, tmp = new Float32Array(4);
+
+  function setupLines() {
+    var R = mulberry(11);
+    N = 0; L.rects.forEach(function (r) { N += r.n; });
+    M = portrait ? 56 : 80;
+    pts = new Float32Array(M * 2);
+    lines = [];
+    for (var i = 0; i < N; i++) {
+      lines.push({
+        f1: .8 + R() * 2.4, f2: 1.8 + R() * 3.2, g1: .8 + R() * 2.4, g2: 1.8 + R() * 3.2,
+        p1: R() * TAU, p2: R() * TAU, q1: R() * TAU, q2: R() * TAU,
+        rx: .5 + R() * .5, ry: .5 + R() * .5, sp: .1 + R() * .16, turns: .7 + R() * .6,
+        y0: R(), y1: R(), bo: R() - .5, co: R() - .5, ph: R() * TAU,
+        jd: R(), cd: R(), a: .42 + R() * .45, lw: .75 + R() * .75,
+        rect: 0, inset: 0, start: 0, wd: 0
+      });
+    }
+    var k = 0;
+    L.rects.forEach(function (rc, ri) {
+      for (var j = 0; j < rc.n; j++, k++) {
+        var ln = lines[k];
+        ln.rect = ri;
+        ln.inset = (j - (rc.n - 1) / 2) * 1.7;   // mehrere Fäden, knapp nebeneinander
+        ln.start = (j % 2) * .5 + j * .03;       // die Hälfte beginnt in der Ecke gegenüber
+        ln.wd = rc.d;
+      }
+    });
+  }
+
+  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function smooth(a, b, v) { var t = clamp01((v - a) / (b - a)); return t * t * (3 - 2 * t); }
+  function inOut(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+  function chaos(ln, u, t, o) {
+    var s = u * TAU * ln.turns, ph = t * ln.sp;
+    var x = L.kx + ptr.x * 16 + L.krx * ln.rx * (Math.sin(ln.f1 * s + ln.p1 + ph) * .62 + Math.sin(ln.f2 * s + ln.p2 - ph * .7) * .38);
+    var y = L.ky + ptr.y * 12 + L.kry * ln.ry * (Math.cos(ln.g1 * s + ln.q1 - ph * .8) * .62 + Math.sin(ln.g2 * s + ln.q2 + ph * .5) * .38);
+    // Die Enden laufen aus dem Bild hinaus, links und rechts – geschwungen,
+    // sonst sähen sie aus wie gespannte Schnüre
+    var a = 1 - smooth(0, .17, u), b = smooth(.83, 1, u);
+    if (a > 0) { x += (L.tx0 - x) * a; y += (H * (.1 + ln.y0 * .8) + Math.sin(u * 23 + ln.ph + ph * 2) * H * .06 - y) * a; }
+    if (b > 0) { x += (L.tx1 - x) * b; y += (H * (.1 + ln.y1 * .8) + Math.sin(u * 19 + ln.p1 - ph * 2) * H * .06 - y) * b; }
+    tmp[o] = x; tmp[o + 1] = y;
+  }
+  function beam(ln, u, t, o) {
+    tmp[o] = L.tx0 + (L.tx1 - L.tx0) * u;
+    // links noch leicht bewegt, nach rechts hin ganz ruhig
+    tmp[o + 1] = L.by + ln.bo * L.bsp + Math.sin(u * 8 + t * .9 + ln.ph) * L.bamp * (1.15 - u * .8);
+  }
+  function calmPt(ln, u, t, o) {
+    tmp[o] = L.tx0 + (L.tx1 - L.tx0) * u;
+    tmp[o + 1] = L.cy + ln.co * L.csp + Math.sin(u * 5.5 + t * .45 + ln.ph) * L.camp;
+  }
+  // Punkt auf dem Umfang eines Rechtecks mit runden Ecken, im Uhrzeigersinn
+  function rr(ln, u, o) {
+    var rc = L.rects[ln.rect], k = ln.inset;
+    var x = rc.x - k, y = rc.y - k, w = rc.w + 2 * k, h = rc.h + 2 * k;
+    var r = Math.max(0, Math.min(rc.r + k, w / 2, h / 2));
+    var sw = w - 2 * r, sh = h - 2 * r, arcLen = Math.PI * r / 2;
+    var s = ((u + ln.start) % 1) * (2 * sw + 2 * sh + 4 * arcLen), px, py, an;
+    if (s < sw) { px = x + r + s; py = y; }
+    else if ((s -= sw) < arcLen) { an = -Math.PI / 2 + s / r; px = x + w - r + Math.cos(an) * r; py = y + r + Math.sin(an) * r; }
+    else if ((s -= arcLen) < sh) { px = x + w; py = y + r + s; }
+    else if ((s -= sh) < arcLen) { an = s / r; px = x + w - r + Math.cos(an) * r; py = y + h - r + Math.sin(an) * r; }
+    else if ((s -= arcLen) < sw) { px = x + w - r - s; py = y + h; }
+    else if ((s -= sw) < arcLen) { an = Math.PI / 2 + s / r; px = x + r + Math.cos(an) * r; py = y + h - r + Math.sin(an) * r; }
+    else if ((s -= arcLen) < sh) { px = x; py = y + h - r - s; }
+    else { s -= sh; an = Math.PI + (r ? s / r : 0); px = x + r + Math.cos(an) * r; py = y + r + Math.sin(an) * r; }
+    tmp[o] = px; tmp[o + 1] = py;
+  }
+
+  function strokePath() {
+    ctx.beginPath(); ctx.moveTo(pts[0], pts[1]);
+    for (var j = 2; j < M * 2; j += 2) ctx.lineTo(pts[j], pts[j + 1]);
+  }
+
+  function draw(t) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (S.alpha < .005 || !N) return;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    // Additiv: Wo sich Fäden kreuzen, wird es heller – wie Licht, nicht wie Farbe
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    var sw = S.sweep, front = 1.22 - sw * 1.6, boost = Math.sin(clamp01(S.lit) * Math.PI);
+    for (var i = 0; i < N; i++) {
+      var ln = lines[i];
+      var f = front + (ln.jd - .5) * .22;
+      var wr = inOut(clamp01((S.wrap - ln.wd * .55) / .45));
+      var wc = inOut(clamp01((S.calm - ln.cd * .3) / .7));
+      for (var j = 0; j < M; j++) {
+        var u = j / (M - 1), x = 0, y = 0;
+        if (wc >= 1) { calmPt(ln, u, t, 0); x = tmp[0]; y = tmp[1]; }
+        else {
+          if (wr >= 1) { rr(ln, u, 0); x = tmp[0]; y = tmp[1]; }
+          else {
+            var wb = sw >= 1 ? 1 : smooth(f - .2, f + .2, u);
+            if (wb < 1) { chaos(ln, u, t, 0); x = tmp[0]; y = tmp[1]; }
+            if (wb > 0) {
+              beam(ln, u, t, 2);
+              if (wb < 1) { x += (tmp[2] - x) * wb; y += (tmp[3] - y) * wb; } else { x = tmp[2]; y = tmp[3]; }
+            }
+            if (wr > 0) { rr(ln, u, 2); x += (tmp[2] - x) * wr; y += (tmp[3] - y) * wr; }
+          }
+          if (wc > 0) { calmPt(ln, u, t, 2); x += (tmp[2] - x) * wc; y += (tmp[3] - y) * wc; }
+        }
+        pts[j * 2] = x; pts[j * 2 + 1] = y;
+      }
+      var a = ln.a * S.alpha * (1 - .6 * wc);
+      strokePath();
+      ctx.globalAlpha = a * (.07 + .12 * boost); ctx.strokeStyle = '#FE7971';
+      ctx.lineWidth = ln.lw * (6 + 5 * boost); ctx.stroke();
+      ctx.globalAlpha = Math.min(1, a * (.8 + .3 * boost)); ctx.strokeStyle = '#FFB0A8';
+      ctx.lineWidth = ln.lw; ctx.stroke();
+    }
+    // Lichtkante: Hier kommt gerade Ordnung ins Knäuel
+    if (sw > 0 && sw < 1) {
+      var fx = L.tx0 + (L.tx1 - L.tx0) * clamp01(front), bw = W * .09;
+      var g = ctx.createLinearGradient(fx - bw, 0, fx + bw, 0);
+      g.addColorStop(0, 'rgba(254,121,113,0)'); g.addColorStop(.5, 'rgba(254,121,113,.10)'); g.addColorStop(1, 'rgba(254,121,113,0)');
+      ctx.globalAlpha = Math.sin(sw * Math.PI) * S.alpha; ctx.fillStyle = g;
+      ctx.fillRect(fx - bw, 0, bw * 2, H);
+    }
+    // Unter der Überschrift von Szene 1 und unter den Hinweisen von Szene 3
+    // treten die Fäden zurück, damit der Text lesbar bleibt
+    var m = 1 - smooth(0, .3, sw);
+    ctx.globalCompositeOperation = 'destination-out';
+    if (m > 0) { ctx.globalAlpha = m * .8; ctx.fillStyle = L.mask; ctx.fillRect(0, 0, W, H); }
+    if (S.veil > 0 && !portrait) { ctx.globalAlpha = S.veil * .9; ctx.fillStyle = L.veil; ctx.fillRect(0, 0, W, H); }
+    ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+  }
+
+  /* --- Schleife -------------------------------------------------------------
+     Läuft nur, solange die Story im Bild ist. Die Maus wirkt nicht direkt,
+     sondern über eine Dämpfung: Das Bild folgt ihr mit etwas Trägheit, wie
+     ein Gegenstand mit Gewicht, statt an ihr zu kleben. */
+  var ptr = { x: 0, y: 0, tx: 0, ty: 0 };
+  var PF = papers.map(function (p, i) {
+    return { pf: p.querySelector('.pf'), pp: p.querySelector('.pp'), w: .55 + i * .12, ph: i * 1.7, dep: 1 };
+  });
+  var running = false, raf = 0, t0 = 0, last = 0, reduced = false;
+
+  function floats(t) {
+    for (var i = 0; i < PF.length; i++) {
+      var f = PF[i], a = S.float;
+      f.pf.style.transform = 'translate3d(0,' + (Math.sin(t * f.w + f.ph) * 7 * a).toFixed(2) + 'px,0) rotate(' +
+        (Math.sin(t * f.w * .8 + f.ph * 1.3) * 1.6 * a).toFixed(2) + 'deg)';
+      f.pp.style.transform = 'translate3d(' + (ptr.x * 20 * f.dep * a).toFixed(2) + 'px,' + (ptr.y * 13 * f.dep * a).toFixed(2) + 'px,0)';
+    }
+    // Mit der Maus neigen, dazu ein kaum merkliches Schweben, sobald das Tablet steht
+    tiltEl.style.transform = 'translate3d(0,' + (Math.sin(t * .8) * 5 * S.tilt).toFixed(2) + 'px,0) rotateX(' +
+      (-ptr.y * 3 * S.tilt + Math.sin(t * .6 + 1) * .5 * S.tilt).toFixed(3) + 'deg) rotateY(' + (ptr.x * 4 * S.tilt).toFixed(3) + 'deg)';
+  }
+
+  function loop(now) {
+    raf = 0;
+    if (!running) return;
+    var t = (now - t0) / 1000, dt = Math.min(.05, (now - last) / 1000 || .016);
+    last = now;
+    var k = 1 - Math.exp(-dt / .22);
+    ptr.x += (ptr.tx - ptr.x) * k; ptr.y += (ptr.ty - ptr.y) * k;
+    floats(t);
+    draw(t);
+    if (S.links > 0) placeLinks();
+    raf = requestAnimationFrame(loop);
+  }
+  function setRunning(on) {
+    if (on === running) return;
+    running = on;
+    if (on && !raf) { last = performance.now(); if (!t0) t0 = last; raf = requestAnimationFrame(loop); }
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) setRunning(false);
+    else if (!reduced && storyVisible) setRunning(true);
+  });
+
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    stage.addEventListener('pointermove', function (e) {
+      ptr.tx = e.clientX / W * 2 - 1; ptr.ty = e.clientY / H * 2 - 1;
+    });
+    stage.addEventListener('pointerleave', function () { ptr.tx = 0; ptr.ty = 0; });
+  }
+
+  // Hinweislinien: vom Punkt am Tablet über einen Knick zum Text
+  function visible(el) { return el.getClientRects().length > 0; }
+  function placeLinks() {
+    if (portrait) return;
+    var sr = stage.getBoundingClientRect();
+    for (var k = 0; k < 4; k++) {
+      var an = null;
+      for (var j = 0; j < anchors[k].length; j++) if (visible(anchors[k][j])) { an = anchors[k][j]; break; }
+      if (!an) continue;
+      var a = an.getBoundingClientRect(), c = callouts[k].getBoundingClientRect();
+      var ax = a.left + a.width / 2 - sr.left, ay = a.top + a.height / 2 - sr.top;
+      var ex = c.right - sr.left + 14, ey = c.top + c.height / 2 - sr.top;
+      links[k].setAttribute('d', 'M' + ax.toFixed(1) + ',' + ay.toFixed(1) + 'L' + (ex + 30).toFixed(1) + ',' + ey.toFixed(1) + 'L' + ex.toFixed(1) + ',' + ey.toFixed(1));
+      knots[k].setAttribute('cx', ax.toFixed(1)); knots[k].setAttribute('cy', ay.toFixed(1));
+    }
+  }
+
+  var chapter = -1;
+  function setChapter(p) {
+    var c = p < .34 ? 0 : p < .69 ? 1 : 2;
+    if (c === chapter) return;
+    chapter = c;
+    dots.forEach(function (d, k) { d.classList.toggle('on', k === c); });
+  }
+
+  // Zahlen mit Schweizer Apostroph; unter 0,5 ein Strich statt einer Null
+  function fmt(el, v) {
+    var n = Math.round(v);
+    var s = v < .5 ? '–' : String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '’');
+    el.textContent = (el.hasAttribute('data-chf') ? 'CHF ' : '') + s;
+  }
+  function group(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u2019'); }
+  function counter(tl, el, at, dur) {
+    var o = { v: 0 }, target = +el.getAttribute('data-count');
+    tl.fromTo(o, { v: 0 }, { v: target, duration: dur, ease: 'aOut', onUpdate: function () { fmt(el, o.v); } }, at);
+  }
+
+  /* --- Zeitleiste -------------------------------------------------------------
+     Eine Zeitleiste von 0 bis 100 für die ganze Story, die Zahlen sind also
+     Prozent des Scrollwegs. ScrollTrigger stellt sie auf den Scrollstand,
+     mit knapp einer Sekunde Nachlauf: Ein Mausrad springt in Stufen, die
+     Story gleitet trotzdem. Rückwärts scrollen spielt sie rückwärts – die
+     Kontrolle bleibt beim Menschen, die Seite übernimmt das Scrollen nie.
+
+       0–6     Szene 1 steht
+       6–32    Ordnung wandert durchs Knäuel, die Zettel reihen sich auf
+       21–31   Szene 2 kommt
+       34–52   Fäden legen sich um die Kacheln, die Zettel landen darin
+       51–66   der Bildschirm geht an, das Tablet entsteht um ihn herum,
+               Diagramm und Auslastung füllen sich
+       58–67   Plakette
+       67–84   Szene 3: das Tablet dreht sich
+       80–86   eine Zahlung kommt herein
+       86–98   vier Hinweise, nacheinander
+     Wer hier Zahlen ändert, prüft auch TILE_DELAY: Die Zettel landen erst,
+     wenn ihr Rahmen steht. */
+  function buildMotion(tl) {
+    var landAt = TILE_DELAY.map(function (dl) { return 34 + 18 * (.55 * dl + .45) - 8; });
+
+    tl.to(cue, { opacity: 0, duration: 3, ease: 'none' }, 0);
+    tl.to(W1, { yPercent: -80, opacity: 0, filter: 'blur(8px)', duration: 6, stagger: .45, ease: 'power2.in' }, 6);
+    tl.to(rest1, { y: -30, opacity: 0, filter: 'blur(6px)', duration: 6, ease: 'power2.in' }, 6.5);
+    tl.to(S, { sweep: 1, duration: 26, ease: 'sine.inOut' }, 6);
+    tl.to(haze, { opacity: 1, duration: 30, ease: 'none' }, 8);
+    tl.to(S, { float: .35, duration: 22, ease: 'none' }, 8);
+
+    papers.forEach(function (p, i) {
+      var c = function () { return L.papers[i]; };
+      tl.fromTo(p, {
+        x: function () { return c().x0 - c().w / 2; }, y: function () { return c().y0 - c().h / 2; },
+        rotation: function () { return c().r0; }, scale: 1, filter: function () { return 'blur(' + c().blur + 'px)'; }
+      }, {
+        x: function () { return c().x1 - c().w / 2; }, y: function () { return c().y1 - c().h / 2; },
+        rotation: function () { return c().r1; }, scale: function () { return c().s1; }, filter: 'blur(0px)',
+        duration: 22, ease: 'power2.inOut'
+      }, 9 + i * .9);
+    });
+
+    tl.fromTo(W2, { yPercent: 70, opacity: 0, filter: 'blur(10px)' },
+      { yPercent: 0, opacity: 1, filter: 'blur(0px)', duration: 7, stagger: .5, ease: 'aOut' }, 21);
+    tl.fromTo(sub2, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 7, ease: 'aOut' }, 24.5);
+
+    tl.to(S, { wrap: 1, duration: 18, ease: 'none' }, 34);
+    tl.to(S, { float: 0, duration: 6, ease: 'none' }, 34);
+    papers.forEach(function (p, i) {
+      var c = function () { return L.papers[i]; }, at = landAt[i];
+      tl.to(p, {
+        x: function () { return L.slots[i].cx - c().w / 2; }, y: function () { return L.slots[i].cy - c().h / 2; },
+        rotation: 0, scale: function () { return c().s2; }, duration: 9, ease: 'power3.inOut'
+      }, at);
+      tl.to(p, { opacity: 0, filter: 'blur(3px)', duration: 2.4, ease: 'none' }, at + 7.2);
+      tl.fromTo(tiles[i], { opacity: 0 }, { opacity: 1, duration: 2.4, ease: 'none' }, at + 6.4);
+    });
+    kpiNums.forEach(function (el, k) { counter(tl, el, 49 + k * .8, 7); });
+
+    tl.to(S, { lit: 1, duration: 9, ease: 'none' }, 51);
+    tl.fromTo(screenBg, { opacity: 0 }, { opacity: 1, duration: 5, ease: 'power1.inOut' }, 54);
+    tl.fromTo(chrome, { opacity: 0 }, { opacity: 1, duration: 5, stagger: .5, ease: 'power1.inOut' }, 54.5);
+    tl.fromTo(bodyEl, { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 7, ease: 'aOut' }, 54);
+    tl.fromTo([glowEl, glare], { opacity: 0 }, { opacity: 1, duration: 8, ease: 'none' }, 55);
+    tl.to(S, { calm: 1, duration: 14, ease: 'none' }, 57);
+    tl.fromTo(bars, { scaleY: 0 }, { scaleY: 1, duration: 6, stagger: .3, ease: 'aOut' }, 57);
+    tl.fromTo(arc, { strokeDashoffset: 100 }, { strokeDashoffset: 14, duration: 8, ease: 'aOut' }, 58);
+    counter(tl, donutNum, 58, 8);
+
+    tl.fromTo(badge, { opacity: 0, scale: .9, filter: 'blur(12px)', x: function () { return L.badge.x; }, y: function () { return L.badge.y + 24; } },
+      { opacity: 1, scale: 1, filter: 'blur(0px)', y: function () { return L.badge.y; }, duration: 7, ease: 'aOut' }, 58);
+    tl.fromTo(badgePaths, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 5, stagger: 1.8, ease: 'aLogo' }, 59);
+
+    tl.to(W2, { yPercent: -70, opacity: 0, filter: 'blur(8px)', duration: 5, stagger: .3, ease: 'power2.in' }, 67);
+    tl.to(sub2, { y: -20, opacity: 0, duration: 5, ease: 'power2.in' }, 67);
+    tl.to(badge, { opacity: 0, y: function () { return L.badge.y - 40; }, scale: 1.05, filter: 'blur(8px)', duration: 5, ease: 'power2.in' }, 68);
+    tl.fromTo(device, { x: 0, y: 0, rotationX: 0, rotationY: 0, rotationZ: 0, scale: 1 }, {
+      x: function () { return L.pose.x; }, y: function () { return L.pose.y; },
+      rotationX: function () { return L.pose.rx; }, rotationY: function () { return L.pose.ry; },
+      rotationZ: function () { return L.pose.rz; }, scale: function () { return L.pose.s; },
+      duration: 15, ease: 'aInOut'
+    }, 69);
+    tl.to(S, { tilt: 1, duration: 8, ease: 'none' }, 76);
+    tl.to(S, { veil: 1, duration: 10, ease: 'none' }, 72);
+    tl.fromTo(W3, { yPercent: 70, opacity: 0, filter: 'blur(10px)' },
+      { yPercent: 0, opacity: 1, filter: 'blur(0px)', duration: 7, stagger: .45, ease: 'aOut' }, 74);
+    tl.fromTo(sub3, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 7, ease: 'aOut' }, 77);
+
+    // Die App arbeitet: Eine Zahlung kommt herein, die offenen Rechnungen
+    // gehen von 3 auf 2 und die Summe um den Betrag zurück.
+    tl.fromTo(toast, { opacity: 0, y: -14, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: 3.5, ease: 'aOut' }, 80);
+    var inv = { v: 3 }, rest = { v: 4870 };
+    tl.fromTo(inv, { v: 3 }, { v: 2, duration: 1.5, ease: 'none', onUpdate: function () { fmt(kpiNums[2], inv.v); } }, 82.5);
+    tl.fromTo(rest, { v: 4870 }, { v: 3630, duration: 3, ease: 'aOut', onUpdate: function () { restEl.textContent = group(rest.v); } }, 82.5);
+
+    tl.to(S, { links: 1, duration: .01, ease: 'none' }, 85);
+    callouts.forEach(function (c, k) {
+      var at = 86 + k * 2.4;
+      tl.fromTo(knots[k], { opacity: 0, scale: .3, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 2, ease: 'aOut' }, at);
+      tl.fromTo(links[k], { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 4, ease: 'power2.inOut' }, at + .4);
+      tl.fromTo(c, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 4, ease: 'aOut' }, at + 2);
+    });
+    tl.to({}, { duration: 2 }, 98);
+  }
+
+  /* Weniger Bewegung: Die Story erzählt dasselbe in drei stehenden Bildern,
+     die beim Scrollen ineinander überblenden. Nichts fliegt, nichts dreht
+     sich, die Fäden bleiben still. */
+  function buildStill(tl) {
+    gsap.set([tiles, chrome, screenBg, bodyEl, glowEl, glare], { opacity: 1 });
+    gsap.set(device, { opacity: 0 });
+    kpiNums.concat([donutNum]).forEach(function (el) { fmt(el, +el.getAttribute('data-count')); });
+    papers.forEach(function (p, i) {
+      var c = L.papers[i];
+      gsap.set(p, { x: c.x0 - c.w / 2, y: c.y0 - c.h / 2, rotation: c.r0 });
+    });
+    gsap.set(badge, { x: L.badge.x, y: L.badge.y });
+    gsap.set([W2, W3, sub2, sub3], { opacity: 0 });
+
+    tl.to(cue, { opacity: 0, duration: 3, ease: 'none' }, 0);
+    tl.to([s1, q('.papers'), canvas], { opacity: 0, duration: 6, ease: 'none' }, 27);
+    tl.to(device, { opacity: 1, duration: 6, ease: 'none' }, 30);
+    tl.to([W2, sub2], { opacity: 1, duration: 6, ease: 'none' }, 30);
+    tl.fromTo(badge, { opacity: 0 }, { opacity: 1, duration: 6, ease: 'none' }, 32);
+
+    tl.to([W2, sub2, badge, device], { opacity: 0, duration: 4, ease: 'none' }, 62);
+    tl.set(device, {
+      x: function () { return L.pose.x; }, y: function () { return L.pose.y; },
+      rotationX: function () { return L.pose.rx; }, rotationY: function () { return L.pose.ry; },
+      rotationZ: function () { return L.pose.rz; }, scale: function () { return L.pose.s; }
+    }, 66);
+    tl.set(bars, { scaleY: 1 }, 66);
+    tl.set(arc, { strokeDashoffset: 14 }, 66);
+    tl.set(toast, { opacity: 1 }, 66);
+    tl.set(links, { strokeDashoffset: 0 }, 66);
+    tl.set(S, { links: 1 }, 66);
+    tl.to(device, { opacity: 1, duration: 5, ease: 'none' }, 66);
+    tl.to([W3, sub3], { opacity: 1, duration: 5, ease: 'none' }, 67);
+    tl.fromTo([knots, links, callouts], { opacity: 0 }, { opacity: 1, duration: 5, ease: 'none' }, 70);
+    tl.to({}, { duration: 25 }, 75);
+  }
+
+  var storyVisible = false;
+  function build(cond) {
+    portrait = !!cond.hoch;
+    reduced = !!cond.ruhig;
+    measure();
+    setupLines();
+    S.sweep = S.wrap = S.lit = S.calm = 0; S.alpha = 1; S.float = 1; S.tilt = 0; S.links = 0;
+    ptr.x = ptr.y = ptr.tx = ptr.ty = 0;
+    var C = portrait ? CHAOS_H : CHAOS_Q;
+    PF.forEach(function (f, i) { f.dep = C[i][3]; });
+    kpiNums.concat([donutNum]).forEach(function (el) { fmt(el, 0); });
+
+    var tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
+    if (reduced) buildStill(tl); else buildMotion(tl);
+    story.classList.add('is-ready');
+
+    ScrollTrigger.create({
+      trigger: story, start: 'top top', end: 'bottom bottom',
+      animation: tl, scrub: reduced ? true : .9, invalidateOnRefresh: true,
+      onUpdate: function (self) {
+        setChapter(self.progress);
+        if (reduced && S.links > 0) placeLinks();
+      }
+    });
+    ScrollTrigger.create({
+      trigger: story, start: 'top bottom', end: 'bottom top',
+      onToggle: function (self) { storyVisible = self.isActive; setRunning(self.isActive && !reduced && !document.hidden); }
+    });
+    if (reduced) draw(0);
+
+    return function () {
+      setRunning(false);
+      story.classList.remove('is-ready');
+      kpiNums.concat([donutNum]).forEach(function (el) { fmt(el, +el.getAttribute('data-count')); });
+    };
+  }
+
+  // Bei jeder Neuberechnung (Fenstergrösse) zuerst neu vermessen, damit die
+  // Funktionswerte in der Zeitleiste die neuen Masse lesen.
+  ScrollTrigger.addEventListener('refreshInit', function () { if (N) measure(); });
+  ScrollTrigger.addEventListener('refresh', function () {
+    if (reduced) draw(0);
+    if (S.links > 0) placeLinks();
+  });
+
+  gsap.matchMedia().add({
+    hoch: '(orientation: portrait)',
+    quer: '(orientation: landscape)',
+    ruhig: '(prefers-reduced-motion: reduce)'
+  }, function (context) { return build(context.conditions); });
+})();
+</script>
+</body>
+</html>
