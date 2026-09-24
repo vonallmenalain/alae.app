@@ -20,8 +20,8 @@ weiter, samt Sprungmarke.
 | Nr. | Kapitel in der Leiste | Abschnitt (`id`) | Was man sieht |
 | --- | --- | --- | --- |
 | 01 | Massgeschneiderte Software | `software`, erste Hälfte | „Chaos, Zettel, Excel?": ein Knäuel aus Lichtfäden mit sechs Zetteln. Ordnung wandert durchs Knäuel, die Fäden legen sich um die Kacheln eines Dashboards, jeder Zettel landet als Kachel, das Signet erscheint auf Milchglas. Dann dreht sich das Tablet, eine Zahlung kommt herein, vier Hinweise zeigen auf die Stellen im Dashboard |
-| 02 | Neuer Webauftritt | `software`, zweite Hälfte (Sprungmarke `webauftritt`) | Das Tablet bleibt. Es lädt die Website einer Schreinerei von 2009 – Lauftext, Besucherzähler, Baustellen-GIF –, die sich Stück für Stück in eine moderne verwandelt. Ein Zeiger schickt darüber eine Offerten-Anfrage ab, und die Website wird zur App: Die Anfrage steht als neuer Auftrag im Dashboard |
-| 03 | Referenzprojekte | `projekte`, `dreamteam`, `fotos` | Gripszug: fünf Wagen, fünf Bereiche. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf Stars werden gewählt, stellen sich auf, die Rangliste rechnet live. Fotoverkauf: eine E-Mail mit Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download |
+| 02 | Neuer Webauftritt | `software`, zweite Hälfte (Sprungmarke `webauftritt`) | Das Tablet bleibt. Es lädt die Website einer Schreinerei von 2009 – Lauftext, Besucherzähler, Baustellen-GIF –, die sich Stück für Stück in eine moderne verwandelt. Ein Zeiger schickt darüber eine Offerten-Anfrage ab, und die Website wird zur App: Die Anfrage steht als neuer Auftrag im Dashboard. Titel: „Vorher: Webseite von 2009", „Nachher: Modern, schnell und lebendig.", „Und daraus wird deine App." Zum Schluss wechselt das Bild im Tablet zu Gripszug |
+| 03 | Referenzprojekte | `projekte`, `dreamteam`, `fotos` | „Referenzapp 1: Gripszug" bis „Referenzapp 3: Fotoverkauf". Gripszug: Das Tablet aus 02 verschwindet nicht, es wandert an seinen neuen Platz und wird zum breiteren Gerät der App, dann fünf Wagen, fünf Bereiche. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf Stars werden gewählt, stellen sich auf, die Rangliste rechnet live. Fotoverkauf: eine E-Mail mit Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download. Unter Gripszug und DreamTeam führt ein Link zur echten App (`kids.alae.app`, `dt.alae.app`) |
 | 04 | 4 Schritte zur Web-App | `ablauf` | Links die vier Schritte, rechts ein Haus, das entsteht: Gespräch auf dem Bauplatz, Plan und Offerte, Rohbau mit Kran und Checkliste, das fertige Haus am Abend |
 | 05 | Preis | `preise` | Ein Preisschild pendelt sich ein, drei Etappen werden nacheinander verrechnet. Dann die zwei Wege nach dem Go-live: Die App wandert samt Schlüssel und Quellcode in eine Kiste – oder die Dienste kreisen um sie |
 | 06 | Über mich | `motivation` | Das Porträt, aus dem die acht Stationen herausfliegen: Studium, Finanzexperte, Controller, Familie, Vibe Coder, Volleyball, Skifahren, Wohnort Oberburg mit Karte der Schweiz |
@@ -49,10 +49,12 @@ Statt eines Menüs gibt es eine Leiste mit den acht Kapiteln (Block
   Ein Tippen klappt die Kapitel unter der Kopfzeile auf; zu gehen sie mit der
   Wahl, einem Tippen daneben, Escape oder sobald man scrollt.
 - **Das Springen:** Nahe Ziele (weniger als 1,6 Bildschirmhöhen) fährt die
-  Seite direkt an, in 0,5 bis 1,15 s. Weite Ziele liegen hinter einem kurzen
-  Schleier mit Nummer und Titel des Kapitels (0,4 s). Dahinter springt die
-  Seite, die Zeitleisten rasten ein, statt hinterherzulaufen, und die letzte
-  Strecke gleitet sie ins Kapitel hinein, während der Schleier geht (1,1 s).
+  Seite direkt an, in 0,5 bis 1,15 s. Weite Ziele liegen hinter einem
+  Schleier mit Nummer und Titel des Kapitels, der rund 1 s steht. Nach 0,4 s
+  springt dahinter die Seite, die Zeitleisten rasten ein, statt
+  hinterherzulaufen; der Titel bleibt trotzdem stehen, bis die Sekunde um ist
+  (`steht` in `springen`). Dann gleitet die Seite die letzte Strecke ins
+  Kapitel hinein, während der Schleier geht (1,1 s).
   So ist man schnell dort und sieht trotzdem, wie das Kapitel beginnt. Wer
   selbst scrollt, übernimmt sofort.
 - **Landepunkte** stehen in `LANDUNG` im Skript, als Anteil der Zeitleiste:
@@ -72,7 +74,7 @@ Entscheide, die man beim Weiterbauen kennen sollte:
 
 - **Das Scrollen treibt die Geschichte an, übernimmt aber nie.** Jedes Kapitel
   hat eine Zeitleiste von 0 bis 100 (`ordnung`, der Abschnitt `software`, bis
-  200, es trägt die Kapitel 01 und 02), die dem Scrollstand folgt, mit 0,9 s
+  204, es trägt die Kapitel 01 und 02), die dem Scrollstand folgt, mit 0,9 s
   Nachlauf, damit ein Mausrad nicht ruckt. Rückwärts scrollen spielt
   rückwärts. Es gibt kein Einrasten beim Scrollen und kein automatisches
   Weiterlaufen – nur die Leiste springt.
@@ -86,6 +88,17 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   weg. Bis ein Kapitel oben angekommen ist, bleibt seine Bühne ganz
   unsichtbar (`is-da`), sonst schöbe sie sich durchsichtig über das vorige.
   Kontakt, FAQ und Fusszeile sind danach gewöhnliche Abschnitte.
+- **Ein Tablet über drei Kapitel:** Von 01 bis zu Gripszug ist es für das
+  Auge dasselbe Gerät. Am Ende von `ordnung` zeigt es schon das Bild von
+  Gripszug (`.screen-next`, erst nach dem Laden der Seite geholt), steht still
+  und meldet seine Lage (`env.uebergabe`: Mitte, Breite, Format, Drehung). Das
+  Gerät von Gripszug hat denselben Rahmen und beginnt genau so; ab dem Wechsel
+  blendet `ordnung` sein Tablet aus (`#software.is-weiter`), während der alte
+  Hintergrund darunter weggleitet. Dann wächst das Gerät an seinen Platz:
+  Breite und Seitenverhältnis über `--gw` und `--ga`, damit Rundungen, Rand und
+  Kamera mitwachsen statt sich zu verzerren. Das Bild ist so beschnitten, dass
+  „Fünf Bereiche – fünf Wagen." lesbar bleibt, bis das Format 16:9 erreicht
+  ist. Bei weniger Bewegung blenden die Kapitel wie bisher ineinander.
 - **Kaum etwas davon ist ein Bild.** Zettel, Tablet, Dashboard, die beiden
   Websites, Preisschild, Kiste und Karten sind HTML und SVG, die Fäden ein
   Canvas. Das bleibt auf jedem Bildschirm scharf, der Text ist echt, und jedes
@@ -167,7 +180,7 @@ braucht es keine Änderung an der Sicherheitsrichtlinie in `netlify.toml`.
 Stellschrauben:
 
 - **Tempo:** `--len` an jedem Kapitel ist sein Scrollweg in vh (`software`
-  940, `projekte` 300, `dreamteam` 480, `fotos` 420, `ablauf` 400, `preise`
+  959, `projekte` 300, `dreamteam` 480, `fotos` 420, `ablauf` 400, `preise`
   380, `motivation` 380, `gespraech` 260). Mehr heisst langsamer, die Abfolge
   bleibt dieselbe. Wer ihn ändert, prüft die Landepunkte in `LANDUNG`.
 - **Abfolge:** Der Zeitplan steht als Tabelle über jeder `buildMotion` im
@@ -175,6 +188,12 @@ Stellschrauben:
   landen erst, wenn ihr Rahmen steht) und die Sprungmarke `.anker` im CSS.
 - **Texte:** direkt im HTML. Spieler und Klubs von DreamTeam stehen im Skript,
   weil es die Karten zeichnet.
+- **Links zu den Apps** (`.app-link`) stehen im HTML unter den Angaben von
+  Gripszug und DreamTeam und blenden mit dem Kapitel ein; bis dahin sind sie
+  nicht klickbar, mit der Tastatur erreicht aber sofort sichtbar. Am Handy
+  steht der DreamTeam-Link unter der Rangliste, weil unter dem Text kein Platz
+  ist – die Rangliste zeigt dort dafür fünf statt sechs Zeilen (auf sehr
+  kurzen Bildschirmen vier).
 
 ## Vor der Veröffentlichung anpassen
 
@@ -193,9 +212,7 @@ Stellschrauben:
 - [x] **Angaben in den Rechtsseiten** – Name, E-Mail und Website. Adresse,
       Telefonnummer und UID bleiben bewusst weg, siehe Abschnitt „Rechtsseiten"
 - [ ] **Rechtsseiten prüfen lassen** – die Texte sind ein Entwurf, keine
-      Rechtsberatung. Den Knopf für die helle Darstellung gibt es auf der neuen
-      Startseite nicht mehr; der Absatz zu `alae-theme` in Ziffer 2 der
-      Datenschutzerklärung beschreibt damit etwas, das nicht mehr entstehen kann
+      Rechtsberatung
 - [x] **Vorschaubild für Social Media** – `assets/og-alae.jpg`, 1200 × 630 px;
       `og:image` und `twitter:image` im `<head>` sind gesetzt (Einzelheiten in
       `assets/README.md`)
@@ -341,8 +358,8 @@ der Rechtsseiten klären sollte.
 
 Die Datenschutzerklärung beschreibt den tatsächlichen Stand der Website:
 Cookies und externe Anfragen nur über den Google-Tag auf der Startseite
-(Ziffer 7), als eigener Browser-Speicher nur der Eintrag `alae-theme` für das
-gewählte Farbschema, als Dienstleister Netlify, Resend, Cloudflare und Google.
+(Ziffer 7), kein eigener Speicher im Browser, als Dienstleister Netlify,
+Resend, Cloudflare und Google.
 **Kommt ein weiterer Dienst dazu – etwa Terminbuchung, Newsletter oder
 Statistik –, muss die Tabelle in Ziffer 6 ergänzt und Ziffer 2 „Cookies und
 fremde Dienste" überprüft werden.**
@@ -485,11 +502,11 @@ Regeln, die überall gelten:
 
 ## Technische Eigenschaften
 
-- Die Startseite ist immer dunkel. Die Rechtsseiten sind es als Voreinstellung
-  über `data-theme="dark"` und lesen eine früher gespeicherte Wahl
-  (`alae-theme` im Local Storage) weiterhin. Die Startseite selbst speichert
-  nichts im Browser. **Kommt Browser-Speicher dazu, muss Ziffer 2 der
-  Datenschutzerklärung ergänzt werden**
+- Die Startseite ist immer dunkel, die Rechtsseiten ebenso
+  (`data-theme="dark"`; die frühere Wahl `alae-theme` wird nicht mehr
+  gelesen). Die Website speichert nichts im Browser. **Kommt
+  Browser-Speicher dazu, muss Ziffer 2 der Datenschutzerklärung ergänzt
+  werden**
 - Responsiv ab 320 px, keine horizontale Scrollleiste; hoch und quer haben je
   eigene Zeitleisten, beim Drehen baut sich alles neu auf
 - Tastaturbedienbar, „Direkt zum Kontakt"-Link, sichtbarer Fokus,

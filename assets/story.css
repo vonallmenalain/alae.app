@@ -81,6 +81,36 @@ img,svg{display:block}
 .btn:active{transform:scale(.97); transition:transform .08s var(--ease-out)}
 .btn--ghost{background:transparent; color:var(--ink); border-color:rgba(236,237,242,.24)}
 
+/* Link zur echten App unter den Angaben einer Referenz: eine gläserne
+   Pille, die Adresse in Mono und ein Pfeil im Korallenkreis – leise, aber
+   eindeutig ein Knopf. */
+.app-link{
+  display:inline-flex; align-items:center; gap:.65rem; width:max-content;
+  margin-top:1.7rem; padding:.42rem .42rem .42rem 1.05rem; border-radius:999px;
+  border:1px solid rgba(236,237,242,.2); background:rgba(255,255,255,.055);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  color:var(--ink); font-size:.9rem; font-weight:680; letter-spacing:-.01em; line-height:1.2;
+  text-decoration:none; -webkit-tap-highlight-color:transparent;
+  transition:border-color .2s ease, background .2s ease, transform .2s var(--ease-out);
+}
+.app-link-url{font-family:var(--mono); font-size:.7rem; font-weight:500; letter-spacing:.03em; color:var(--muted); transition:color .2s ease}
+.app-link-pfeil{
+  flex:none; width:1.9rem; height:1.9rem; padding:.42rem; border-radius:50%; background:var(--coral);
+  fill:none; stroke:var(--coral-fg); stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round;
+  transition:transform .25s var(--ease-out), background .2s ease;
+}
+@media (hover: hover) and (pointer: fine){
+  .app-link:hover{border-color:rgba(236,237,242,.46); background:rgba(255,255,255,.1)}
+  .app-link:hover .app-link-url{color:var(--ink)}
+  .app-link:hover .app-link-pfeil{transform:translate(2px, -2px); background:var(--coral-hover)}
+}
+.app-link:active{transform:scale(.97); transition:transform .08s var(--ease-out)}
+.app-link:focus-visible{outline-offset:4px; border-radius:999px}
+/* Das Skript blendet ihn mit dem Kapitel ein; bis dahin nicht klickbar,
+   mit der Tastatur erreicht aber sofort sichtbar */
+.js .app-link{opacity:0; pointer-events:none}
+.js .app-link:focus-visible{opacity:1 !important; pointer-events:auto}
+
 .kicker{
   display:flex; align-items:center; gap:.6rem;
   font-family:var(--mono); font-size:.72rem; font-weight:600;
@@ -277,7 +307,7 @@ img,svg{display:block}
    Deckkraft statt visibility, damit Vorleseprogramme die Texte der späteren
    Kapitel trotzdem finden; Klicks gehen so lange durch sie hindurch. */
 .story{position:relative; height:calc(100 * var(--svh) + var(--len, 400) * 1vh)}
-#software{--len:940}
+#software{--len:959}
 .js .story + .story{margin-top:calc(-100 * var(--svh))}
 .js .story + .story .stage-bg{opacity:0}
 .js .story + .story .stage{opacity:0; pointer-events:none}
@@ -817,14 +847,20 @@ img,svg{display:block}
   background:rgba(26,25,32,.66); -webkit-backdrop-filter:blur(1.2em) saturate(1.4); backdrop-filter:blur(1.2em) saturate(1.4);
   box-shadow:0 0 0 .1em rgba(255,255,255,.16), inset 0 .1em 0 rgba(255,255,255,.14), 0 3em 6em -2em rgba(0,0,0,.6);
 }
-@media (orientation: portrait){ .screen-badge{font-size:calc(100cqw / 90)} }
+@media (orientation: portrait){ .screen-badge{font-size:calc(100cqw / 90)} :root{--gz-bild:0% 50%} }
 .js .screen-badge{opacity:0}
 .screen-badge svg{width:6.8em; height:auto; flex:none}
 .screen-badge b{display:block; font-size:4.6em; font-weight:760; letter-spacing:-.035em; line-height:1; color:#ECEDF2}
 .screen-badge small{display:block; margin-top:.7em; font-family:var(--mono); font-size:1.3em; letter-spacing:.17em; text-transform:uppercase; color:#AEB4BF}
+/* Zum Schluss das Bild der ersten Referenz, so beschnitten wie im Gerät von
+   Gripszug, das ab dem nächsten Kapitel übernimmt (Skript, „uebergabe").
+   Ab dort ist dieses Tablet unsichtbar – dasselbe Bild steht an derselben
+   Stelle im Kapitel darüber. */
+.screen-next{position:absolute; inset:0; z-index:4; width:100%; height:100%; object-fit:cover; object-position:var(--gz-bild, 18% 50%); opacity:0; pointer-events:none}
+#software.is-weiter .device{visibility:hidden}
 
 /* Texte links (quer) bzw. oben (hoch), wie in Szene 3 */
-.anker{position:absolute; left:0; top:calc((100% - 100 * var(--svh)) * .515); width:1px; height:1px; pointer-events:none}
+.anker{position:absolute; left:0; top:calc((100% - 100 * var(--svh)) * .505); width:1px; height:1px; pointer-events:none}
 .anker-alt{position:absolute; left:0; top:0; width:1px; height:1px; pointer-events:none}
 .w-kicker{position:absolute; z-index:7; left:var(--pad); top:calc(14.5 * var(--svh) - 2.3rem); margin:0; pointer-events:none}
 .s5, .s6, .s7{left:var(--pad); top:calc(14.5 * var(--svh)); width:min(29rem, 34vw)}
@@ -906,6 +942,7 @@ img,svg{display:block}
    Leuchtringe um die fünf Wagen. Die Bereiche stehen daneben als echter
    Text, jeder mit einem Balken für den Fortschritt. */
 #projekte{--len:300}
+#projekte .stage{--gz-b:min(54vw, calc(62 * var(--svh) * 1.72))}
 #projekte .stage-bg{background:radial-gradient(90% 80% at 68% 48%, #152029 0%, var(--bg) 58%, var(--bg-deep) 100%)}
 .gz-sky{
   position:absolute; inset:-10%; opacity:0; pointer-events:none; will-change:opacity;
@@ -913,22 +950,35 @@ img,svg{display:block}
     radial-gradient(36% 34% at 68% 48%, rgba(120,190,240,.22), transparent 70%),
     radial-gradient(30% 22% at 66% 80%, rgba(120,200,120,.14), transparent 72%);
 }
+/* Dasselbe Tablet wie in den Kapiteln davor – gleicher Rahmen, gleiche
+   Rundungen, gleiche Kamera –, hier im Format 16:9. Am Anfang des Kapitels
+   wächst es aus Lage und Format des Tablets dort heraus: Das Skript bewegt
+   --gw (Breite) und --ga (Seitenverhältnis), die Mitte (--gz-b, 69 %/52 %)
+   bleibt dabei stehen. */
 .gz-device{
-  --gw:min(54vw, calc(62 * var(--svh) * 1.72));
-  position:absolute; z-index:4; width:var(--gw); height:calc(var(--gw) / 1.72);
-  left:calc(69% - var(--gw) / 2); top:calc(52 * var(--svh) - var(--gw) / 3.44);
+  --gw:var(--gz-b); --ga:1.72;
+  position:absolute; z-index:4; width:var(--gw); height:calc(var(--gw) / var(--ga));
+  left:calc(69% - var(--gw) / 2); top:calc(52 * var(--svh) - var(--gw) / var(--ga) / 2);
   will-change:transform;
 }
 .js .gz-device{opacity:0}
 .gz-body{
-  position:absolute; inset:0; border-radius:calc(var(--gw) * .04);
+  position:absolute; inset:0; border-radius:calc(var(--gw) * .047);
   background:linear-gradient(150deg, #36373E 0%, #17171C 20%, #0D0D11 62%, #1D1E23 100%);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.10), 0 60px 90px -40px rgba(0,0,0,.9), 0 30px 90px -30px rgba(90,170,230,.35);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), inset 0 1.5px 0 rgba(255,255,255,.14), 0 0 0 1px rgba(0,0,0,.7), 0 60px 90px -40px rgba(0,0,0,.9), 0 30px 90px -30px rgba(90,170,230,.35);
 }
-.gz-screen{position:absolute; inset:calc(var(--gw) * .022); border-radius:calc(var(--gw) * .024); overflow:hidden; background:#A8D8EF}
-.gz-screen img{display:block; width:100%; height:100%; object-fit:cover}
-/* Anfang der Zeitleiste: Das Bild kommt grau und wird farbig */
-.js .gz-screen img{filter:grayscale(1) brightness(.55)}
+.gz-cam{
+  position:absolute; left:50%; top:calc(var(--gw) * .0092);
+  width:calc(var(--gw) * .0062); height:calc(var(--gw) * .0062);
+  margin-left:calc(var(--gw) * -.0031); border-radius:50%;
+  background:#26262C; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);
+}
+.gz-screen{position:absolute; inset:calc(var(--gw) * .021); border-radius:calc(var(--gw) * .027); overflow:hidden; background:#A8D8EF}
+/* Ausschnitt, solange das Gerät noch schmaler ist als das Bild: so, dass
+   „Fünf Bereiche – fünf Wagen." ganz zu lesen ist (gleich wie .screen-next) */
+.gz-screen img{display:block; width:100%; height:100%; object-fit:cover; object-position:var(--gz-bild, 18% 50%)}
+/* Endbreite des Geräts, für das Skript */
+.gz-mass{position:absolute; left:0; top:0; width:var(--gz-b); height:0; visibility:hidden; pointer-events:none}
 .gz-ring{
   position:absolute; left:calc(var(--x) * 100%); top:calc(var(--y) * 100%);
   width:12.5%; aspect-ratio:1; margin:-6.25% 0 0 -6.25%; border-radius:50%;
@@ -961,15 +1011,32 @@ img,svg{display:block}
 .is-ready .gz-copy .headline{visibility:inherit}
 .js .gz-areas b{transform:scaleX(0)}
 @media (orientation: portrait){
-  .gz-device{--gw:88vw; left:calc(50% - var(--gw) / 2); top:calc(27 * var(--svh))}
+  /* Das Gerät oben, darunter Bereiche, Versprechen und Link als ein Block,
+     mittig im Platz, der unter dem Gerät bleibt. Auf kurzen Bildschirmen
+     (Safari mit Leisten) wird das Gerät kleiner. --gz-y ist seine Mitte. */
+  #projekte .stage{--gz-b:min(88vw, calc(30 * var(--svh) * 1.72)); --gz-y:calc(25 * var(--svh) + var(--gz-b) / 3.44)}
+  .gz-device{left:calc(50% - var(--gw) / 2); top:calc(var(--gz-y) - var(--gw) / var(--ga) / 2)}
   .gz-copy{position:absolute; inset:0; width:auto}
+  .js .gz-copy{
+    display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+    padding:calc(25 * var(--svh) + var(--gz-b) / 1.72 + 1rem) var(--pad) calc(3.5 * var(--svh));
+  }
   .gz-copy .kicker{position:absolute; left:var(--pad); top:calc(10 * var(--svh)); margin:0}
   .gz-copy .headline{position:absolute; left:var(--pad); right:var(--pad); top:calc(13.5 * var(--svh)); max-width:none; font-size:clamp(1.8rem, 1.3rem + 2.6vw, 2.4rem)}
   .gz-copy .sub{display:none}
-  .gz-areas{position:absolute; left:var(--pad); right:var(--pad); top:calc(59 * var(--svh)); margin:0; grid-template-columns:1fr 1fr; gap:.8rem 1.2rem}
+  .gz-areas{align-self:stretch; margin:0; grid-template-columns:1fr 1fr; gap:.8rem 1.2rem}
   .gz-areas li{font-size:.86rem}
-  .gz-no{position:absolute; left:var(--pad); right:var(--pad); top:calc(84 * var(--svh)); margin:0; gap:.4rem}
+  .gz-no{margin:1.35rem 0 0; gap:.4rem}
   .gz-no li{font-size:.76rem; padding:.4rem .7rem .4rem .5rem}
+  .gz-copy .app-link{margin-top:1.05rem}
+}
+/* Sehr kurze Bildschirme (etwa iPhone SE in Safari): kleineres Gerät,
+   engere Abstände, in der Rangliste vier Zeilen */
+@media (orientation: portrait) and (max-height: 600px){
+  #projekte .stage{--gz-b:min(88vw, calc(24 * var(--svh) * 1.72))}
+  .gz-areas{gap:.55rem 1.2rem}
+  .gz-no{margin-top:1rem}
+  .gz-copy .app-link{margin-top:.8rem}
 }
 
 /* --- Kapitel DreamTeam --------------------------------------------------------
@@ -1047,15 +1114,22 @@ img,svg{display:block}
   .dt-steps{display:flex; flex-wrap:wrap; gap:.4rem .9rem; margin-top:1rem}
   .dt-steps li{font-size:.8rem; gap:.4rem}
   .dt-steps li span{width:1.45rem; height:1.45rem; font-size:.66rem}
+  .dt-rank .app-link{margin-top:.8rem}
+  .dt-rank .dt-rows > .dt-row:nth-child(6), .dt-rank .dt-slotno:nth-child(6){display:none}
   .dt-scrim{background:linear-gradient(rgba(5,11,28,.9) 0%, rgba(5,11,28,.72) 24%, rgba(5,11,28,0) 40%)}
   /* Unten verankert: So passt die Rangliste auch auf kleine Telefone, und
      das Spielfeld bekommt den Streifen darüber (Skript, „Schlussbild"). */
   .dt-rank{left:var(--pad); right:var(--pad); width:auto; top:auto; bottom:calc(2.5 * var(--svh)); padding:.9rem .9rem .75rem}
   .dt-rank-h{margin-bottom:.8rem; font-size:1.1rem}
-  .dt-rows{height:calc(6 * (2.55rem + 5px) - 5px)}
+  .dt-rows{height:calc(5 * (2.55rem + 5px) - 5px)}
   .dt-row{height:2.55rem; grid-template-columns:1.5rem 2rem 1fr auto; gap:.5rem}
   .dt-av{width:2rem; height:2rem}
   .dt-who b{font-size:.84rem}
+}
+
+@media (orientation: portrait) and (max-height: 600px){
+  .dt-rows{height:calc(4 * (2.55rem + 5px) - 5px)}
+  .dt-rank .dt-rows > .dt-row:nth-child(5), .dt-rank .dt-slotno:nth-child(5){display:none}
 }
 
 /* --- Kapitel Fotoverkauf ------------------------------------------------------
