@@ -1231,9 +1231,9 @@
      beim Neuzeichnen kurz ab.
 
      Spieler und Klubs wie im Champions-League-Pool der App (dt.alae.app,
-     data-cl2627.js). Fotos und Wappen liegen, sobald vorhanden, unter
-     assets/dt/ (Liste DT_BILDER); fehlt eines, zeichnet die Karte eine
-     Silhouette in den Klubfarben und das Kürzel des Klubs.
+     data-cl2627.js). Fotos und Wappen liegen unter assets/dt/ (Liste
+     DT_BILDER); fehlt eines, zeichnet die Karte eine Silhouette in den
+     Klubfarben und das Kürzel des Klubs.
      ========================================================================= */
   var DT_KLUB = {
     541: { n: 'Real Madrid', k: 'RMA', a: '#F4F4F6', b: '#C9A227' },
@@ -1275,9 +1275,13 @@
     { id: 1622, n: 'Gianluigi Donnarumma', c: 50 }
   ];
   // Welche Fotos und Wappen als Datei vorliegen (assets/dt/spieler/<id>.webp,
-  // assets/dt/klubs/<id>.webp). Nur diese werden geladen, sonst gäbe jede
-  // fehlende Datei einen Fehler in der Konsole.
-  var DT_BILDER = { spieler: [], klubs: [] };
+  // assets/dt/klubs/<id>.webp, geladen von media.api-sports.io wie in der
+  // App). Nur diese werden geladen, sonst gäbe jede fehlende Datei einen
+  // Fehler in der Konsole. Kommt ein Spieler dazu, gehört sein Foto hierher.
+  var DT_BILDER = {
+    spieler: [9, 153, 184, 217, 278, 483, 502, 631, 730, 756, 762, 1100, 1460, 1496, 1622, 2864, 18979, 22090, 25282, 31009, 129718, 133609, 181812, 203224, 263482, 386828],
+    klubs: [40, 42, 50, 85, 157, 165, 505, 529, 530, 541, 645]
+  };
   var DT_CACHE = {};
   function dtBild(art, id, fertig) {
     if (DT_BILDER[art].indexOf(id) < 0) return null;
