@@ -1,10 +1,14 @@
 # assets
 
-Bilder und Kurzfilme für die Landingpage.
+Code, Schrift, Bilder und Kurzfilme der Website.
 
 ## Kurzfilme
 
-Acht Filme: der Aufmacher im Hero und einer je Projektkarte. Zu jedem gehören
+**Die Startseite zeigt zurzeit keine Filme** – die Scroll-Geschichte erzählt
+die drei Apps selbst. Die Dateien bleiben als Reserve liegen, samt Rezept
+unten, falls Filme später wieder dazukommen.
+
+Acht Filme: der Aufmacher und einer je App der früheren Startseite. Zu jedem gehören
 vier Dateien – die hohe und die quere Fassung, je mit einem Standbild, das vor
 dem ersten Klick zu sehen ist.
 
@@ -111,9 +115,14 @@ Worauf es ankommt:
 
 | Datei | Projekt | Grösse |
 | --- | --- | --- |
-| `dt-top-manager.png` | DreamTeam – Rangliste der Top Manager (WM 2026) | 1101 × 831 px |
-| `Alain.png` | Porträt für den Abschnitt „Motivation" | 630 × 633 px |
+| `Alain.png` | Porträt im Kapitel „Über mich" und im FAQ-Gespräch | 630 × 633 px |
+| `gripszug.webp` | Illustration der fünf Trainingsbereiche, im Tablet des Kapitels Gripszug | 2000 × 1125 px |
 | `og-alae.jpg` | Vorschaubild für Social Media und Messenger | 1200 × 630 px |
+
+Die übrigen Zeichnungen – die Kinder im Fotoverkauf, das Haus im Ablauf, die
+Symbole und die Schweizer Karte unter „Über mich", die alte und die neue
+Website im Tablet – sind SVG direkt in `index.html`. So bleiben sie scharf,
+kosten keine eigene Anfrage, und das Skript kann ihre Teile einzeln bewegen.
 
 ### `og-alae.jpg` – das Vorschaubild
 
@@ -155,16 +164,16 @@ die Seite beim Laden springt.
 
 ### Nicht mehr eingebunden, bleiben als Reserve liegen
 
-Seit die Kurzfilme da sind, zeigen die Apps in `index.html` keine Screenshots
-mehr. Die Dateien bleiben liegen, falls ein Film einmal ersetzt werden muss.
-Eine Ausnahme: `gripszug.webp` (Illustration der fünf Trainingsbereiche,
-2000 × 1125 px) ist wieder im Einsatz, als Bild im Gerät der Story
-(`story.html`, Kapitel Gripszug). Die Leuchtringe und -rahmen dort sind in
-Anteilen dieses Bildes vermessen – wird es ersetzt, sind sie neu zu setzen.
+Die Screenshots stammen aus der Zeit vor den Kurzfilmen. Die Dateien bleiben
+liegen, falls einmal wieder ein Bild gebraucht wird. `gripszug.webp` dagegen
+ist im Einsatz (Tabelle oben): Die Leuchtringe und -rahmen im Kapitel
+Gripszug sind in Anteilen dieses Bildes vermessen – wird es ersetzt, sind sie
+neu zu setzen.
 
 | Datei | Projekt | Grösse |
 | --- | --- | --- |
 | `dt-champions-league.webp` | DreamTeam – Teamansicht im Champions-League-Betrieb | 1401 × 1192 px |
+| `dt-top-manager.png` | DreamTeam – Rangliste der Top Manager (WM 2026) | 1101 × 831 px |
 | `jass-app.png` | Jass App – Startbildschirm mit beiden Betriebsarten | 965 × 375 px |
 | `pvt.png` | Volleyballturnier – Dashboard eines Teams | 1084 × 1246 px |
 | `foto-app.png` | Fotoverkauf – Galerie einer Familie | 929 × 1211 px |
@@ -208,10 +217,12 @@ Verein stehen so auch in der öffentlich erreichbaren App unter `pvt.alae.app`.
 **Wird ein Film ersetzt, ist das erneut zu prüfen.** Ein Mitschnitt aus dem
 laufenden Betrieb einer geschützten App gehört nicht auf die Landingpage.
 
-**Die Story (`story.html`) hält es genauso.** DreamTeam zeigt dort erfundene
-Spieler, Klubs, Wappen und Manager, gezeichnet vom Skript – keine echten
-Spielerfotos oder Klubwappen, wie sie `dt-champions-league.webp` enthält. Im
-Fotoverkauf sind die Kinder gezeichnet, Adresse und Code erfunden.
+**Die Startseite hält es genauso.** Im Fotoverkauf ist das Kind gezeichnet –
+auf allen sechs Fotos dasselbe –, Adresse und Code sind erfunden. DreamTeam
+nennt echte Spieler und Klubs, wie die App selbst, zeigt aber keine
+Spielerfotos oder Klubwappen, wie sie `dt-champions-league.webp` enthält:
+Statt Fotos zeichnet das Skript Silhouetten, statt Wappen Kürzel in den
+Klubfarben. Die Manager der Rangliste sind erfunden.
 
 ### Die nicht mehr eingebundenen Screenshots
 
@@ -245,11 +256,11 @@ Menü mit den zuschaltbaren Bereichen, das die App ja gerade auszeichnet.
 weiterhin stimmen.** Für den Fotoverkauf empfiehlt sich zusätzlich eine
 schriftliche Freigabe der Fotografin.
 
-## Bibliotheken und Schrift der Story
+## Bibliotheken und Schrift der Startseite
 
-`story.html` (siehe README, „Story (Prototyp)") braucht als einzige Seite eine
-Bibliothek und eine eigene Schrift. Beides liegt hier und wird von alae.app
-selbst ausgeliefert, nicht von einem fremden Server. Darum lässt die
+Die Startseite (siehe README, „Die Scroll-Geschichte") braucht als einzige
+Seite eine Bibliothek und eine eigene Schrift. Beides liegt hier und wird von
+alae.app selbst ausgeliefert, nicht von einem fremden Server. Darum lässt die
 Sicherheitsrichtlinie in `netlify.toml` es ohne Änderung zu.
 
 | Datei | Was | Grösse (komprimiert) |
@@ -260,8 +271,9 @@ Sicherheitsrichtlinie in `netlify.toml` es ohne Änderung zu.
 | `fonts/caveat-600.woff2` | Caveat SemiBold, Handschrift der Zettel | 17 KB |
 | `fonts/OFL-Caveat.txt` | Lizenz der Schrift (SIL Open Font License) | – |
 
-Dazu der eigene Code der Story: `story.css` (73 KB, komprimiert 20 KB) und
-`story.js` (86 KB, komprimiert 25 KB).
+Dazu der eigene Code: `story.css` (109 KB, komprimiert 27 KB), `story.js`
+(138 KB, komprimiert 41 KB) und `index.html` selbst (135 KB, komprimiert
+36 KB – der grösste Teil sind die Zeichnungen als SVG).
 
 **GSAP** ist seit 2025 samt allen Plugins kostenlos, auch für kommerzielle
 Seiten. Die Bedingungen stehen unter <https://gsap.com/standard-license>, der
