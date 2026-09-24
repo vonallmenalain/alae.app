@@ -92,69 +92,100 @@ höchstens aber alle drei Sekunden. Beim Wegfahren läuft bewusst nichts mehr.
 ## Story (Prototyp)
 
 `story.html` ist der Entwurf für die neue Startseite: eine Geschichte im
-Vollbild, bei der beim Scrollen ein Bild ins nächste übergeht. Gebaut sind die
-Szenen 1–3 von 7. Die Seite ist nirgends verlinkt, trägt `noindex` und hat
-keinen Google-Tag – sie ist zum Anschauen da, nicht für Anzeigen.
-`index.html` bleibt unverändert, bis die Story fertig ist.
+Vollbild, bei der beim Scrollen ein Bild ins nächste übergeht. Gebaut sind alle
+sieben Szenen in sechs Kapiteln. Die Seite ist nirgends verlinkt, trägt
+`noindex` und hat keinen Google-Tag – sie ist zum Anschauen da, nicht für
+Anzeigen. `index.html` bleibt unverändert, bis die Story eingebaut wird; dann
+kommen Ablauf, Preise, FAQ und Kontakt im selben Stil dazu.
 
-| Szene | Text | Bild |
-| --- | --- | --- |
-| 1 | „Chaos, Zettel, Excel?" | Ein Knäuel aus Lichtfäden, darin sechs Zettel: Haftnotizen, eine Excel-Tabelle mit `#BEZUG!`, ein Ausdruck mit Kaffeerand |
-| 2 | „Massgeschneiderte Software statt Excel-Chaos" | Ordnung wandert von rechts durchs Knäuel, die Fäden werden zu einem Strahl und legen sich um die Kacheln eines Dashboards. Jeder Zettel landet als Kachel, der Bildschirm geht an, das Logo erscheint auf Milchglas |
-| 3 | „Exakt passend für deine Bedürfnisse" | Das Tablet dreht sich, eine Zahlung kommt herein, vier Hinweise zeigen auf die Stellen im Dashboard |
+| Szene | Kapitel (`id`) | Text | Bild |
+| --- | --- | --- | --- |
+| 1 | `ordnung` | „Chaos, Zettel, Excel?" | Ein Knäuel aus Lichtfäden, darin sechs Zettel: Haftnotizen, eine Excel-Tabelle mit `#BEZUG!`, ein Ausdruck mit Kaffeerand |
+| 2 | `ordnung` | „Massgeschneiderte Software statt Excel-Chaos" | Ordnung wandert von rechts durchs Knäuel, die Fäden legen sich um die Kacheln eines Dashboards. Jeder Zettel landet als Kachel, der Bildschirm geht an, das Logo erscheint auf Milchglas |
+| 3 | `ordnung` | „Exakt passend für deine Bedürfnisse" | Das Tablet dreht sich, eine Zahlung kommt herein, vier Hinweise zeigen auf die Stellen im Dashboard |
+| 4 | `ordnung` | „Was sich für dich ändert" | Vier Schalter springen auf „ON", jeder räumt etwas weg: Fehlerzellen, Zettel, eine 0 wird zu 100 %, zuletzt erscheint die Schweizer Flagge |
+| 5 | `vergleich` | „Mehr ist nicht immer besser." | Links ein aufgeräumter Ablauf, rechts schiebt sich Standard-Software mit Tabellen und Zetteln herein. Eine echte Lupe fährt darüber (am Computer folgt sie der Maus) |
+| 6 | `gripszug`, `dreamteam`, `fotos` | App 1–3 | Gripszug: die eigene Illustration, fünf Wagen leuchten nacheinander auf. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf werden gewählt, stellen sich auf, die Rangliste rechnet live. Fotoverkauf: eine E-Mail mit 14 Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download |
+| 7 | `gespraech` | „Lass uns über deine Idee reden." | Die Fäden vom Anfang legen sich auf das Signet, Schriftzug und Einladung steigen nach |
 
-Geplant sind noch: 4 die Schalter, die nacheinander auf „ON" springen,
-5 Vorher und Nachher, 6 die sieben Apps im Gerät, 7 das Erstgespräch. Die
-Vorlagen dafür liegen in `Bildvorlagen/`.
+Die Dateien: `story.html` (Inhalt), `assets/story.css` (Gestaltung, gegliedert
+nach Kapiteln), `assets/story.js` (Bewegung, eine Funktion pro Kapitel).
 
 Entscheide, die man beim Weiterbauen kennen sollte:
 
-- **Das Scrollen treibt die Story an, übernimmt aber nie.** Eine Zeitleiste
-  von 0 bis 100 folgt dem Scrollstand, mit 0,9 s Nachlauf, damit ein Mausrad
-  nicht ruckt. Rückwärts scrollen spielt rückwärts. Es gibt kein Einrasten und
-  kein automatisches Weiterlaufen.
-- **Die Bühne klebt per CSS** (`position: sticky`), nicht über das Pinning von
-  GSAP. Der Browser hält sie selbst fest, auch am iPhone, wenn die
-  Adressleiste ein- und ausfährt.
-- **Nichts davon ist ein Bild.** Zettel, Tablet und Dashboard sind HTML, die
-  Fäden ein Canvas. Das bleibt auf jedem Bildschirm scharf, der Text ist echt,
-  und jedes Teil kann sich einzeln bewegen. Die KI-Bilder in `Bildvorlagen/`
-  sind Stilvorgabe, nicht Inhalt: Ihr Text ist eingebacken, und in den
-  Dashboards stehen Fantasiewörter.
+- **Das Scrollen treibt die Story an, übernimmt aber nie.** Jedes Kapitel hat
+  eine Zeitleiste von 0 bis 100 (`ordnung` bis 134, es trägt vier Szenen), die
+  dem Scrollstand folgt, mit 0,9 s Nachlauf, damit ein Mausrad nicht ruckt.
+  Rückwärts scrollen spielt rückwärts. Es gibt kein Einrasten und kein
+  automatisches Weiterlaufen.
+- **Jedes Kapitel ist eine eigene Sektion mit eigener Bühne**, die per CSS
+  klebt (`position: sticky`), nicht über das Pinning von GSAP. Der Browser
+  hält sie selbst fest, auch am iPhone, wenn die Adressleiste ein- und
+  ausfährt.
+- **Überblendung statt Schnitt:** Ab dem zweiten Kapitel rückt jede Sektion
+  eine Bildschirmhöhe nach oben und liegt über dem Ende der vorigen. Ihr
+  Hintergrund blendet in den ersten 6 % ein, das alte Bild gleitet darunter
+  weg. Bis ein Kapitel oben angekommen ist, bleibt seine Bühne ganz
+  unsichtbar (`is-da`), sonst schöbe sie sich durchsichtig über das vorige.
+- **Nichts davon ist ein Bild** – ausser der Illustration von Gripszug, die
+  aus der App selbst stammt. Zettel, Tablet, Dashboard, Spielerkarten und
+  Telefon sind HTML und SVG, die Fäden ein Canvas. Das bleibt auf jedem
+  Bildschirm scharf, der Text ist echt, und jedes Teil kann sich einzeln
+  bewegen. Die KI-Bilder in `Bildvorlagen/` sind Stilvorgabe, nicht Inhalt.
+- **Keine echten Personen:** DreamTeam zeigt erfundene Spieler, Klubs, Wappen
+  und Manager – echte Spielerfotos und Klubwappen gehören anderen, und die
+  Seite wirbt. Die Kinder im Fotoverkauf sind gezeichnet, Adresse und Code
+  erfunden (`eltern@example.ch`), wie im Kurzfilm der App.
 - **Das Dashboard hat eine feste Auflösung:** quer 1180 px, hoch 820 px,
   1em = 10 px. Die Schrift folgt über `cqw` der Breite des Bildschirms im
   Gerät. Das Dashboard wächst und schrumpft also als Ganzes wie ein echter
-  Bildschirm und bricht nie um. Die Zahlen sind erfunden, passen aber
-  zueinander (September = August × 1,12), Datum und Monate kommen aus der Uhr
-  des Besuchers.
+  Bildschirm und bricht nie um. Dasselbe gilt für die App im Telefon des
+  Fotoverkaufs. Die Zahlen sind erfunden, passen aber zueinander (September =
+  August × 1,12), Datum und Monate kommen aus der Uhr des Besuchers.
 - **Der Anfangszustand steht im CSS, nicht im Skript.** GSAP setzt beim
-  Neuberechnen (andere Fenstergrösse) seine Werte zurück. Stünde der Anfang
-  nur im Skript, tauchten Texte und Kacheln späterer Szenen kurz auf.
+  Neuberechnen (andere Fenstergrösse) seine Werte zurück, und ein gestaffeltes
+  `fromTo` bringt seinen Anfang danach erst wieder, wenn es an der Reihe ist.
+  Stünde der Anfang nur im Skript, tauchten Texte und Kacheln späterer Szenen
+  kurz auf.
+- **Die Fäden sind auf grossen Bildschirmen gedeckelt.** Die Zeichenfläche
+  bekommt höchstens 2,2 Millionen Bildpunkte, das Leuchten wird auf einer
+  Fläche in Viertelgrösse gemalt und vom Browser weich hochgerechnet. An einem
+  4K-Bildschirm sind das rund 2,4 statt 8,3 Megapixel pro Bild, und das breite
+  Leuchten, das vorher am meisten kostete, fast nichts mehr. Die Zettel haben
+  eigene Ebenen, damit sie beim Schweben nicht neu gemalt werden. Braucht ein
+  Bild trotzdem im Mittel über 24 ms, zeichnen die Fäden in zwei Stufen mit
+  weniger Bildpunkten.
 - **Die Hinweislinien** in Szene 3 enden alle am linken Rand ihres Bausteins,
   von oben nach unten in der Reihenfolge der Hinweise. So bleiben sie kurz und
   kreuzen sich nie. Hoch gibt es keine Linien, nur vier Chips.
-- **Weniger Bewegung** (`prefers-reduced-motion`): drei stehende Bilder, die
+- **Die Lupe** zeigt eine Kopie der Szene, 1,8-fach vergrössert. Das Skript
+  legt sie beim Start an; wer im Vergleich etwas ändert, ändert beides.
+- **Weniger Bewegung** (`prefers-reduced-motion`): stehende Bilder, die
   ineinander überblenden. Nichts fliegt, nichts dreht sich, die Fäden bleiben
-  still.
-- **Ohne Skript oder ohne GSAP** steht eine ruhige Seite da: die drei Texte,
-  das eingeschaltete Tablet und die vier Punkte als Liste.
+  still, jedes Kapitel zeigt gleich sein Endbild.
+- **Ohne Skript oder ohne GSAP** steht eine ruhige Seite da: alle Texte, das
+  eingeschaltete Tablet, die Schalter auf „ON", der Vergleich als ein Bild,
+  die drei Apps mit ihren Punkten und die Einladung.
 
 Die Bibliothek ist **GSAP 3.15** (`gsap`, `ScrollTrigger`, `CustomEase`) in
 `assets/vendor/`, die Handschrift der Zettel **Caveat** in `assets/fonts/`
 (Einzelheiten in `assets/README.md`). Beides kommt von alae.app selbst. Darum
 braucht es keine Änderung an der Sicherheitsrichtlinie in `netlify.toml`, und
 es bleibt beim Grundsatz „keine externen Skripte". Die übrige Seite kommt
-weiter ohne Bibliothek aus. Komprimiert lädt die Story rund 90 KB, ganz ohne
-Bilder.
+weiter ohne Bibliothek aus. Komprimiert lädt die Story rund 105 KB Code und
+17 KB Schrift, dazu das Gripszug-Bild (93 KB), sobald das Kapitel näher
+kommt.
 
 Stellschrauben:
 
-- **Tempo:** `--len` an `.story` ist der Scrollweg in vh (heute 460). Mehr
-  heisst langsamer, die Abfolge bleibt dieselbe.
-- **Abfolge:** Der Zeitplan steht als Tabelle über `buildMotion` im Skript.
-  Wer dort Zahlen ändert, prüft auch `TILE_DELAY`, denn die Zettel landen
-  erst, wenn ihr Rahmen steht.
-- **Texte:** direkt im HTML der drei `.scene`-Blöcke und der `.callout`-Liste.
+- **Tempo:** `--len` an jedem Kapitel ist sein Scrollweg in vh (`ordnung`
+  620, `vergleich` 300, `gripszug` 300, `dreamteam` 480, `fotos` 420,
+  `gespraech` 260). Mehr heisst langsamer, die Abfolge bleibt dieselbe.
+- **Abfolge:** Der Zeitplan steht als Tabelle über jeder `buildMotion` im
+  Skript. Wer in `ordnung` Zahlen ändert, prüft auch `TILE_DELAY`, denn die
+  Zettel landen erst, wenn ihr Rahmen steht.
+- **Texte:** direkt im HTML. Spieler, Klubs und Manager von DreamTeam stehen
+  im Skript (`CLUBS`, `PLAYERS`, `MANAGER`), weil es die Karten baut.
 
 ## Vor der Veröffentlichung anpassen
 
