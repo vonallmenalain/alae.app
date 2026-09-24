@@ -359,6 +359,10 @@ img,svg{display:block}
    Bewegungen nie in die Quere. Grössen in --u, Schrift in cqw: Der Inhalt
    wächst und schrumpft mit dem Zettel, statt umzubrechen. */
 .papers{position:absolute; inset:0; z-index:5; pointer-events:none}
+/* Die Zettel stehen erst, wenn das Skript sie platziert hat – vorher lägen
+   sie beim Laden für ein paar Bilder gestapelt oben links */
+.js .papers{visibility:hidden}
+.is-ready .papers{visibility:inherit}
 .paper{position:absolute; left:0; top:0; container-type:inline-size; will-change:transform}
 /* Mittlere und innere Schicht bekommen eine eigene Ebene: Sie bewegen sich
    in jedem Bild, und ohne eigene Ebene müsste der Browser dafür jedes Mal
@@ -1178,18 +1182,17 @@ img,svg{display:block}
 .js .ft-copy .headline{visibility:hidden}
 .is-ready .ft-copy .headline{visibility:inherit}
 @media (orientation: portrait){
-  .ft-phone{--pw:min(60vw, calc(54 * var(--svh) * .49)); left:calc(50% - var(--pw) / 2); top:calc(25 * var(--svh))}
+  .ft-phone{--pw:min(60vw, calc(48 * var(--svh) * .49)); left:calc(50% - var(--pw) / 2); top:calc(25 * var(--svh))}
   .ft-mail{left:var(--pad); right:var(--pad); width:auto; top:calc(34 * var(--svh))}
   .ft-att{grid-template-columns:1fr 1fr; padding:.8rem}
   .ft-att span{font-size:.66rem}
   .ft-copy{left:var(--pad); right:var(--pad); top:calc(10 * var(--svh)); width:auto}
   .ft-copy .headline{max-width:none; font-size:clamp(1.8rem, 1.3rem + 2.6vw, 2.4rem)}
-  /* Hoch ist unter dem Telefon nur Platz für einen Punkt: Es steht immer
-     der, den das Telefon gerade zeigt. 74 unter dem Textblock sind 84 auf
-     der Bühne. */
-  .ft-points{position:absolute; left:0; right:0; top:calc(74 * var(--svh)); margin:0}
-  .ft-points li{position:absolute; left:0; right:0; top:0; font-size:.95rem; opacity:0; transition:opacity .35s ease, color .35s ease}
-  .ft-points li.cur{opacity:1}
+  /* Hoch stehen alle vier Punkte unter dem Telefon und werden abgehakt wie
+     quer. 66 unter dem Textblock sind 76 auf der Bühne. */
+  .ft-points{position:absolute; left:0; right:0; top:calc(66 * var(--svh)); margin:0; gap:.5rem}
+  .ft-points li{padding-left:1.95rem; font-size:.88rem}
+  .ft-points li::before{width:1.3rem; height:1.3rem}
 }
 
 /* --- Kapitel Ablauf -------------------------------------------------------------
@@ -1240,13 +1243,18 @@ img,svg{display:block}
 .js .ab-copy .headline{visibility:hidden}
 .is-ready .ab-copy .headline{visibility:inherit}
 @media (orientation: portrait){
-  .ab-bild{left:0; right:0; top:calc(30 * var(--svh)); bottom:auto; height:calc(38 * var(--svh))}
+  .ab-bild{left:0; right:0; top:calc(22 * var(--svh)); bottom:auto; height:calc(30 * var(--svh))}
   .ab-copy{left:var(--pad); right:var(--pad); top:calc(10 * var(--svh)); width:auto}
   .ab-copy .headline{max-width:none; font-size:clamp(1.8rem, 1.3rem + 2.6vw, 2.4rem)}
-  .ab-schritte{position:absolute; left:0; right:0; top:calc(60 * var(--svh)); margin:0}
-  .ab-schritte li{position:absolute; left:0; right:0; top:0; opacity:0; transition:opacity .4s ease, color .4s ease}
-  .ab-schritte li::before{display:none}
-  .ab-schritte li.on{opacity:1}
+  /* hoch: alle vier Schritte unter dem Bild, der aktuelle mit seinem Text.
+     44 unter dem Textblock sind 54 auf der Bühne. */
+  .ab-schritte{position:absolute; left:0; right:0; top:calc(44 * var(--svh)); margin:0; gap:0}
+  .ab-schritte li{grid-template-columns:1.9rem 1fr; gap:.75rem; padding:.3rem 0}
+  .ab-schritte li::before{left:.95rem; top:2.35rem; bottom:-.3rem}
+  .ab-nr{width:1.9rem; height:1.9rem; font-size:.74rem}
+  .ab-schritte b{margin-top:.28rem; font-size:.95rem}
+  .ab-schritte p{margin-top:.25rem; font-size:.84rem; line-height:1.45}
+  .ab-schritte small{margin-top:.25rem; font-size:.64rem}
 }
 
 /* --- Kapitel Preise -------------------------------------------------------------- */
@@ -1465,13 +1473,6 @@ img,svg{display:block}
 @keyframes fq-tippt{0%, 60%, 100%{transform:translateY(0); opacity:.5} 30%{transform:translateY(-.3rem); opacity:1}}
 .fq-fragen{flex:none; display:flex; flex-wrap:wrap; gap:.5rem; padding:.85rem 1rem 1rem; border-top:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.02)}
 .fq-fragen:empty{display:none}
-/* hoch: die Fragen in einer Reihe zum Wischen, der Verlauf behält die Höhe */
-@media (max-width: 40rem){
-  .fq-fenster{height:min(40rem, 76 * var(--svh))}
-  .fq-fragen{flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:none; -webkit-mask-image:linear-gradient(90deg, #000 88%, transparent); mask-image:linear-gradient(90deg, #000 88%, transparent)}
-  .fq-fragen::-webkit-scrollbar{display:none}
-  .fq-frage{flex:none; white-space:nowrap}
-}
 .fq-frage{
   padding:.65rem 1rem; border-radius:999px; border:1px solid rgba(254,121,113,.35); background:rgba(254,121,113,.07);
   color:var(--ink); font:inherit; font-size:.9rem; font-weight:600; cursor:pointer; text-align:left;
@@ -1481,10 +1482,15 @@ img,svg{display:block}
 .fq-frage:active{transform:scale(.97)}
 .fq-frage[disabled]{opacity:.35; cursor:default}
 .fq-schluss{align-self:center; margin-top:.4rem}
+/* schmal: die Fragen untereinander, das Fenster wird dafür höher */
+@media (max-width: 40rem){
+  .fq-fenster{height:min(48rem, 88 * var(--svh))}
+  .fq-fragen{flex-direction:column; align-items:stretch; gap:.4rem; padding:.7rem .8rem .8rem}
+  .fq-frage{padding:.55rem .85rem; border-radius:.85rem; font-size:.86rem; line-height:1.35}
+}
 @media (max-width: 40rem){
   .fq-blase{max-width:90%; font-size:.92rem}
   .fq-verlauf{padding:1rem .9rem 1.2rem}
-  .fq-frage{font-size:.84rem}
 }
 
 /* --- Fuss ---------------------------------------------------------------------------- */
