@@ -574,8 +574,6 @@
     var anchors = [0, 1, 2, 3].map(function (k) { return qa('.anchor[data-a="' + k + '"]', sec); });
     var s1 = q1('.s1', sec);
     var W1 = words(q1('.s1 h1', sec)), W2 = words(q1('.s2 h2', sec)), W3 = words(q1('.s3 h2', sec));
-    var rest1 = [q1('.s1 .kicker', sec), q1('.s1 .sub', sec)];
-    var sub2 = q1('.s2 .sub', sec), sub3 = q1('.s3 .sub', sec);
     var portrait = env.portrait, reduced = env.reduced;
 
     // Kapitel 2: die zwei Websites im Bildschirm, dann wieder die App
@@ -585,7 +583,6 @@
     var trNeu = q1('.tr-neu', sec), trRows = qa('.table .tr:not(.th):not(.tr-neu)', sec), trLast = trRows[trRows.length - 1];
     var wKicker = q1('.w-kicker', sec);
     var W5 = words(q1('.s5 h2', sec)), W6 = words(q1('.s6 h2', sec)), W7 = words(q1('.s7 h2', sec));
-    var sub5 = q1('.s5 .sub', sec), sub6 = q1('.s6 .sub', sec), sub7 = q1('.s7 .sub', sec);
     // Paare: gleiches data-m auf beiden Seiten. Die Reihenfolge ist die der
     // Verwandlung – zuerst wird das Bild zur Bühne, dann folgt der Rest.
     var MORPH = ['bild', 'titel', 'logo', 'nav', 'text', 'cta', 'bewertung', 'leistungen'].map(function (k) {
@@ -894,7 +891,6 @@
 
       tl.to(cue, { opacity: 0, duration: 3, ease: 'none' }, 0);
       tl.to(W1, { yPercent: -80, opacity: 0, filter: 'blur(8px)', duration: 6, stagger: .45, ease: 'power2.in' }, 6);
-      tl.to(rest1, { y: -30, opacity: 0, filter: 'blur(6px)', duration: 6, ease: 'power2.in' }, 6.5);
       tl.to(S, { sweep: 1, duration: 26, ease: 'sine.inOut' }, 6);
       tl.to(haze, { opacity: 1, duration: 30, ease: 'none' }, 8);
       tl.to(S, { float: .35, duration: 22, ease: 'none' }, 8);
@@ -912,7 +908,6 @@
       });
 
       wordsIn(tl, W2, 21, .5);
-      tl.fromTo(sub2, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 7, ease: 'aOut' }, 24.5);
 
       tl.to(S, { wrap: 1, duration: 18, ease: 'none' }, 34);
       tl.to(S, { float: 0, duration: 6, ease: 'none' }, 34);
@@ -943,7 +938,6 @@
       tl.fromTo(badgePaths, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 5, stagger: 1.8, ease: 'aLogo' }, 59);
 
       wordsOut(tl, W2, 67);
-      tl.to(sub2, { y: -20, opacity: 0, duration: 5, ease: 'power2.in' }, 67);
       tl.to(badge, { autoAlpha: 0, y: function () { return L.badge.y - 40; }, scale: 1.05, filter: 'blur(8px)', duration: 5, ease: 'power2.in' }, 68);
       tl.fromTo(device, { x: 0, y: 0, rotationX: 0, rotationY: 0, rotationZ: 0, scale: 1 }, {
         x: function () { return L.pose.x; }, y: function () { return L.pose.y; },
@@ -954,7 +948,6 @@
       tl.to(S, { tilt: 1, duration: 8, ease: 'none' }, 76);
       tl.to(S, { veil: 1, duration: 10, ease: 'none' }, 72);
       wordsIn(tl, W3, 74);
-      tl.fromTo(sub3, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 7, ease: 'aOut' }, 77);
 
       // Die App arbeitet: Eine Zahlung kommt herein, die offenen Rechnungen
       // gehen von 3 auf 2 und die Summe um den Betrag zurück.
@@ -975,7 +968,6 @@
       tl.to(knots.concat(links, callouts), { opacity: 0, duration: 4, ease: 'power1.in' }, 100);
       tl.to(toast, { opacity: 0, y: -10, duration: 3, ease: 'power1.in' }, 100);
       wordsOut(tl, W3, 100);
-      tl.to(sub3, { y: -20, opacity: 0, duration: 5, ease: 'power2.in' }, 100);
       tl.to(S, { links: 0, duration: .01, ease: 'none' }, 104.5);
       tl.to(S, { alpha: .75, duration: 10, ease: 'none' }, 100);
       tl.to(device, {
@@ -994,9 +986,7 @@
       tl.set(zDigit, { textContent: '8' }, 117);
       tl.fromTo(wKicker, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 4, ease: 'aOut' }, 105);
       wordsIn(tl, W5, 106);
-      tl.fromTo(sub5, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 7, ease: 'aOut' }, 109);
       wordsOut(tl, W5, 120);
-      tl.to(sub5, { y: -20, opacity: 0, duration: 5, ease: 'power2.in' }, 120);
 
       // Die Verwandlung
       altFall.forEach(function (el, i) {
@@ -1026,9 +1016,7 @@
       tl.set(wnGrund, { opacity: 1 }, 139.5);
       tl.set(webAlt, { autoAlpha: 0 }, 139.6);
       wordsIn(tl, W6, 127);
-      tl.fromTo(sub6, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 7, ease: 'aOut' }, 130);
       wordsOut(tl, W6, 150);
-      tl.to(sub6, { y: -20, opacity: 0, duration: 5, ease: 'power2.in' }, 150);
 
       // Ein Zeiger fragt eine Offerte an
       tl.fromTo(zeiger, { opacity: 0, x: function () { return L.z0.x; }, y: function () { return L.z0.y; } }, { opacity: 1, duration: 1.5, ease: 'none' }, 151);
@@ -1059,7 +1047,6 @@
       var offen = { v: 4 };
       tl.fromTo(offen, { v: 4 }, { v: 5, duration: 1.6, ease: 'none', onUpdate: function () { fmt(kpiNums[0], offen.v); } }, 180);
       wordsIn(tl, W7, 157);
-      tl.fromTo(sub7, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 7, ease: 'aOut' }, 160);
       tl.fromTo(sBadge, { opacity: 0, scale: .9, filter: 'blur(10px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 6, ease: 'aOut' }, 184);
       tl.to({}, { duration: 8 }, 192);
     }
@@ -1076,19 +1063,19 @@
         gsap.set(p, { x: c.x0 - c.w / 2, y: c.y0 - c.h / 2, rotation: c.r0 });
       });
       gsap.set(badge, { x: L.badge.x, y: L.badge.y });
-      gsap.set([W2, W3, sub2, sub3], { opacity: 0 });
+      gsap.set([W2, W3], { opacity: 0 });
       // Kapitel 2 steht in drei Bildern bereit: alte Seite, neue Seite, App
       gsap.set(altLoad, { opacity: 1 });
       gsap.set(MORPH.map(function (p) { return p.n; }).concat(neuPop, [wnGrund]), { opacity: 1 });
-      gsap.set([W5, W6, W7, sub5, sub6, sub7, wKicker], { opacity: 0 });
+      gsap.set([W5, W6, W7, wKicker], { opacity: 0 });
 
       tl.to(cue, { opacity: 0, duration: 3, ease: 'none' }, 0);
       tl.to([s1, q1('.papers', sec), cv.core, cv.glow], { opacity: 0, duration: 6, ease: 'none' }, 27);
       tl.to(device, { opacity: 1, duration: 6, ease: 'none' }, 30);
-      tl.to([W2, sub2], { opacity: 1, duration: 6, ease: 'none' }, 30);
+      tl.to(W2, { opacity: 1, duration: 6, ease: 'none' }, 30);
       tl.fromTo(badge, { opacity: 0 }, { opacity: 1, duration: 6, ease: 'none' }, 32);
 
-      tl.to([W2, sub2, badge, device], { opacity: 0, duration: 4, ease: 'none' }, 62);
+      tl.to([W2, badge, device], { opacity: 0, duration: 4, ease: 'none' }, 62);
       tl.set(device, {
         x: function () { return L.pose.x; }, y: function () { return L.pose.y; },
         rotationX: function () { return L.pose.rx; }, rotationY: function () { return L.pose.ry; },
@@ -1100,10 +1087,10 @@
       tl.set(links, { strokeDashoffset: 0 }, 66);
       tl.set(S, { links: 1 }, 66);
       tl.to(device, { opacity: 1, duration: 5, ease: 'none' }, 66);
-      tl.to([W3, sub3], { opacity: 1, duration: 5, ease: 'none' }, 67);
+      tl.to(W3, { opacity: 1, duration: 5, ease: 'none' }, 67);
       tl.fromTo([knots, links, callouts], { opacity: 0 }, { opacity: 1, duration: 5, ease: 'none' }, 70);
 
-      tl.to([W3, sub3, knots, links, callouts, device, toast], { opacity: 0, duration: 4, ease: 'none' }, 100);
+      tl.to([W3, knots, links, callouts, device, toast], { opacity: 0, duration: 4, ease: 'none' }, 100);
       tl.set(S, { links: 0 }, 104);
       tl.set(device, {
         x: function () { return L.pose3.x; }, y: function () { return L.pose3.y; },
@@ -1113,20 +1100,20 @@
       tl.set(appEl, { opacity: 0 }, 104);
       tl.set(webAlt, { autoAlpha: 1 }, 104);
       tl.to(device, { opacity: 1, duration: 5, ease: 'none' }, 104);
-      tl.to([wKicker, W5, sub5], { opacity: 1, duration: 5, ease: 'none' }, 105);
-      tl.to([W5, sub5], { opacity: 0, duration: 4, ease: 'none' }, 122);
+      tl.to([wKicker, W5], { opacity: 1, duration: 5, ease: 'none' }, 105);
+      tl.to(W5, { opacity: 0, duration: 4, ease: 'none' }, 122);
       tl.fromTo(webNeu, { autoAlpha: 0 }, { autoAlpha: 1, duration: 6, ease: 'none' }, 123);
       // die alte Seite liegt über der App – weg, sobald die neue deckt
       tl.set(webAlt, { autoAlpha: 0 }, 129.5);
-      tl.to([W6, sub6], { opacity: 1, duration: 5, ease: 'none' }, 126);
-      tl.to([W6, sub6], { opacity: 0, duration: 4, ease: 'none' }, 158);
+      tl.to(W6, { opacity: 1, duration: 5, ease: 'none' }, 126);
+      tl.to(W6, { opacity: 0, duration: 4, ease: 'none' }, 158);
       tl.set(trNeu, { maxHeight: function () { return L.rowH; }, paddingTop: function () { return L.rowPad; }, paddingBottom: function () { return L.rowPad; }, borderTopWidth: 1, opacity: 1 }, 160);
       tl.set(trLast, { maxHeight: 0, paddingTop: 0, paddingBottom: 0, borderTopWidth: 0, opacity: 0 }, 160);
       tl.set([toastWeb, navNeu, sBadge], { opacity: 1 }, 160);
       tl.set(kpiNums[0], { textContent: '5' }, 160);
       tl.to(appEl, { opacity: 1, duration: 6, ease: 'none' }, 160);
       tl.to(webNeu, { autoAlpha: 0, duration: 6, ease: 'none' }, 160);
-      tl.to([W7, sub7], { opacity: 1, duration: 5, ease: 'none' }, 162);
+      tl.to(W7, { opacity: 1, duration: 5, ease: 'none' }, 162);
       tl.to({}, { duration: 33 }, 167);
     }
 
@@ -1169,7 +1156,7 @@
   function gripszug(sec, env) {
     var device = q1('.gz-device', sec), img = q1('.gz-screen img', sec), sky = q1('.gz-sky', sec);
     var rings = qa('.gz-ring', sec), chips = qa('.gz-chip', sec);
-    var kicker = q1('.gz-copy .kicker', sec), Wg = words(q1('.gz-copy h2', sec)), sub = q1('.gz-copy .sub', sec);
+    var kicker = q1('.gz-copy .kicker', sec), Wg = words(q1('.gz-copy h2', sec));
     var areas = qa('.gz-areas li', sec), fills = qa('.gz-areas b', sec), nos = qa('.gz-no li', sec);
     var portrait = env.portrait, reduced = env.reduced;
 
@@ -1191,7 +1178,6 @@
       tl.fromTo(img, { filter: 'grayscale(1) brightness(.55)' }, { filter: 'grayscale(0) brightness(1)', duration: 10, ease: 'power1.inOut' }, 10);
       tl.fromTo(kicker, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 8);
       wordsIn(tl, Wg, 10);
-      if (sub) tl.fromTo(sub, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 6, ease: 'aOut' }, 15);
       rings.forEach(function (r, k) {
         var at = 26 + k * 6.2;
         tl.fromTo(r, { opacity: 0, scale: .55 }, { opacity: 1, scale: 1, duration: 2.4, ease: 'aOut' }, at);
@@ -1205,7 +1191,7 @@
     }
     function buildStill(tl) {
       bgIn(tl, sec);
-      gsap.set([kicker, sub, areas, nos, Wg, chips, device], { opacity: 1 });
+      gsap.set([kicker, areas, nos, Wg, chips, device], { opacity: 1 });
       gsap.set(img, { filter: 'none' });
       gsap.set(fills, { scaleX: 1 });
       tl.fromTo([q1('.gz-copy', sec), device, sky], { opacity: 0 }, { opacity: 1, duration: 8, ease: 'none' }, 4);
@@ -1879,19 +1865,21 @@
     var masse = qa('#b-dims ' + STRICH, svg);
     var haken = [1, 2, 3].map(function (k) { return q1('#b-check-' + k, svg); });
     var WAND_ZU = { y: 640, height: 0 }, WAND_AUF = { y: 294, height: 346 };
-    blasen.forEach(function (b) { gsap.set(b, { svgOrigin: b.getAttribute('data-origin') }); });
-    gsap.set(L.care, { svgOrigin: '916 430' });
-    gsap.set(L['crane-arm'], { svgOrigin: L['crane-arm'].getAttribute('data-pivot') });
+    // Drehpunkt des Auslegers oben am Turm, im Koordinatensystem des Bildes.
+    // Er gehört in jede Drehung selbst – ein vorab gesetzter Drehpunkt ging
+    // verloren, und der Ausleger schwang um die Bildecke.
+    var PIVOT = L['crane-arm'].getAttribute('data-pivot');
 
     function motion(tl) {
       tl.fromTo(svg, { opacity: 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 11, ease: 'aOut', transformOrigin: '60% 70%' }, 3);
       // 1 Erstgespräch
       tl.fromTo(L.people, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 6, ease: 'aOut' }, 8);
+      // die Sprechblasen steigen ruhig von unten auf und gehen später wieder
       blasen.forEach(function (b, k) {
-        tl.fromTo(b, { opacity: 0, scale: .3 }, { opacity: 1, scale: 1, duration: 4, ease: 'back.out(2.2)' }, 15 + k * 4.6);
+        tl.fromTo(b, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 4, ease: 'aOut' }, 15 + k * 4.6);
       });
       // 2 Konzept und Angebot
-      tl.to(blasen, { opacity: 0, scale: .85, duration: 3, ease: 'power2.in', stagger: .5 }, 31);
+      tl.to(blasen, { opacity: 0, y: -10, duration: 3, ease: 'power2.in', stagger: .5 }, 31);
       tl.to(L.people, { opacity: .18, duration: 4, ease: 'none' }, 34);
       tl.fromTo(L.grid, { opacity: 0 }, { opacity: 1, duration: 5, ease: 'none' }, 34);
       tl.fromTo(L.plan, { opacity: 0 }, { opacity: 1, duration: 1, ease: 'none' }, 35.5);
@@ -1909,7 +1897,7 @@
       tl.fromTo(L.foundation, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 4, ease: 'aOut' }, 56);
       tl.fromTo(L.crane, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 57);
       tl.fromTo(wand, { attr: WAND_ZU }, { attr: WAND_AUF, duration: 10, ease: 'power1.inOut' }, 58.5);
-      tl.fromTo(L['crane-arm'], { rotation: -11 }, { rotation: 4, duration: 15, ease: 'power1.inOut' }, 59);
+      tl.fromTo(L['crane-arm'], { rotation: -11, svgOrigin: PIVOT }, { rotation: 4, svgOrigin: PIVOT, duration: 15, ease: 'power1.inOut' }, 59);
       tl.fromTo(L['crane-load'], { y: 0 }, { y: 24, duration: 7, ease: 'power1.inOut' }, 66);
       tl.fromTo(L['crane-cable'], { scaleY: 1 }, { scaleY: 1.6, duration: 7, ease: 'power1.inOut', transformOrigin: '50% 0%' }, 66);
       tl.fromTo(L.scaffold, { opacity: 0 }, { opacity: 1, duration: 4, ease: 'none' }, 61);
@@ -1928,7 +1916,7 @@
       tl.fromTo(L.stars, { opacity: 0 }, { opacity: 1, duration: 6, ease: 'none' }, 85);
       tl.fromTo(lichter, { opacity: 0 }, { opacity: 1, duration: 1.4, ease: 'power3.out', stagger: .85 }, 85);
       tl.fromTo(L['people-end'], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 4, ease: 'aOut' }, 89);
-      tl.fromTo(L.care, { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, duration: 4, ease: 'back.out(2)' }, 92);
+      tl.fromTo(L.care, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 4, ease: 'aOut' }, 92);
     }
     // Weniger Bewegung: dieselben vier Bilder, nur überblendet
     function still(tl) {
@@ -2111,7 +2099,7 @@
   var UEBER_Q = [[.455, .22], [.875, .2], [.44, .41], [.9, .39], [.455, .6], [.895, .58], [.47, .79], [.84, .8]];
   var UEBER_H = [[.26, .6], [.74, .6], [.26, .685], [.74, .685], [.26, .77], [.74, .77], [.26, .855], [.74, .87]];
   function ueber(sec, env) {
-    var stage = q1('.stage', sec), kicker = q1('.um-copy .kicker', sec), Wu = words(q1('.um-copy h2', sec)), sub = q1('.um-copy .sub', sec);
+    var stage = q1('.stage', sec), kicker = q1('.um-copy .kicker', sec), Wu = words(q1('.um-copy h2', sec));
     var foto = q1('.um-foto', sec), liste = q1('.um-karten', sec);
     var portrait = env.portrait, reduced = env.reduced;
     var karten = qa('.um-karte', sec), K = [], W = 0, H = 0, fz = { x: 0, y: 0 };
@@ -2134,13 +2122,12 @@
     }
     /* Zeitleiste:
          0–6    Hintergrund
-         4–16   Überschrift und Text, das Foto
+         4–16   der Name, das Foto
          16–78  acht Karten fliegen herein, eine nach der anderen */
     function buildMotion(tl) {
       bgIn(tl, sec);
       tl.fromTo(kicker, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 4);
       wordsIn(tl, Wu, 5);
-      tl.fromTo(sub, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 7, ease: 'aOut' }, 10);
       tl.fromTo(foto, { opacity: 0, scale: .82, filter: 'blur(8px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 10, ease: 'aOut' }, 6);
       karten.forEach(function (el, k) {
         var at = 18 + k * 7.4, c = function () { return K[k]; };
@@ -2157,7 +2144,7 @@
     }
     function buildStill(tl) {
       bgIn(tl, sec);
-      gsap.set([kicker, Wu, sub, foto], { opacity: 1 });
+      gsap.set([kicker, Wu, foto], { opacity: 1 });
       karten.forEach(function (el, k) { gsap.set(el, { x: K[k].x, y: K[k].y, opacity: 1 }); });
       tl.fromTo([q1('.um-copy', sec), foto, liste], { opacity: 0 }, { opacity: 1, duration: 8, ease: 'none' }, 4);
       tl.to({}, { duration: 88 }, 12);
