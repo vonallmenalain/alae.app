@@ -116,7 +116,7 @@ Worauf es ankommt:
 | Datei | Projekt | Grösse |
 | --- | --- | --- |
 | `Alain.png` | Porträt im Kapitel „Über mich" und im FAQ-Gespräch | 630 × 633 px |
-| `gripszug.webp` | Illustration der fünf Trainingsbereiche, im Tablet des Kapitels Gripszug | 2000 × 1125 px |
+| `gripszug.webp` | Illustration der fünf Trainingsbereiche, im Gerät des Kapitels Gripszug und schon am Schluss von „Neuer Webauftritt" im Tablet (dort erst nach dem Laden der Seite geholt) | 2000 × 1125 px |
 | `og-alae.jpg` | Vorschaubild für Social Media und Messenger | 1200 × 630 px |
 
 Die übrigen Zeichnungen – die Kinder im Fotoverkauf, das Haus im Ablauf, die

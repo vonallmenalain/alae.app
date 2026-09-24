@@ -6,7 +6,7 @@
    Erstgespräch) → Kontakt und FAQ → Aufbau
 
    Jedes Kapitel ist eine Funktion, die eine Zeitleiste von 0 bis 100 baut
-   (Ordnung: bis 200, es trägt die Szenen 1 bis 3 und den neuen
+   (Ordnung: bis 204, es trägt die Szenen 1 bis 3 und den neuen
    Webauftritt) und optional eine tick-Funktion für das, was in jedem Bild
    neu gerechnet wird: Fäden, schwebende Zettel, Karten im Raum.
    ScrollTrigger stellt die Zeitleiste auf den Scrollstand; die gemeinsame
@@ -244,7 +244,9 @@
         });
       }
       schleier.classList.add('is-an');
-      var mein = lauf, gleiten = !ruhig() && l.von < l.y;
+      // Gesprungen wird, sobald der Schleier deckt; der Titel bleibt aber
+      // rund eine Sekunde stehen, damit man ihn in Ruhe lesen kann
+      var mein = lauf, gleiten = !ruhig() && l.von < l.y, an = Date.now(), steht = ruhig() ? 520 : 1000;
       mein.uhr = setTimeout(function () {
         if (lauf !== mein) return;
         hin(gleiten ? l.von : l.y);
@@ -253,9 +255,12 @@
         mein.raf = requestAnimationFrame(function () {
           mein.raf = requestAnimationFrame(function () {
             if (lauf !== mein) return;
-            schleier.classList.remove('is-an');
-            if (gleiten) fahren(l.von, l.y, 1100, aus, fertig);
-            else { lauf = null; fertig(); }
+            mein.uhr = setTimeout(function () {
+              if (lauf !== mein) return;
+              schleier.classList.remove('is-an');
+              if (gleiten) fahren(l.von, l.y, 1100, aus, fertig);
+              else { lauf = null; fertig(); }
+            }, Math.max(0, steht - (Date.now() - an)));
           });
         });
       }, ruhig() ? 240 : 400);
@@ -596,6 +601,15 @@
     var anfrage = q1('.wn-anfrage', sec), zeiger = q1('.wn-zeiger', sec), ctaEl = q1('.wn-cta', sec);
     var sendenEl = q1('.wn-senden', sec), gesendet = q1('.wn-gesendet', sec), tipper = qa('.wn-anfrage [data-tippe]', sec);
     var heroBox = q1('.wn-bild', sec), hero = new Leinwand(q1('.wn-faeden', sec), q1('.wn-faeden-glow', sec));
+    // Das Bild der ersten Referenz für den Schluss von Kapitel 2 – nur mit
+    // Skript nötig, darum erst hier eingesetzt (und erst spät geladen)
+    var nextImg = q1('.screen-next', sec);
+    if (!nextImg) {
+      nextImg = document.createElement('img');
+      nextImg.className = 'screen-next'; nextImg.alt = ''; nextImg.decoding = 'async';
+      nextImg.width = 2000; nextImg.height = 1125;
+      screenEl.insertBefore(nextImg, glare);
+    }
 
     /* Zustand der Fäden, bewegt von der Zeitleiste, gelesen beim Zeichnen:
          sweep  0 → 1  Ordnung wandert von rechts nach links durchs Knäuel
@@ -657,6 +671,12 @@
         var frei = H - textUnten - H * .05 - 22;
         L.pose3 = { x: 0, y: textUnten + 22 + frei / 2 - d.cy, s: Math.max(.62, Math.min(1, frei / d.h)), rx: 5, ry: -6, rz: .5 };
       } else L.pose3 = { x: W * .615 - d.cx, y: H * .555 - d.cy, s: .92, rx: 4, ry: -10, rz: .8 };
+      // Für das nächste Kapitel: So steht das Tablet am Schluss – Mitte,
+      // Breite, Format und Drehung. Dort übernimmt das Gerät von Gripszug.
+      env.uebergabe = {
+        cx: d.cx + L.pose3.x, cy: d.cy + L.pose3.y, w: d.w, a: d.w / d.h,
+        rx: L.pose3.rx, ry: L.pose3.ry, rz: L.pose3.rz, s: L.pose3.s
+      };
       // Verwandlung: wo jedes neue Stück herkommt (alte Lage minus neue,
       // Grössenverhältnis). Gemessen ohne Transformationen, im Bildschirm.
       L.m = MORPH.map(function (p) {
@@ -861,7 +881,7 @@
     }
 
     /* Zeitleiste – Szenen 1 bis 3 von 0 bis 100, der neue Webauftritt
-       von 100 bis 200:
+       von 100 bis 204:
          0–6     Szene 1 steht
          6–32    Ordnung wandert durchs Knäuel, die Zettel reihen sich auf
          21–31   Szene 2 kommt
@@ -871,21 +891,26 @@
          67–84   Szene 3: das Tablet dreht sich
          80–86   eine Zahlung kommt herein
          86–98   vier Hinweise, nacheinander
-       Kapitel 2, Neuer Webauftritt (100 bis 200):
+       Kapitel 2, Neuer Webauftritt (100 bis 204):
          100–114 Hinweise gehen, das Tablet dreht sich nach vorn
          103–114 der Bildschirm lädt die alte Website, Stück für Stück
-         106–120 „Die Website von 2009?"
+         106–120 „Vorher: Webseite von 2009"
          121–140 die Verwandlung: Altes fällt weg, jedes Stück wandert an
                  seinen neuen Platz, die Fäden laufen durchs Bild
-         127–150 „Modern, schnell und lebendig."
+         127–150 „Nachher: Modern, schnell und lebendig."
          151–172 ein Zeiger klickt „Offerte anfragen", die Anfrage wird
                  ausgefüllt und gesendet; „Und daraus wird deine App."
          173–184 die Website wird zur App: die Anfrage steht in den
                  Aufträgen, die Meldung kommt
          184–190 das Signet auf Glas
+         190–198 der Titel geht, das Tablet kommt zur Ruhe, sein Bild wird
+                 zu dem von Gripszug; das Licht darunter erlischt
+         198–204 Halt. Ab dem nächsten Kapitel steht an genau dieser Stelle
+                 das Gerät von Gripszug und wandert weiter (env.uebergabe).
        Wer hier Zahlen ändert, prüft auch TILE_DELAY: Die Zettel landen erst,
        wenn ihr Rahmen steht, die Lage von .anker im CSS (Sprungmarke
-       „Neuer Webauftritt" bei 103 von 200) und LANDUNG.webauftritt. */
+       „Neuer Webauftritt" bei 103 von 204), #software{--len} (4,7 vh je
+       Einheit) und LANDUNG.webauftritt. */
     function buildMotion(tl) {
       var landAt = TILE_DELAY.map(function (dl) { return 34 + 18 * (.55 * dl + .45) - 8; });
 
@@ -1048,7 +1073,15 @@
       tl.fromTo(offen, { v: 4 }, { v: 5, duration: 1.6, ease: 'none', onUpdate: function () { fmt(kpiNums[0], offen.v); } }, 180);
       wordsIn(tl, W7, 157);
       tl.fromTo(sBadge, { opacity: 0, scale: .9, filter: 'blur(10px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 6, ease: 'aOut' }, 184);
-      tl.to({}, { duration: 8 }, 192);
+
+      // Überleitung zu den Referenzen: Titel und Überzeile gehen, das Tablet
+      // hört auf zu schweben, und sein Bild wird zu dem der ersten App
+      wordsOut(tl, W7, 190);
+      tl.to(wKicker, { opacity: 0, y: -8, duration: 4, ease: 'power1.in' }, 190.5);
+      tl.to(S, { tilt: 0, duration: 6, ease: 'power1.inOut' }, 190);
+      tl.fromTo(nextImg, { opacity: 0 }, { opacity: 1, duration: 6, ease: 'power1.inOut' }, 192);
+      tl.to([glowEl, glare], { opacity: 0, duration: 6, ease: 'none' }, 192);
+      tl.to({}, { duration: 6 }, 198);
     }
 
     /* Weniger Bewegung: vier stehende Bilder, die beim Scrollen ineinander
@@ -1114,7 +1147,7 @@
       tl.to(appEl, { opacity: 1, duration: 6, ease: 'none' }, 160);
       tl.to(webNeu, { autoAlpha: 0, duration: 6, ease: 'none' }, 160);
       tl.to(W7, { opacity: 1, duration: 5, ease: 'none' }, 162);
-      tl.to({}, { duration: 33 }, 167);
+      tl.to({}, { duration: 37 }, 167);
     }
 
     measure();
@@ -1124,6 +1157,14 @@
     var tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
     if (reduced) buildStill(tl); else buildMotion(tl);
     if (reduced) draw(0);
+    // Das Bild für den Schluss erst nach dem Rest der Seite laden – oder
+    // sofort, wenn jemand schon in Kapitel 2 ist
+    function laden() {
+      var quelle = q1('.gz-screen img');
+      if (!reduced && quelle && !nextImg.getAttribute('src')) nextImg.setAttribute('src', quelle.getAttribute('src'));
+    }
+    if (document.readyState === 'complete') setTimeout(laden, 1200);
+    else window.addEventListener('load', function () { setTimeout(laden, 1200); });
 
     return {
       tl: tl,
@@ -1136,8 +1177,9 @@
         L.heroFade = hero.fade(0, 0, L.hw * (portrait ? .2 : .66), 0, [[0, .96], [1, 0]]);
       },
       refreshed: function () { if (reduced) draw(0); if (S.links > 0) placeLinks(); },
-      onUpdate: function () {
+      onUpdate: function (p) {
         if (reduced && S.links > 0) placeLinks();
+        if (p > .4) laden();
       },
       cleanup: function () {
         kpiNums.concat([donutNum]).forEach(function (el) { fmt(el, +el.getAttribute('data-count')); });
@@ -1152,30 +1194,61 @@
 
   /* =========================================================================
      KAPITEL GRIPSZUG – Szene 6, erste App
+     Das Gerät ist das Tablet aus den Kapiteln davor. Es beginnt genau dort,
+     wo jenes aufgehört hat (env.uebergabe: Mitte, Breite, Format, Drehung),
+     mit demselben Bild, und wächst von da an seinen Platz im Format 16:9.
+     Ab dem Wechsel blendet das Kapitel davor sein Tablet aus (da).
      ========================================================================= */
+  // Schatten des Tablets in Kapitel 1 und 2 und der von Gripszug – gleich
+  // aufgebaut, damit der eine in den anderen übergehen kann
+  var SCHATTEN_TABLET = 'inset 0px 0px 0px 1px rgba(255,255,255,.1), inset 0px 1.5px 0px rgba(255,255,255,.14), 0px 0px 0px 1px rgba(0,0,0,.7), 0px 60px 90px -40px rgba(0,0,0,.9), -24px 30px 70px -34px rgba(254,121,113,.42)';
+  var SCHATTEN_GZ = 'inset 0px 0px 0px 1px rgba(255,255,255,.1), inset 0px 1.5px 0px rgba(255,255,255,.14), 0px 0px 0px 1px rgba(0,0,0,.7), 0px 60px 90px -40px rgba(0,0,0,.9), 0px 30px 90px -30px rgba(90,170,230,.35)';
   function gripszug(sec, env) {
-    var device = q1('.gz-device', sec), img = q1('.gz-screen img', sec), sky = q1('.gz-sky', sec);
+    var stage = q1('.stage', sec), device = q1('.gz-device', sec), body = q1('.gz-body', sec), sky = q1('.gz-sky', sec);
     var rings = qa('.gz-ring', sec), chips = qa('.gz-chip', sec);
     var kicker = q1('.gz-copy .kicker', sec), Wg = words(q1('.gz-copy h2', sec));
     var areas = qa('.gz-areas li', sec), fills = qa('.gz-areas b', sec), nos = qa('.gz-no li', sec);
+    var link = q1('.app-link', sec);
     var portrait = env.portrait, reduced = env.reduced;
+    var vorher = sec.previousElementSibling;
+    var probe = document.createElement('i');
+    probe.className = 'gz-mass';
+    stage.appendChild(probe);
+
+    // Endbreite und Mitte des Geräts (die Mitte bleibt beim Wachsen stehen)
+    var G = { b: 0, x: 0, y: 0 };
+    function measure() {
+      var W = stage.clientWidth, H = stage.clientHeight;
+      G.b = probe.offsetWidth;
+      G.x = W * (portrait ? .5 : .69);
+      G.y = portrait ? H * .25 + G.b / 3.44 : H * .52;
+    }
+    var U = function () { return env.uebergabe; };
 
     /* Zeitleiste:
          0–6    Hintergrund blendet über das Ende des neuen Webauftritts
-         4–22   das Gerät kommt, das Bild wird farbig
+         0–18   das Tablet wandert an seinen Platz, wird breiter und grösser
          8–22   Titel
          26–58  fünf Wagen, fünf Bereiche – einer nach dem anderen
-         60–72  keine Werbung, kein Abo, keine Käufe */
+         60–72  keine Werbung, kein Abo, keine Käufe, dann der Link zur App */
     function buildMotion(tl) {
       bgIn(tl, sec);
       tl.fromTo(sky, { opacity: 0 }, { opacity: 1, duration: 12, ease: 'none' }, 2);
-      tl.fromTo(device, portrait
-        ? { opacity: 0, y: 120, rotationX: 24, scale: .9, transformPerspective: 1400 }
-        : { opacity: 0, x: 220, rotationY: -30, rotationX: 6, scale: .88, transformPerspective: 1600 },
-      portrait
-        ? { opacity: 1, y: 0, rotationX: 4, scale: 1, duration: 14, ease: 'aOut' }
-        : { opacity: 1, x: 0, rotationY: -8, rotationX: 3, scale: 1, duration: 14, ease: 'aOut' }, 4);
-      tl.fromTo(img, { filter: 'grayscale(1) brightness(.55)' }, { filter: 'grayscale(0) brightness(1)', duration: 10, ease: 'power1.inOut' }, 10);
+      if (U()) {
+        tl.fromTo(device, {
+          '--gw': function () { return U().w + 'px'; }, '--ga': function () { return U().a; },
+          x: function () { return U().cx - G.x; }, y: function () { return U().cy - G.y; },
+          rotationX: function () { return U().rx; }, rotationY: function () { return U().ry; },
+          rotationZ: function () { return U().rz; }, scale: function () { return U().s; }, opacity: 1
+        }, {
+          '--gw': function () { return G.b + 'px'; }, '--ga': 1.72,
+          x: 0, y: 0, rotationX: portrait ? 4 : 3, rotationY: portrait ? 0 : -8, rotationZ: 0, scale: 1, opacity: 1,
+          duration: 18, ease: 'aInOut'
+        }, 0);
+        tl.fromTo(body, { boxShadow: SCHATTEN_TABLET }, { boxShadow: SCHATTEN_GZ, duration: 14, ease: 'none' }, 1);
+      } else {
+        tl.fromTo(device, { opacity: 0, y: 40 }, { opacity: 1, y: 0, rotationX: portrait ? 4 : 3, rotationY: portrait ? 0 : -8, duration: 12, ease: 'aOut' }, 4);
+      }
       tl.fromTo(kicker, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 8);
       wordsIn(tl, Wg, 10);
       rings.forEach(function (r, k) {
@@ -1187,19 +1260,29 @@
         tl.fromTo(fills[k], { scaleX: 0 }, { scaleX: 1, duration: 4, ease: 'aOut' }, at + 1.4);
       });
       tl.fromTo(nos, { opacity: 0, y: 12, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: 4, stagger: 2.2, ease: 'aOut' }, 60);
+      tl.fromTo(link, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 4, ease: 'aOut' }, 67.5);
+      tl.set(link, { pointerEvents: 'auto' }, 68.5);
       tl.to({}, { duration: 22 }, 78);
     }
     function buildStill(tl) {
       bgIn(tl, sec);
-      gsap.set([kicker, areas, nos, Wg, chips, device], { opacity: 1 });
-      gsap.set(img, { filter: 'none' });
+      gsap.set([kicker, areas, nos, Wg, chips, device, link], { opacity: 1 });
+      gsap.set(device, { rotationX: portrait ? 4 : 3, rotationY: portrait ? 0 : -8 });
       gsap.set(fills, { scaleX: 1 });
       tl.fromTo([q1('.gz-copy', sec), device, sky], { opacity: 0 }, { opacity: 1, duration: 8, ease: 'none' }, 4);
+      tl.set(link, { pointerEvents: 'auto' }, 8);
       tl.to({}, { duration: 90 }, 10);
     }
+    measure();
     var tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
     if (reduced) buildStill(tl); else buildMotion(tl);
-    return { tl: tl, tick: null };
+    return {
+      tl: tl, tick: null, measure: measure,
+      // Übernahme: Solange dieses Kapitel zu sehen ist, trägt sein Gerät
+      // das Tablet – das im Kapitel davor wäre sonst doppelt zu sehen
+      da: reduced || !U() ? null : function (on) { if (vorher) vorher.classList.toggle('is-weiter', on); },
+      cleanup: function () { probe.remove(); if (vorher) vorher.classList.remove('is-weiter'); }
+    };
   }
 
 
@@ -1379,8 +1462,11 @@
   function dreamteam(sec, env) {
     var stage = q1('.stage', sec), field = q1('.dt-field', sec), scrim = q1('.dt-scrim', sec), copyEl = q1('.dt-copy', sec);
     var kicker = q1('.dt-copy .kicker', sec), Wd = words(q1('.dt-copy h2', sec)), stepsList = q1('.dt-steps', sec), steps = qa('.dt-steps li', sec);
-    var btn = q1('.dt-btn', sec), rank = q1('.dt-rank', sec), rowsBox = q1('.dt-rows', sec);
+    var btn = q1('.dt-btn', sec), rank = q1('.dt-rank', sec), rowsBox = q1('.dt-rows', sec), link = q1('.app-link', sec);
     var portrait = env.portrait, reduced = env.reduced;
+    // Hoch fehlt unter dem Text der Platz: Der Link steht dort unter der
+    // Rangliste und erscheint mit ihr (die zeigt dafür fünf statt sechs Zeilen)
+    if (link && portrait) { rank.appendChild(link); gsap.set(link, { opacity: 1, pointerEvents: 'auto' }); }
     var NFELD = portrait ? 6 : 8, NPASS = portrait ? 5 : 7;
     var CAM0 = -2600, F = 900;
     var S = { cam: 0, form: 0, dim: 0 };
@@ -1525,7 +1611,7 @@
       if (portrait) {
         var yA = cb.y + cb.h + 8, yB = rk.y - 8;
         var top = P.top - CH * P.s0 * .8, bot = P.bottom + CH * P.s1 * .2;
-        sc = Math.max(.3, Math.min(.62, (yB - yA) / (bot - top)));
+        sc = Math.max(.24, Math.min(.62, (yB - yA) / (bot - top)));
         P.end = { s: sc, x: -(P.cx - W / 2) * sc, y: (yA + yB) / 2 - H / 2 - ((top + bot) / 2 - H / 2) * sc };
       } else {
         sc = .6;
@@ -1633,6 +1719,10 @@
       tl.fromTo(kicker, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 5);
       wordsIn(tl, Wd, 7);
       tl.fromTo(stepsList, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 6, ease: 'aOut' }, 12);
+      if (link && !portrait) {
+        tl.fromTo(link, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 15);
+        tl.set(link, { pointerEvents: 'auto' }, 16);
+      }
       pickOrder.forEach(function (c, k) {
         var at = 30 + k * .9;
         tl.fromTo(c, { pick: 0 }, { pick: 1, duration: 2, ease: 'none' }, at);
@@ -1667,7 +1757,7 @@
       bgIn(tl, sec);
       S.cam = 1; S.form = 1; S.dim = 1;
       cards.forEach(function (c) { if (c.p.cap) c.cap = 1; });
-      gsap.set([kicker, stepsList, Wd, pitch], { opacity: 1 });
+      gsap.set([kicker, stepsList, Wd, pitch, link], { opacity: 1 });
       gsap.set(field, { x: P.end.x, y: P.end.y, scale: P.end.s });
       gsap.set(rank, { autoAlpha: 1 });
       gsap.set(rowEls, { opacity: 1 });
@@ -1677,6 +1767,7 @@
       gsap.set(crown, { opacity: 1 });
       steps.forEach(function (s) { s.classList.add('on'); });
       tl.fromTo([q1('.dt-copy', sec), field, rank], { opacity: 0 }, { opacity: 1, duration: 8, ease: 'none' }, 4);
+      tl.set(link, { pointerEvents: 'auto' }, 8);
       tl.to({}, { duration: 90 }, 10);
     }
 
@@ -1695,7 +1786,10 @@
         steps[1].classList.toggle('on', u >= 44);
         steps[2].classList.toggle('on', u >= 68);
       },
-      cleanup: function () { field.innerHTML = ''; rowsBox.innerHTML = ''; steps.forEach(function (s) { s.classList.remove('on'); }); }
+      cleanup: function () {
+        field.innerHTML = ''; rowsBox.innerHTML = ''; steps.forEach(function (s) { s.classList.remove('on'); });
+        if (link && link.parentNode !== copyEl) copyEl.appendChild(link);
+      }
     };
   }
 
@@ -2371,6 +2465,7 @@
         trigger: sec, start: folgt ? 'top top' : 'top bottom', end: 'bottom top',
         onToggle: function (self) {
           if (folgt) stageEl.classList.toggle('is-da', self.isActive);
+          if (ch.da) ch.da(self.isActive);
           setActive(ch, self.isActive && !!ch.tick);
         }
       });
@@ -2400,7 +2495,7 @@
      aufgebaut). */
   var LANDUNG = {
     software: ['software', 0, 0],
-    webauftritt: ['software', .505, .57],
+    webauftritt: ['software', .495, .559],
     projekte: ['projekte', .065, .22],
     dreamteam: ['dreamteam', .065, .2],
     fotos: ['fotos', .065, .16],
@@ -2419,8 +2514,8 @@
   };
   navi.anfang = function (id) {
     if (id === 'software') return 0;
-    // „Neuer Webauftritt" beginnt in der Mitte des ersten Kapitels
-    if (id === 'webauftritt') return kapitelY('software', .5);
+    // „Neuer Webauftritt" beginnt bei 100 von 204 im ersten Kapitel
+    if (id === 'webauftritt') return kapitelY('software', .49);
     var sec = document.getElementById(id);
     return sec && sec.hasAttribute('data-kapitel') ? kapitelY(id, 0) : null;
   };
