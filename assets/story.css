@@ -305,10 +305,14 @@ img,svg{display:block}
    Skript setzt is-da): Sonst schöbe sie sich durchsichtig von unten über
    das Ende des vorigen Kapitels, mit allem, was darauf schon steht.
    Deckkraft statt visibility, damit Vorleseprogramme die Texte der späteren
-   Kapitel trotzdem finden; Klicks gehen so lange durch sie hindurch. */
+   Kapitel trotzdem finden; Klicks gehen so lange durch sie hindurch.
+   Auch die Sektion selbst nimmt keine Klicks an: Sie liegt eine
+   Bildschirmhöhe lang unsichtbar über dem Ende der vorigen und fing dort
+   sonst die Klicks auf deren Links ab (App öffnen bei Gripszug). Klickbar
+   ist nur die Bühne, sobald sie da ist. */
 .story{position:relative; height:calc(100 * var(--svh) + var(--len, 400) * 1vh)}
 #software{--len:959}
-.js .story + .story{margin-top:calc(-100 * var(--svh))}
+.js .story + .story{margin-top:calc(-100 * var(--svh)); pointer-events:none}
 .js .story + .story .stage-bg{opacity:0}
 .js .story + .story .stage{opacity:0; pointer-events:none}
 .js .story + .story .stage.is-da{opacity:1; pointer-events:auto}

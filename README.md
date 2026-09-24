@@ -87,6 +87,9 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   Hintergrund blendet in den ersten 6 % ein, das alte Bild gleitet darunter
   weg. Bis ein Kapitel oben angekommen ist, bleibt seine Bühne ganz
   unsichtbar (`is-da`), sonst schöbe sie sich durchsichtig über das vorige.
+  Die überlappende Sektion selbst nimmt keine Klicks an (`pointer-events`),
+  nur ihre Bühne, sobald sie da ist – sonst läge sie unsichtbar über den
+  Links am Ende des vorigen Kapitels, etwa „App öffnen" bei Gripszug.
   Kontakt, FAQ und Fusszeile sind danach gewöhnliche Abschnitte.
 - **Ein Tablet über drei Kapitel:** Von 01 bis zu Gripszug ist es für das
   Auge dasselbe Gerät. Am Ende von `ordnung` zeigt es schon das Bild von
