@@ -295,6 +295,13 @@
     // Am Desktop bleibt die Leiste nach dem Klick zu, bis die Maus sie verlässt
     nav.addEventListener('mouseleave', function () { nav.classList.remove('is-zu'); });
 
+    // Sprungmarke von Hand geändert (Adresszeile, Zurück): Der Browser steht
+    // dann schon am Anfang des Abschnitts – von dort an den Landepunkt
+    window.addEventListener('hashchange', function () {
+      var id = decodeURIComponent(location.hash.slice(1));
+      if (ids.indexOf(id) >= 0 || GEHOERT[id] || ALIAS[id]) springen(id);
+    });
+
     // --- Alle Sprünge innerhalb der Seite laufen hier durch
     document.addEventListener('click', function (e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -2406,7 +2413,7 @@
     projekte: ['projekte', .065, .22],
     dreamteam: ['dreamteam', .065, .2],
     fotos: ['fotos', .065, .16],
-    ablauf: ['ablauf', .065, .15],
+    ablauf: ['ablauf', .065, .22],
     preise: ['preise', .065, .25],
     motivation: ['motivation', .065, .2],
     gespraech: ['gespraech', .36, .8]
