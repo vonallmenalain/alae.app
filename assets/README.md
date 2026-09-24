@@ -155,12 +155,15 @@ die Seite beim Laden springt.
 
 ### Nicht mehr eingebunden, bleiben als Reserve liegen
 
-Seit die Kurzfilme da sind, zeigen die Apps keine Screenshots mehr. Die
-Dateien bleiben liegen, falls ein Film einmal ersetzt werden muss.
+Seit die Kurzfilme da sind, zeigen die Apps in `index.html` keine Screenshots
+mehr. Die Dateien bleiben liegen, falls ein Film einmal ersetzt werden muss.
+Eine Ausnahme: `gripszug.webp` (Illustration der fünf Trainingsbereiche,
+2000 × 1125 px) ist wieder im Einsatz, als Bild im Gerät der Story
+(`story.html`, Kapitel Gripszug). Die Leuchtringe und -rahmen dort sind in
+Anteilen dieses Bildes vermessen – wird es ersetzt, sind sie neu zu setzen.
 
 | Datei | Projekt | Grösse |
 | --- | --- | --- |
-| `gripszug.webp` | Gripszug – Illustration der fünf Trainingsbereiche | 2000 × 1125 px |
 | `dt-champions-league.webp` | DreamTeam – Teamansicht im Champions-League-Betrieb | 1401 × 1192 px |
 | `jass-app.png` | Jass App – Startbildschirm mit beiden Betriebsarten | 965 × 375 px |
 | `pvt.png` | Volleyballturnier – Dashboard eines Teams | 1084 × 1246 px |
@@ -204,6 +207,11 @@ Verein stehen so auch in der öffentlich erreichbaren App unter `pvt.alae.app`.
 
 **Wird ein Film ersetzt, ist das erneut zu prüfen.** Ein Mitschnitt aus dem
 laufenden Betrieb einer geschützten App gehört nicht auf die Landingpage.
+
+**Die Story (`story.html`) hält es genauso.** DreamTeam zeigt dort erfundene
+Spieler, Klubs, Wappen und Manager, gezeichnet vom Skript – keine echten
+Spielerfotos oder Klubwappen, wie sie `dt-champions-league.webp` enthält. Im
+Fotoverkauf sind die Kinder gezeichnet, Adresse und Code erfunden.
 
 ### Die nicht mehr eingebundenen Screenshots
 
@@ -251,6 +259,9 @@ Sicherheitsrichtlinie in `netlify.toml` es ohne Änderung zu.
 | `vendor/CustomEase.min.js` | CustomEase 3.15.0: dieselben Kurven wie im CSS | 7 KB (4 KB) |
 | `fonts/caveat-600.woff2` | Caveat SemiBold, Handschrift der Zettel | 17 KB |
 | `fonts/OFL-Caveat.txt` | Lizenz der Schrift (SIL Open Font License) | – |
+
+Dazu der eigene Code der Story: `story.css` (73 KB, komprimiert 20 KB) und
+`story.js` (86 KB, komprimiert 25 KB).
 
 **GSAP** ist seit 2025 samt allen Plugins kostenlos, auch für kommerzielle
 Seiten. Die Bedingungen stehen unter <https://gsap.com/standard-license>, der
