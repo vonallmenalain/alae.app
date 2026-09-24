@@ -90,9 +90,10 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   Websites, Preisschild, Kiste und Karten sind HTML und SVG, die Fäden ein
   Canvas. Das bleibt auf jedem Bildschirm scharf, der Text ist echt, und jedes
   Teil kann sich einzeln bewegen. Bilder sind nur die Illustration von
-  Gripszug (aus der App), das Porträt und die Zeichnungen: die Kinder im
-  Fotoverkauf, das Haus im Ablauf, die Symbole und die Schweizer Karte unter
-  „Über mich" – alle als SVG im HTML. Die KI-Bilder in `Bildvorlagen/` sind
+  Gripszug (aus der App), die Spielerfotos und Klubwappen bei DreamTeam, das
+  Porträt und die Zeichnungen: die Kinder im Fotoverkauf, das Haus im
+  Ablauf, die Symbole und die Schweizer Karte unter „Über mich" – die
+  Zeichnungen alle als SVG im HTML. Die KI-Bilder in `Bildvorlagen/` sind
   Stilvorgabe, nicht Inhalt.
 - **Die zwei Websites im Tablet** haben feste Stücke, die einander
   entsprechen (`data-m`: Logo, Navigation, Titel, Bild, Text, Knopf, Leistungen,
@@ -107,12 +108,17 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   im Skript). Die Karten werden auf einem Canvas gezeichnet – vorab als Bilder
   in zwei Auflösungen, pro Bild nur noch nach Tiefe sortiert und
   hingestellt. Das ruckelt und flackert auch am Handy nicht, und keine Karte
-  wird am Rand abgeschnitten. Spielerfotos und Klubwappen stehen bewusst nicht
-  auf der Seite: Statt Fotos zeichnet das Skript eine Silhouette, statt Wappen
-  ein Kürzel in den Klubfarben. Sollen doch Bilder hinein, gehören sie als
-  WebP nach `assets/dt/spieler/<Nummer>.webp` und `assets/dt/klubs/<Nummer>.webp`
-  (Nummern wie in der App) und die Nummern in `DT_BILDER` – vorher ist zu
-  klären, ob die Rechte für eine Werbeseite reichen.
+  wird am Rand abgeschnitten. Fotos und Wappen kommen von
+  `media.api-sports.io`, wie in der App, liegen aber als WebP auf alae.app
+  selbst (`assets/dt/`, Einzelheiten in `assets/README.md`) – so braucht es
+  keine Änderung an der Sicherheitsrichtlinie, und der Browser fragt keinen
+  fremden Server an. Welche vorliegen, steht in `DT_BILDER`; fehlt eines,
+  zeichnet die Karte eine Silhouette und ein Kürzel in den Klubfarben.
+  **Zu den Rechten:** api-sports liefert Logos und Bilder nach eigener Angabe
+  nur zur Identifikation und hat selbst keine Rechte daran; sie liegen bei
+  Klubs, Ligen und Fotografen. Die Bilder stehen bewusst trotzdem auf der
+  Seite. Kommt eine Beanstandung, genügt es, `DT_BILDER` zu leeren – dann
+  zeigen alle Karten wieder Silhouetten und Kürzel.
 - **Der Fotoverkauf zeigt überall dasselbe gezeichnete Kind** – als Porträt,
   ganz, beim Spielen weiter weg, auf dem Klassen- und dem Gruppenfoto. Adresse
   und Code sind erfunden (`eltern@example.ch`), wie im Kurzfilm der App.
@@ -179,9 +185,9 @@ Stellschrauben:
 - [ ] **Texte gegenlesen** – alle acht Kapitel, besonders die neuen: Neuer
       Webauftritt, die vier Schritte, Preis, die Stationen unter „Über mich"
       und die Antworten im FAQ-Gespräch
-- [ ] **DreamTeam** – die Seite nennt echte Spieler und Klubs, zeigt aber keine
-      Fotos und Wappen (siehe „Die Scroll-Geschichte"). Sollen Bilder hinein,
-      vorher die Rechte klären
+- [ ] **DreamTeam-Bilder** – die Karten zeigen echte Spielerfotos und
+      Klubwappen von api-sports (siehe „Die Scroll-Geschichte"). Bei der
+      rechtlichen Prüfung mit abklären
 - [x] **Impressum und Datenschutzerklärung** – als `impressum.html` und
       `datenschutz.html` angelegt, in der Fusszeile verlinkt
 - [x] **Angaben in den Rechtsseiten** – Name, E-Mail und Website. Adresse,

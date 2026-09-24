@@ -180,6 +180,21 @@ neu zu setzen.
 | `share.png` | Familien-Sharing – Fotobereich mit Bereiche-Menü | 1317 × 1136 px |
 | `buchhaltung.png` | Management Einzelfirma – Buchungserfassung und Journal | 1547 × 994 px |
 
+### `dt/` – Spielerfotos und Klubwappen für DreamTeam
+
+| Ordner | Inhalt | Grösse |
+| --- | --- | --- |
+| `dt/spieler/<Nummer>.webp` | 26 Spielerfotos, 150 × 150 px, weisser Grund | je 3 bis 4 KB |
+| `dt/klubs/<Nummer>.webp` | 11 Klubwappen, höchstens 150 × 150 px, durchsichtig | je 4 bis 10 KB |
+
+Zusammen rund 160 KB. Die Nummern sind die von api-football, dieselben wie in
+der App (`DT_TEAM`, `DT_ANDERE` und `DT_KLUB` im Skript). Quelle ist
+`https://media.api-sports.io/football/players/<Nummer>.png` beziehungsweise
+`…/teams/<Nummer>.png`; die PNG sind unverändert gross als WebP gespeichert
+(Qualität 86). Das Skript lädt nur, was in `DT_BILDER` steht – **kommt ein
+Spieler oder Klub dazu, gehört seine Nummer dorthin**, sonst zeigt seine Karte
+die Silhouette. Zu den Rechten siehe README, „Die Scroll-Geschichte".
+
 ## Bilder klein halten
 
 Screenshots werden als PNG schnell unnötig gross. Zwei Stufen:
@@ -219,10 +234,8 @@ laufenden Betrieb einer geschützten App gehört nicht auf die Landingpage.
 
 **Die Startseite hält es genauso.** Im Fotoverkauf ist das Kind gezeichnet –
 auf allen sechs Fotos dasselbe –, Adresse und Code sind erfunden. DreamTeam
-nennt echte Spieler und Klubs, wie die App selbst, zeigt aber keine
-Spielerfotos oder Klubwappen, wie sie `dt-champions-league.webp` enthält:
-Statt Fotos zeichnet das Skript Silhouetten, statt Wappen Kürzel in den
-Klubfarben. Die Manager der Rangliste sind erfunden.
+zeigt echte Spieler und Klubs mit Foto und Wappen, wie die App selbst
+(`dt/`, siehe unten). Die Manager der Rangliste sind erfunden.
 
 ### Die nicht mehr eingebundenen Screenshots
 
