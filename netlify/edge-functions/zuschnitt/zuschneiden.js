@@ -11,7 +11,9 @@
  *                 werden die gewählten, in der gewählten Reihenfolge; ihre
  *                 Nummer („Referenzapp 2") steht zwischen <!--nr--> und
  *                 <!--/nr-->. Der Eintrag „Referenzprojekte" in der
- *                 Kapitel-Leiste (data-referenzen) führt zur ersten.
+ *                 Kapitel-Leiste (data-referenzen) führt zur ersten, und
+ *                 darunter stehen dieselben Apps in derselben Reihenfolge
+ *                 (<!--leiste:schluessel--> … <!--/leiste-->).
  *                 Kennt die Seite keine der gewählten, bleibt alles, wie es
  *                 ist.
  *   Zielgruppe    Die Texte aus zielgruppen.js ersetzen die markierten
@@ -25,6 +27,7 @@
 import { ZIELGRUPPEN } from './zielgruppen.js';
 
 const BLOCK = /<!--referenz:([\w-]+)-->[\s\S]*?<!--\/referenz-->/g;
+const EINTRAG = /<!--leiste:([\w-]+)-->[\s\S]*?<!--\/leiste-->/g;
 const TEXT = /<!--zg:([\w-]+)-->[\s\S]*?<!--\/zg-->/g;
 const GETIPPT = /data-tippe="[^"]*"(\s+data-zg-tippe="([\w-]+)")/g;
 
@@ -48,9 +51,24 @@ function referenzenZuschneiden(html, referenzen) {
     .join('\n\n');
   const zugeschnitten = html.slice(0, erster) + neu + html.slice(letzter);
 
-  // „Referenzprojekte" in der Leiste führt zur ersten gezeigten App
+  // „Referenzprojekte" in der Leiste führt zur ersten gezeigten App, und
+  // darunter stehen genau die gezeigten
   const id = /<section[^>]*\sid="([\w-]+)"/.exec(gewaehlt[0].text)?.[1];
-  return id ? zugeschnitten.replace(/href="#[\w-]+"(\s+data-referenzen)/g, `href="#${id}"$1`) : zugeschnitten;
+  const leiste = leisteZuschneiden(zugeschnitten, gewaehlt.map((b) => b.schluessel));
+  return id ? leiste.replace(/href="#[\w-]+"(\s+data-referenzen)/g, `href="#${id}"$1`) : leiste;
+}
+
+/** Die Einträge der Referenzapps unter „Referenzprojekte", in dieser Reihenfolge. */
+function leisteZuschneiden(html, schluessel) {
+  const eintraege = [...html.matchAll(EINTRAG)];
+  if (eintraege.length === 0) return html;
+  const nach = new Map(eintraege.map((m) => [m[1], m[0]]));
+  const erster = eintraege[0].index;
+  const letzter = eintraege[eintraege.length - 1].index + eintraege[eintraege.length - 1][0].length;
+  // Der Zeilenumbruch samt Einzug, wie er in index.html zwischen zwei Einträgen steht
+  const zwischen = eintraege.length > 1 ? html.slice(erster + eintraege[0][0].length, eintraege[1].index) : '\n';
+  const neu = schluessel.filter((s) => nach.has(s)).map((s) => nach.get(s)).join(zwischen);
+  return html.slice(0, erster) + neu + html.slice(letzter);
 }
 
 function zielgruppeEinsetzen(html, zielgruppe) {

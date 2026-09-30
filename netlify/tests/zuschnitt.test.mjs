@@ -17,6 +17,8 @@ import { ZIELGRUPPEN } from '../edge-functions/zuschnitt/zielgruppen.js';
 const HTML = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
 
 const sektionen = (html) => [...html.matchAll(/<section class="story" id="([\w-]+)"/g)].map((m) => m[1]);
+const leiste = (html) => [...html.matchAll(/<!--leiste:([\w-]+)--><li><a href="#([\w-]+)"/g)].map((m) => [m[1], m[2]]);
+const ohneLeiste = (html) => html.replace(/\s*<!--leiste:[\w-]+-->[\s\S]*?<!--\/leiste-->/g, '');
 const nummern = (html) => [...html.matchAll(/Referenzapp <!--nr-->(\d+)<!--\/nr-->: (\w+)/g)].map((m) => `${m[1]} ${m[2]}`);
 const texte = (html) => {
   const gefunden = new Map();
@@ -37,12 +39,25 @@ test('Ohne brauchbare Angaben bleibt die Seite, wie sie ist', () => {
 
 test('Die fünf Referenzapps stehen als Blöcke in index.html, je mit einem Kapitel', () => {
   const bloecke = referenzBloecke(HTML);
-  assert.deepEqual(bloecke.map((b) => b.schluessel), ['gripszug', 'dreamteam', 'fotoverkauf', 'volleyball', 'buchhaltung']);
+  assert.deepEqual(bloecke.map((b) => b.schluessel), ['volleyball', 'buchhaltung', 'fotoverkauf', 'gripszug', 'dreamteam']);
   for (const b of bloecke) {
     assert.equal((b.text.match(/<section\b/g) || []).length, 1, b.schluessel);
     assert.match(b.text, new RegExp(`data-referenz="${b.schluessel}"`));
   }
-  assert.deepEqual(nummern(HTML), ['1 Gripszug', '2 DreamTeam', '3 Fotoverkauf', '4 Volleyballturnier', '5 Buchhaltung']);
+  assert.deepEqual(nummern(HTML), ['1 Volleyballturnier', '2 Buchhaltung', '3 Fotoverkauf', '4 Gripszug', '5 DreamTeam']);
+  // „Referenzprojekte" führt ohne Skript zur ersten
+  assert.match(HTML, /<a href="#volleyball" data-referenzen>/);
+});
+
+test('Unter „Referenzprojekte" steht jede Referenzapp, und ihr Eintrag führt in ihr Kapitel', () => {
+  const bloecke = referenzBloecke(HTML);
+  assert.deepEqual(leiste(HTML).map(([schluessel]) => schluessel), bloecke.map((b) => b.schluessel));
+  for (const [schluessel, ziel] of leiste(HTML)) {
+    const block = bloecke.find((b) => b.schluessel === schluessel).text;
+    assert.match(block, new RegExp(`id="${ziel}"`), `${schluessel} führt nach #${ziel}, ausserhalb seines Kapitels`);
+  }
+  // Gripszug über seinen Anker: „#projekte" heisst „Referenzprojekte"
+  assert.deepEqual(leiste(HTML).find(([s]) => s === 'gripszug'), ['gripszug', 'app-gripszug']);
 });
 
 test('Ein Link zeigt genau seine Referenzapps, in seiner Reihenfolge', () => {
@@ -50,11 +65,12 @@ test('Ein Link zeigt genau seine Referenzapps, in seiner Reihenfolge', () => {
   assert.deepEqual(sektionen(html), ['software', 'fotos', 'projekte', 'ablauf', 'preise', 'motivation', 'gespraech']);
   assert.deepEqual(nummern(html), ['1 Fotoverkauf', '2 Gripszug']);
   assert.equal(html.includes('id="dreamteam"'), false);
-  // „Referenzprojekte" in der Leiste führt zur ersten
+  // „Referenzprojekte" in der Leiste führt zur ersten, darunter stehen genau diese
   assert.match(html, /<a href="#fotos" data-referenzen>/);
+  assert.deepEqual(leiste(html), [['fotoverkauf', 'fotos'], ['gripszug', 'app-gripszug']]);
   // Der Rest der Seite bleibt, wie er ist
-  const ohne = (h) => h.slice(0, referenzBloecke(h)[0].anfang);
-  assert.equal(ohne(html).replace('href="#fotos" data-referenzen', 'href="#projekte" data-referenzen'), ohne(HTML));
+  const ohne = (h) => ohneLeiste(h.slice(0, referenzBloecke(h)[0].anfang));
+  assert.equal(ohne(html).replace('href="#fotos" data-referenzen', 'href="#volleyball" data-referenzen'), ohne(HTML));
   assert.equal(html.slice(html.lastIndexOf('<!--/referenz-->')), HTML.slice(HTML.lastIndexOf('<!--/referenz-->')));
 });
 
@@ -108,6 +124,7 @@ test('Das Volleyballturnier lässt sich wählen wie die anderen, auch als erstes
   assert.deepEqual(sektionen(html), ['software', 'volleyball', 'dreamteam', 'ablauf', 'preise', 'motivation', 'gespraech']);
   assert.deepEqual(nummern(html), ['1 Volleyballturnier', '2 DreamTeam']);
   assert.match(html, /<a href="#volleyball" data-referenzen>/);
+  assert.deepEqual(leiste(html).map(([schluessel]) => schluessel), ['volleyball', 'dreamteam']);
   // Der Anker der früheren Karte kommt mit seinem Kapitel
   assert.equal((html.match(/id="app-volleyball"/g) || []).length, 1);
   assert.equal(html.includes('id="projekte"'), false);

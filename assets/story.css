@@ -212,6 +212,18 @@ img,svg{display:block}
 .kapitel.is-offen .kp-liste li:nth-child(6){transition-delay:.125s}
 .kapitel.is-offen .kp-liste li:nth-child(7){transition-delay:.15s}
 .kapitel.is-offen .kp-liste li:nth-child(8){transition-delay:.175s}
+/* Die Referenzapps unter „Referenzprojekte": eingerückt, ohne Nummer, der
+   Strich unter der Nummer des Kapitels */
+.kp-unter{margin:-.2rem 0 .3rem; padding:0; list-style:none}
+.kp-liste .kp-unter a{min-height:2.3rem; gap:.65rem; padding-left:calc(.85rem + 1rem + .8rem)}
+.kp-liste .kp-unter .kp-strich{width:.5rem}
+.kp-unter .kp-titel{font-size:.9rem; font-weight:560; color:rgba(236,237,242,.7)}
+.kp-liste .kp-unter a.is-jetzt{background:rgba(254,121,113,.06)}
+.kp-liste .kp-unter a.is-jetzt .kp-strich{width:.9rem}
+.kp-unter a.is-jetzt .kp-titel{color:var(--ink)}
+.kapitel.is-offen .kp-liste .kp-unter li:nth-child(n){transition-delay:.06s}
+/* Mit den Referenzapps wird die Liste lang: am kleinen Handy scrollt sie */
+.kp-panel{max-height:calc(100 * var(--svh) - var(--kp-top, 4.2rem) - 1rem); overflow-y:auto; overscroll-behavior:contain}
 /* Ohne Skript gibt es am Handy nichts aufzuklappen */
 .kapitel:not(.is-bereit) .kp-panel{display:none}
 
@@ -219,7 +231,7 @@ img,svg{display:block}
   .kapitel.is-bereit .kp-knopf, .kp-dunkel{display:none}
   .kapitel:not(.is-bereit) .kp-panel{display:block}
   .kp-panel{
-    left:0; top:50%; width:auto; padding:1rem 1.5rem 1rem 1.15rem; border:0; border-radius:0; background:none; box-shadow:none;
+    left:0; top:50%; width:auto; max-height:none; overflow:visible; padding:1rem 1.5rem 1rem 1.15rem; border:0; border-radius:0; background:none; box-shadow:none;
     -webkit-backdrop-filter:none; backdrop-filter:none;
     opacity:1; visibility:visible; transform:none; translate:0 -50%; transition:none; pointer-events:none;
   }
@@ -264,6 +276,19 @@ img,svg{display:block}
   .kp-liste a:hover .kp-strich{background:rgba(236,237,242,.75)}
   .kp-liste a.is-jetzt:hover .kp-strich{background:rgba(254,121,113,.45)}
   .kp-liste a:focus-visible{outline-offset:1px}
+  /* Die Referenzapps auch geschlossen, als feinere Striche: So springt die
+     Leiste beim Öffnen nicht, und man sieht, in welcher App man ist */
+  .kp-unter{margin:0 0 .1rem}
+  .kp-liste .kp-unter a{min-height:1.3rem; gap:.55rem; padding:0 .5rem 0 0}
+  .kp-liste .kp-unter a.is-jetzt{background:none}
+  .kp-liste .kp-unter .kp-strich{width:.42rem; height:1.5px; margin-left:.43rem; margin-right:.5rem; background:rgba(236,237,242,.2); transition:width .4s var(--ease-out), margin .4s var(--ease-out), background .25s ease}
+  .kp-liste .kp-unter a.is-jetzt .kp-strich{width:.85rem; margin-left:0; background:rgba(254,121,113,.38); box-shadow:0 0 8px rgba(254,121,113,.4)}
+  .kp-unter .kp-titel{font-size:.82rem; font-weight:520; color:rgba(236,237,242,.62)}
+  .kapitel:is(:hover, :focus-within):not(.is-zu) .kp-liste .kp-unter .kp-strich{width:.42rem; margin-left:2.05rem; margin-right:.15rem}
+  .kapitel:is(:hover, :focus-within):not(.is-zu) .kp-liste .kp-unter a.is-jetzt .kp-strich{width:.7rem; margin-left:1.9rem; margin-right:.02rem}
+  .kapitel:is(:hover, :focus-within):not(.is-zu) .kp-unter li :is(.kp-nr, .kp-titel){transition-delay:.13s}
+  .kp-unter a.is-jetzt .kp-titel{color:#fff}
+  .kp-liste .kp-unter a:hover .kp-strich{background:rgba(236,237,242,.6)}
   /* nach dem Klick sofort zu, ohne das verzögerte Zuklappen */
   .kapitel.is-zu :is(.kp-panel::before, .kp-kopf, .kp-nr, .kp-titel){transition-delay:0s; transition-duration:.15s}
 }
@@ -305,6 +330,10 @@ img,svg{display:block}
 
    --len ist der Scrollweg in vh. Mehr heisst langsamer, nicht länger zu
    sehen: Die Zeitleiste ist immer dieselbe, sie wird nur gestreckt.
+   --tempo teilt die Scrollwege aller Kapitel: 2 heisst doppelt so schnell
+   wie mit --len allein. So bleiben die Kapitel im gleichen Verhältnis
+   zueinander, und das Tempo lässt sich an einer Stelle einstellen, auch
+   nur für ein Format (etwa @media (pointer: coarse) fürs Handy).
 
    Überblendung: Jedes Kapitel ab dem zweiten rückt eine Bildschirmhöhe
    nach oben und liegt damit über dem Ende des vorigen. Sein Hintergrund
@@ -320,7 +349,8 @@ img,svg{display:block}
    Bildschirmhöhe lang unsichtbar über dem Ende der vorigen und fing dort
    sonst die Klicks auf deren Links ab (App öffnen bei Gripszug). Klickbar
    ist nur die Bühne, sobald sie da ist. */
-.story{position:relative; height:calc(100 * var(--svh) + var(--len, 400) * 1vh)}
+:root{--tempo:2}
+.story{position:relative; height:calc(100 * var(--svh) + var(--len, 400) / var(--tempo) * 1vh)}
 #software{--len:959}
 .js .story + .story{margin-top:calc(-100 * var(--svh)); pointer-events:none}
 .js .story + .story .stage-bg{opacity:0}

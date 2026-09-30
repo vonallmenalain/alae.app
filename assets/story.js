@@ -121,6 +121,8 @@
      des Ziels – dahinter springt die Seite, die Zeitleisten rasten ein, und
      die letzte Strecke gleitet sie ins Kapitel hinein. So ist man schnell
      dort und sieht trotzdem, wie das Kapitel beginnt.
+     Unter „Referenzprojekte" steht jede gezeigte Referenzapp als eigener
+     Eintrag; die, in der man gerade ist, ist hervorgehoben.
      Wer die Seite mit Sprungmarke öffnet, steht gleich am Ziel
      (navi.ankommen).
      Läuft auch ohne GSAP. Die Story trägt dann die genaueren Landepunkte
@@ -130,7 +132,9 @@
   (function kapitelNavigation() {
     var nav = document.getElementById('kapitel');
     if (!nav) return;
-    var knopf = q1('.kp-knopf', nav), links = qa('.kp-liste a', nav), bar = q1('.bar');
+    var knopf = q1('.kp-knopf', nav), links = qa('.kp-liste > li > a', nav), bar = q1('.bar');
+    // Die Referenzapps einzeln, unter „Referenzprojekte"
+    var unter = qa('.kp-unter a', nav);
     var ring = q1('.kp-ring-fort', nav), dunkel = q1('.kp-dunkel', nav);
     var schleier = q1('.kp-schleier'), sNr = q1('.kp-schleier-nr'), sTitel = q1('.kp-schleier-titel');
     // Welche Referenzapps die Seite zeigt und in welcher Reihenfolge, kann ein
@@ -154,6 +158,8 @@
     if (ersteReferenz !== 'projekte') ALIAS.projekte = ersteReferenz;
     ['dreamteam', 'fotos', 'volleyball', 'buchhaltung'].forEach(function (id) { if (!document.getElementById(id)) ALIAS[id] = ersteReferenz; });
     Object.keys(ALIAS).forEach(function (a) { if (!document.getElementById(ALIAS[a])) ALIAS[a] = ersteReferenz; });
+    // Wohin die Einträge der Referenzapps führen: Gripszug über #app-gripszug
+    var unterIds = unter.map(function (a) { var id = a.getAttribute('href').slice(1); return ALIAS[id] || id; });
     var ruhig = function () { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
     var oben = function (el) { return el.getBoundingClientRect().top + window.pageYOffset; };
     var hoehe = function () { return window.innerHeight; };
@@ -181,12 +187,12 @@
     }
 
     // --- aktueller Eintrag, Füllung des Strichs, Ring am Pfeil
-    var aktiv = -1, bitteAn = false, starts = [], schluessel = '';
+    var aktiv = -1, unterAktiv = -1, bitteAn = false, starts = [], unterStarts = [], schluessel = '';
     function zeigen() {
       bitteAn = false;
       var y = window.pageYOffset, m = maxY();
       var key = m + '|' + window.innerWidth + '|' + hoehe() + '|' + (navi.anfang ? 1 : 0);
-      if (key !== schluessel) { schluessel = key; starts = ids.map(anfang); }
+      if (key !== schluessel) { schluessel = key; starts = ids.map(anfang); unterStarts = unterIds.map(anfang); }
       var k = 0;
       for (var i = 1; i < starts.length; i++) if (y >= starts[i] - 2) k = i;
       var ende = k + 1 < starts.length ? starts[k + 1] : m;
@@ -199,6 +205,20 @@
         aktiv = k;
       }
       links[k].style.setProperty('--p', p.toFixed(3));
+      // In den Referenzprojekten auch die App, in der man gerade ist
+      var j = -1;
+      if (ids[k] === ersteReferenz) for (var u = 0; u < unterStarts.length; u++) if (y >= unterStarts[u] - 2) j = u;
+      if (j !== unterAktiv) {
+        unter.forEach(function (a, i) {
+          a.classList.toggle('is-jetzt', i === j);
+          if (i === j) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+        });
+        unterAktiv = j;
+      }
+      if (j >= 0) {
+        var bis = j + 1 < unterStarts.length ? unterStarts[j + 1] : ende;
+        unter[j].style.setProperty('--p', (bis > unterStarts[j] ? Math.min(1, Math.max(0, (y - unterStarts[j]) / (bis - unterStarts[j]))) : 1).toFixed(3));
+      }
       if (ring) ring.style.strokeDashoffset = (1 - (m > 0 ? y / m : 0)).toFixed(4);
     }
     function bitte() { if (!bitteAn) { bitteAn = true; requestAnimationFrame(zeigen); } }
@@ -229,13 +249,16 @@
     }
     function springen(id, opt) {
       opt = opt || {};
+      var marke = id;
       id = ALIAS[id] || id;
       var l = landung(id);
       if (!l) return false;
       abbrechen();
       var el = document.getElementById(id), y0 = window.pageYOffset, weit = Math.abs(l.y - y0);
       var fertig = function () {
-        if (history.replaceState) history.replaceState(null, '', '#' + id);
+        // Ein Anker einer App bleibt in der Adresse: „#projekte" hiesse beim
+        // nächsten Laden „Referenzprojekte", nicht Gripszug
+        if (history.replaceState) history.replaceState(null, '', '#' + (/^app-/.test(marke) ? marke : id));
         if (opt.fokus && el) {
           if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
           try { el.focus({ preventScroll: true }); } catch (e) { /* alte Browser */ }
@@ -253,7 +276,8 @@
         sNr.textContent = String(k + 1).padStart(2, '0');
         // Wörter mit Bindestrich nicht am Bindestrich umbrechen (Web-App)
         sTitel.textContent = '';
-        q1('.kp-titel', links[k]).textContent.split(' ').forEach(function (w, i) {
+        // Aus einem Eintrag einer Referenzapp: deren Name statt „Referenzprojekte"
+        (opt.titel || q1('.kp-titel', links[k]).textContent).split(' ').forEach(function (w, i) {
           if (i) sTitel.appendChild(document.createTextNode(' '));
           if (w.indexOf('-') < 0) { sTitel.appendChild(document.createTextNode(w)); return; }
           var nb = document.createElement('span'); nb.className = 'kp-nb'; nb.textContent = w; sTitel.appendChild(nb);
@@ -377,7 +401,8 @@
       if (ids.indexOf(id) < 0 && !GEHOERT[id] && !ALIAS[id]) return;
       e.preventDefault();
       if (nav.contains(a)) { schliessen(); nav.classList.add('is-zu'); a.blur(); }
-      springen(id, { fokus: true });
+      var app = a.closest('.kp-unter') && q1('.kp-titel', a);
+      springen(id, { fokus: true, titel: app ? app.textContent : undefined });
     });
   })();
 
@@ -975,7 +1000,7 @@
        Wer hier Zahlen ändert, prüft auch TILE_DELAY: Die Zettel landen erst,
        wenn ihr Rahmen steht, die Lage von .anker im CSS (Sprungmarke
        „Neuer Webauftritt" bei 103 von 204), #software{--len} (4,7 vh je
-       Einheit) und LANDUNG.webauftritt. */
+       Einheit, geteilt durch --tempo) und LANDUNG.webauftritt. */
     function buildMotion(tl) {
       var landAt = TILE_DELAY.map(function (dl) { return 34 + 18 * (.55 * dl + .45) - 8; });
 
