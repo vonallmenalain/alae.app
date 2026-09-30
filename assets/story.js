@@ -121,10 +121,12 @@
      des Ziels – dahinter springt die Seite, die Zeitleisten rasten ein, und
      die letzte Strecke gleitet sie ins Kapitel hinein. So ist man schnell
      dort und sieht trotzdem, wie das Kapitel beginnt.
+     Wer die Seite mit Sprungmarke öffnet, steht gleich am Ziel
+     (navi.ankommen).
      Läuft auch ohne GSAP. Die Story trägt dann die genaueren Landepunkte
      (navi.landung), den Beginn jedes Eintrags (navi.anfang) und das
      Einrasten der Zeitleisten (navi.einrasten) nicht bei. */
-  var navi = { landung: null, anfang: null, einrasten: null, springen: null };
+  var navi = { landung: null, anfang: null, einrasten: null, springen: null, ankommen: null };
   (function kapitelNavigation() {
     var nav = document.getElementById('kapitel');
     if (!nav) return;
@@ -281,14 +283,59 @@
       return true;
     }
     navi.springen = springen;
-    // Wer selbst scrollt, übernimmt – die Fahrt hört sofort auf
-    ['wheel', 'touchstart', 'keydown'].forEach(function (typ) {
+    // Wer selbst scrollt, übernimmt – die Fahrt hört sofort auf, und auch
+    // die Ankunft (unten) rückt dann nicht mehr nach
+    var selbst = false;
+    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (typ) {
       window.addEventListener(typ, function (e) {
-        if (!lauf) return;
         if (typ === 'keydown' && !/^(Arrow|Page|Home|End| $)/.test(e.key)) return;
-        abbrechen();
+        selbst = true;
+        if (lauf && typ !== 'pointerdown') abbrechen();
       }, { passive: true });
     });
+
+    // --- Ankunft mit Sprungmarke (etwa ein Link mit Code auf #projekte)
+    // Der Kopf der Seite hat is-anflug gesetzt, der Schleier deckt ab dem
+    // ersten Bild. Gesprungen wird, sobald die Story steht, nicht erst bei
+    // „load": Das wartet auf jedes Bild, und so lange stand vorher der
+    // Anfang der Seite da. Frühester Zeitpunkt ist die Aufgabe nach
+    // DOMContentLoaded: Gleich nach diesem Ereignis fährt der Browser selbst
+    // an den Anfang des Abschnitts mit dieser Marke und überschriebe einen
+    // früheren Sprung. Nach „load" stellt sich die Seite noch einmal auf
+    // den Landepunkt, falls sich etwas verschoben hat, ausser jemand hat
+    // inzwischen selbst gescrollt.
+    navi.ankommen = function () {
+      if (document.readyState === 'loading') {
+        var los = false;
+        var einmal = function () { if (!los) { los = true; navi.ankommen(); } };
+        document.addEventListener('DOMContentLoaded', function () {
+          // Was zuerst kommt: die nächste Aufgabe oder das nächste Bild. Auf
+          // langsamen Geräten zeichnet der Browser sonst erst noch Bilder
+          // an der falschen Stelle, bevor die Aufgabe drankommt.
+          setTimeout(einmal, 0);
+          requestAnimationFrame(einmal);
+        });
+        return;
+      }
+      var ziel = '';
+      try { ziel = decodeURIComponent(location.hash.slice(1)); } catch (e) { /* kaputte Sprungmarke */ }
+      try {
+        if (ziel && springen(ziel, { sofort: true })) {
+          window.addEventListener('load', function () {
+            requestAnimationFrame(function () { if (!selbst) springen(ziel, { sofort: true }); });
+          });
+        }
+      } finally {
+        // Ein Bild lang deckt der Schleier noch, während darunter das Ziel
+        // gezeichnet wird; dann geht er, schneller als nach einem Sprung
+        requestAnimationFrame(function () {
+          if (!root.classList.contains('is-anflug')) return;
+          root.classList.add('is-gelandet');
+          root.classList.remove('is-anflug');
+          setTimeout(function () { root.classList.remove('is-gelandet'); }, 500);
+        });
+      }
+    };
 
     // --- Aufklappen am Handy
     var yOffen = 0;
@@ -336,6 +383,7 @@
 
   if (!window.gsap || !window.ScrollTrigger || !window.CustomEase) {
     root.classList.remove('js');
+    if (navi.ankommen) navi.ankommen();
     return;
   }
   gsap.registerPlugin(ScrollTrigger, CustomEase);
@@ -2951,13 +2999,8 @@
   kontaktEinblenden();
   faqChat();
 
-  // Mit Sprungmarke geöffnet (etwa /#preise): nach dem Laden direkt auf den
-  // Landepunkt des Kapitels, nicht an den Anfang seines Abschnitts
-  if (location.hash.length > 1) {
-    window.addEventListener('load', function () {
-      requestAnimationFrame(function () {
-        if (navi.springen) navi.springen(decodeURIComponent(location.hash.slice(1)), { sofort: true });
-      });
-    });
-  }
+  // Mit Sprungmarke geöffnet (etwa /#preise oder ein Link mit Code): direkt
+  // auf den Landepunkt des Kapitels, nicht an den Anfang seines Abschnitts
+  // und nicht erst nach dem Laden aller Bilder (Kapitel-Navigation, „Ankunft")
+  if (navi.ankommen) navi.ankommen();
 })();

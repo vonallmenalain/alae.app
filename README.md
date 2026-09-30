@@ -65,6 +65,18 @@ Statt eines Menüs gibt es eine Leiste mit den acht Kapiteln (Block
   Kopfzeile und die Links in den FAQ-Antworten. Die Adresse zeigt danach das
   Kapitel (`#preise`), und wer die Seite mit einer solchen Adresse öffnet,
   landet direkt am Landepunkt.
+- **Ankunft mit Sprungmarke** (`/#preise`, Links mit Code auf
+  `#projekte`): Das kleine Skript im `<head>` setzt `is-anflug`, und der
+  Schleier deckt ohne Titel ab dem ersten Bild. Gesprungen wird, sobald die
+  Story steht, gleich nach `DOMContentLoaded` (nicht früher: direkt nach
+  diesem Ereignis fährt der Browser selbst noch an den Anfang des
+  Abschnitts). Dann geht der Schleier in 0,35 s (`is-gelandet`). Früher
+  wartete der Sprung auf `load`, also auf jedes Bild, und bis dahin stand der
+  Anfang der Seite da. Nach `load` rückt die Seite noch einmal auf den
+  Landepunkt, wenn niemand selbst gescrollt hat. Kommt das Skript nicht,
+  geht der Schleier nach 4 s von selbst; ohne Skript gibt es ihn nicht.
+  `#top`, `#main` und `#software` führen an den Anfang und brauchen ihn
+  nicht.
 - Die Leiste funktioniert auch ohne GSAP, dann fährt sie einfach an den Anfang
   des Abschnitts. Ohne Skript ist sie am Computer eine Liste von Links, die
   sich beim Darüberfahren öffnet.
@@ -416,10 +428,12 @@ alae.app/?ref=<code>                       (auch direkt, etwa Google Ads)
 | `netlify/tests/` | Tests zu allem davon, `npm test` |
 
 - **Am Rand, nicht im Browser:** Die Seite kommt schon richtig an, ohne
-  Umspringen und auch ohne Skript. Namen oder Adressen erfährt alae.app
-  nie, nur die Schlüssel der Referenzapps und der Zielgruppe. Ohne Code,
-  bei einem unbekannten Code oder wenn die Verwaltung nicht innert 1,5 s
-  antwortet, geht die Seite unverändert hinaus.
+  Umspringen und auch ohne Skript. Das Kapitel aus `#kapitel` erscheint
+  direkt, ohne dass vorher der Anfang der Seite zu sehen ist (Ankunft mit
+  Sprungmarke, unter „Kapitel-Navigation"). Namen oder Adressen erfährt
+  alae.app nie, nur die Schlüssel der Referenzapps und der Zielgruppe. Ohne
+  Code, bei einem unbekannten Code oder wenn die Verwaltung nicht innert
+  1,5 s antwortet, geht die Seite unverändert hinaus.
 - **Referenzapps:** Jedes Kapitel einer Referenzapp steht in `index.html`
   zwischen `<!--referenz:schluessel-->` und `<!--/referenz-->` und trägt
   `data-referenz`. Die Nummer der Überzeile („Referenzapp 2") steht
