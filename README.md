@@ -21,7 +21,7 @@ weiter, samt Sprungmarke.
 | --- | --- | --- | --- |
 | 01 | Massgeschneiderte Software | `software`, erste Hälfte | „Chaos, Zettel, Excel?": ein Knäuel aus Lichtfäden mit sechs Zetteln. Ordnung wandert durchs Knäuel, die Fäden legen sich um die Kacheln eines Dashboards, jeder Zettel landet als Kachel, das Signet erscheint auf Milchglas. Dann dreht sich das Tablet, eine Zahlung kommt herein, vier Hinweise zeigen auf die Stellen im Dashboard |
 | 02 | Neuer Webauftritt | `software`, zweite Hälfte (Sprungmarke `webauftritt`) | Das Tablet bleibt. Es lädt die Website einer Schreinerei von 2009 – Lauftext, Besucherzähler, Baustellen-GIF –, die sich Stück für Stück in eine moderne verwandelt. Ein Zeiger schickt darüber eine Offerten-Anfrage ab, und die Website wird zur App: Die Anfrage steht als neuer Auftrag im Dashboard. Titel: „Vorher: Webseite von 2009", „Nachher: Modern, schnell und lebendig.", „Und daraus wird deine App." Zum Schluss wechselt das Bild im Tablet zu Gripszug |
-| 03 | Referenzprojekte | `projekte`, `dreamteam`, `fotos` | „Referenzapp 1: Gripszug" bis „Referenzapp 3: Fotoverkauf". Gripszug: Das Tablet aus 02 verschwindet nicht, es wandert an seinen neuen Platz und wird zum breiteren Gerät der App, dann fünf Wagen, fünf Bereiche. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf Stars werden gewählt, stellen sich auf, die Rangliste rechnet live. Fotoverkauf: eine E-Mail mit Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download. Unter Gripszug und DreamTeam führt ein Link zur echten App (`kids.alae.app`, `dt.alae.app`) |
+| 03 | Referenzprojekte | `projekte`, `dreamteam`, `fotos`, `volleyball` | „Referenzapp 1: Gripszug" bis „Referenzapp 4: Volleyballturnier". Gripszug: Das Tablet aus 02 verschwindet nicht, es wandert an seinen neuen Platz und wird zum breiteren Gerät der App, dann fünf Wagen, fünf Bereiche. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf Stars werden gewählt, stellen sich auf, die Rangliste rechnet live. Fotoverkauf: eine E-Mail mit Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download. Volleyballturnier: Der ausgedruckte Spielplan in der Halle und die Fragen, die er offenlässt; er löst sich in seine Spiele auf, und jedes findet seinen Platz im Spielplan des Tages. Auf dem Handy wird ein Resultat eingetippt, die Tabelle rechnet nach und ordnet neu, und das Dashboard zeigt einem Team seine Spiele und wann es zählen muss – im Plan dahinter bleiben genau diese stehen. Unter Gripszug, DreamTeam und Volleyballturnier führt ein Link zur echten App (`kids.alae.app`, `dt.alae.app`, `pvt.alae.app`) |
 | 04 | 4 Schritte zur Web-App | `ablauf` | Links die vier Schritte, rechts ein Haus, das entsteht: Gespräch auf dem Bauplatz, Plan und Offerte, Rohbau mit Kran und Checkliste, das fertige Haus am Abend |
 | 05 | Preis | `preise` | Ein Preisschild pendelt sich ein, drei Etappen werden nacheinander verrechnet. Dann die zwei Wege nach dem Go-live: Die App wandert samt Schlüssel und Quellcode in eine Kiste – oder die Dienste kreisen um sie |
 | 06 | Über mich | `motivation` | Das Porträt, aus dem die acht Stationen herausfliegen: Studium, Finanzexperte, Controller, Familie, Vibe Coder, Volleyball, Skifahren, Wohnort Oberburg mit Karte der Schweiz |
@@ -29,7 +29,8 @@ weiter, samt Sprungmarke.
 | 08 | FAQ | `faq` | Kein Akkordeon, sondern ein Gespräch mit Alain: Eine Frage antippen, sie erscheint als Nachricht, kurz „tippt …", dann die Antwort |
 
 Die Anker der früheren Startseite (`#top`, `#main`, `#app-gripszug`,
-`#app-dreamteam`, `#app-fotoverkauf` und die der entfernten Apps) führen an
+`#app-dreamteam`, `#app-fotoverkauf`, `#app-volleyball` und die der
+entfernten Apps) führen an
 die passende Stelle, damit alte Links und Anzeigen nicht ins Leere zeigen.
 
 ### Kapitel-Navigation
@@ -135,6 +136,14 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   Klubs, Ligen und Fotografen. Die Bilder stehen bewusst trotzdem auf der
   Seite. Kommt eine Beanstandung, genügt es, `DT_BILDER` zu leeren – dann
   zeigen alle Karten wieder Silhouetten und Kürzel.
+- **Das Volleyballturnier zeigt erfundene Teams** wie der Kurzfilm der App;
+  echt sind nur Name und Verein des Turniers, wie in der öffentlichen App.
+  Spielplan (`VB_PLAN` im Skript), Tabelle, Spiele und Dashboard (im HTML)
+  passen zueinander: Das eingetippte Resultat, Netzroller gegen Volley
+  Wanne 21:17, bringt Netzroller von Platz 3 auf Platz 1. Wer dort eine Zahl
+  ändert, rechnet Punkte, Plus, Minus und Verhältnis nach (`VB_NETZROLLER`,
+  `VB_WANNE`). Hoch ist das Handy kein Gerät im Bild, sondern eine Karte
+  über die ganze Breite, damit die Tabelle lesbar bleibt.
 - **Der Fotoverkauf zeigt überall dasselbe gezeichnete Kind** – als Porträt,
   ganz, beim Spielen weiter weg, auf dem Klassen- und dem Gruppenfoto. Adresse
   und Code sind erfunden (`eltern@example.ch`), wie im Kurzfilm der App.
@@ -171,7 +180,7 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   ineinander überblenden. Nichts fliegt, nichts dreht sich, die Fäden bleiben
   still; die Leiste springt ohne Gleiten, nur mit dem Schleier.
 - **Ohne Skript oder ohne GSAP** steht eine ruhige Seite da: jedes Kapitel mit
-  Text und Endbild untereinander – das eingeschaltete Tablet, die drei Apps,
+  Text und Endbild untereinander – das eingeschaltete Tablet, die Apps,
   alle vier Schritte offen mit dem fertigen Haus, Preisschild und Etappen, die
   Stationen als Karten, die Einladung, das Formular und die Fragen als Liste.
 
@@ -183,7 +192,8 @@ braucht es keine Änderung an der Sicherheitsrichtlinie in `netlify.toml`.
 Stellschrauben:
 
 - **Tempo:** `--len` an jedem Kapitel ist sein Scrollweg in vh (`software`
-  959, `projekte` 300, `dreamteam` 480, `fotos` 420, `ablauf` 400, `preise`
+  959, `projekte` 300, `dreamteam` 480, `fotos` 420, `volleyball` 460,
+  `ablauf` 400, `preise`
   380, `motivation` 380, `gespraech` 260). Mehr heisst langsamer, die Abfolge
   bleibt dieselbe. Wer ihn ändert, prüft die Landepunkte in `LANDUNG`.
 - **Abfolge:** Der Zeitplan steht als Tabelle über jeder `buildMotion` im
@@ -192,7 +202,7 @@ Stellschrauben:
 - **Texte:** direkt im HTML. Spieler und Klubs von DreamTeam stehen im Skript,
   weil es die Karten zeichnet.
 - **Links zu den Apps** (`.app-link`) stehen im HTML unter den Angaben von
-  Gripszug und DreamTeam und blenden mit dem Kapitel ein; bis dahin sind sie
+  Gripszug, DreamTeam und Volleyballturnier und blenden mit dem Kapitel ein; bis dahin sind sie
   nicht klickbar, mit der Tastatur erreicht aber sofort sichtbar. Am Handy
   steht der DreamTeam-Link unter der Rangliste, weil unter dem Text kein Platz
   ist – die Rangliste zeigt dort dafür fünf statt sechs Zeilen (auf sehr
@@ -205,8 +215,8 @@ Stellschrauben:
       `EMPFAENGER` in `assets/story.js` und in den strukturierten Daten am Ende
       von `index.html`)
 - [ ] **Texte gegenlesen** – alle acht Kapitel, besonders die neuen: Neuer
-      Webauftritt, die vier Schritte, Preis, die Stationen unter „Über mich"
-      und die Antworten im FAQ-Gespräch
+      Webauftritt, das Volleyballturnier, die vier Schritte, Preis, die
+      Stationen unter „Über mich" und die Antworten im FAQ-Gespräch
 - [ ] **DreamTeam-Bilder** – die Karten zeigen echte Spielerfotos und
       Klubwappen von api-sports (siehe „Die Scroll-Geschichte"). Bei der
       rechtlichen Prüfung mit abklären
@@ -409,8 +419,9 @@ alae.app/?ref=<code>                       (auch direkt, etwa Google Ads)
   Sprungmarken passend: „Referenzprojekte" führt zur ersten gezeigten App,
   und die Übergabe des Tablets an Gripszug gibt es nur, wenn Gripszug direkt
   folgt. **Bekommt eine App ein Kapitel,** braucht es die Marken, einen
-  Eintrag in `LANDUNG` und denselben Schlüssel in der Verwaltung
-  (`gemeinsam/marketing.ts`, `REFERENZAPPS`).
+  Eintrag in `LANDUNG`, ihre `id` in der Liste der Kapitel, die ein Link
+  weglassen kann (Skript, „Kapitel-Navigation"), und denselben Schlüssel
+  in der Verwaltung (`gemeinsam/marketing.ts`, `REFERENZAPPS`).
 - **Zielgruppen:** Kapitel 1 und 2 erzählen ohne Code von einer Schreinerei
   (`kmu`). Für `verein` und `schule` ersetzt der Rand die markierten Stellen
   `<!--zg:schluessel-->…<!--/zg-->` durch die Texte aus `zielgruppen.js`,

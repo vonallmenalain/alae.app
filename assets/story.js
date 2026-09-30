@@ -2,8 +2,8 @@
    Bewegung der Startseite (index.html)
    Aufbau: Heute → Kontaktformular → Kapitel-Navigation → (ab hier nur mit
    GSAP) Werkzeuge → Leinwand → Schleife → Kapitel (Ordnung mit Neuer
-   Webauftritt, Gripszug, DreamTeam, Fotoverkauf, Ablauf, Preise, Über mich,
-   Erstgespräch) → Kontakt und FAQ → Aufbau
+   Webauftritt, Gripszug, DreamTeam, Fotoverkauf, Volleyballturnier,
+   Ablauf, Preise, Über mich, Erstgespräch) → Kontakt und FAQ → Aufbau
 
    Jedes Kapitel ist eine Funktion, die eine Zeitleiste von 0 bis 100 baut
    (Ordnung: bis 204, es trägt die Szenen 1 bis 3 und den neuen
@@ -142,14 +142,14 @@
     referenzen.slice(1).forEach(function (id) { GEHOERT[id] = ersteReferenz; });
     // Anker der früheren Startseite, damit alte Links an die passende Stelle führen
     var ALIAS = {
-      top: 'software', main: 'software', 'app-gripszug': 'projekte', 'app-jass': ersteReferenz, 'app-volleyball': ersteReferenz,
+      top: 'software', main: 'software', 'app-gripszug': 'projekte', 'app-jass': ersteReferenz, 'app-volleyball': 'volleyball',
       'app-sharing': ersteReferenz, 'app-buchhaltung': ersteReferenz, 'app-dreamteam': 'dreamteam', 'app-fotoverkauf': 'fotos'
     };
     // „#projekte" heisst: an den Anfang der Referenzprojekte, auch wenn dort
     // eine andere App steht. Fehlt ein Ziel, weil der Link diese App nicht
     // zeigt, geht es ebenfalls dorthin.
     if (ersteReferenz !== 'projekte') ALIAS.projekte = ersteReferenz;
-    ['dreamteam', 'fotos'].forEach(function (id) { if (!document.getElementById(id)) ALIAS[id] = ersteReferenz; });
+    ['dreamteam', 'fotos', 'volleyball'].forEach(function (id) { if (!document.getElementById(id)) ALIAS[id] = ersteReferenz; });
     Object.keys(ALIAS).forEach(function (a) { if (!document.getElementById(ALIAS[a])) ALIAS[a] = ersteReferenz; });
     var ruhig = function () { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
     var oben = function (el) { return el.getBoundingClientRect().top + window.pageYOffset; };
@@ -1917,6 +1917,229 @@
 
 
   /* =========================================================================
+     KAPITEL VOLLEYBALLTURNIER – Referenzprojekt
+     Erst das Alte: Der Spielplan hängt ausgedruckt in der Halle, und die
+     Fragen kommen trotzdem. Der Aushang löst sich in seine Spiele auf, und
+     jedes findet seinen Platz im Spielplan des Tages. Dann läuft das Turnier
+     auf dem Handy: Ein Resultat wird eingetippt, die Tabelle rechnet nach
+     und ordnet neu, und das Dashboard zeigt einem Team seine Spiele – auch
+     die, bei denen es zählen muss. Im Plan dahinter bleiben genau diese
+     stehen. Nachgebaut nach der App (pvt.alae.app), Teams erfunden.
+     ========================================================================= */
+  // Der Spielplan von 12:00 bis 13:24: je Startzeit die Felder 1 bis 3, mit
+  // Kategorie (Jugend, Plausch, Ambitioniert) und den beiden Teams. mein:
+  // Netzroller spielt, zaehlt: Netzroller zählt. Die Spiele der Kategorie
+  // Ambitioniert passen zu Tabelle, Spielen und Dashboard im Handy
+  // (index.html); das Resultat um 13:24 auf Feld 2 wird eingetippt.
+  var VB_ZEITEN = ['12:00', '12:12', '12:24', '12:36', '12:48', '13:00', '13:12', '13:24'];
+  var VB_PLAN = [
+    [['a', 'Netzroller', 'Pfahlbauer', 'mein'], ['p', 'Baggerbande', 'Spass am Ball'], ['j', 'Jungpfähle', 'Ballkünstler']],
+    [['j', 'Sprungfedern', 'Netzhüpfer'], ['a', 'Volley Wanne', 'Baggerfreunde'], ['p', 'Die Aufschläger', 'Bagger-Brigade']],
+    [['p', 'Die Unsportlichen', 'Netzwerker'], ['j', 'Die Schmetterlinge', 'Pfahlwerfer'], ['a', 'Block & Roll', 'Aufsteller', 'zaehlt']],
+    [['a', 'Aufsteller', 'Netzroller', 'mein'], ['p', 'Spass am Ball', 'Die Aufschläger'], ['j', 'Volley Vipers', 'Jungpfähle']],
+    [['j', 'Ballkünstler', 'Sprungfedern'], ['a', 'Pfahlbauer', 'Block & Roll'], ['p', 'Bagger-Brigade', 'Die Unsportlichen']],
+    [['p', 'Netzwerker', 'Baggerbande'], ['j', 'Netzhüpfer', 'Die Schmetterlinge'], ['a', 'Baggerfreunde', 'Netzroller', 'mein']],
+    [['a', 'Volley Wanne', 'Aufsteller'], ['p', 'Die Aufschläger', 'Die Unsportlichen'], ['j', 'Pfahlwerfer', 'Volley Vipers']],
+    [['j', 'Jungpfähle', 'Sprungfedern'], ['a', 'Netzroller', 'Volley Wanne', 'mein'], ['p', 'Baggerbande', 'Bagger-Brigade']]
+  ];
+  // Die Tabelle vor und nach dem eingetippten Resultat (Netzroller 21:17
+  // Volley Wanne): Sp, P, +, −, Verhältnis. Netzroller steigt von 3 auf 1,
+  // Volley Wanne fällt auf 3.
+  var VB_NETZROLLER = [[3, 4], [4, 6], [58, 79], [53, 70], [1.09, 1.13]];
+  var VB_WANNE = [[2, 3], [4, 4], [42, 59], [33, 54], [1.27, 1.09]];
+  function volleyball(sec, env) {
+    var stage = q1('.stage', sec), glow = q1('.vb-glow', sec), aushang = q1('.vb-aushang', sec), fragen = qa('.vb-frage', sec);
+    var plan = q1('.vb-plan', sec), raster = q1('.vb-raster', sec), phone = q1('.vb-phone', sec);
+    var tabs = qa('.vb-tabs span', sec), viewPlan = q1('.vb-view--plan', sec), viewDash = q1('.vb-view--dash', sec);
+    var zeilen = qa('.vb-tab .vb-tr', sec).slice(1), plus = q1('.vb-plus', sec);
+    var neu = q1('.vb-sp--neu', sec), typers = qa('[data-tippe]', neu), caret = q1('.vb-caret', neu), ok = q1('.vb-ok', neu), sieger = q1('.vb-sieger', neu);
+    var eigene = qa('.vb-eigene .vb-sp', sec), zaehlen = qa('.vb-zaehlen .vb-sp', sec);
+    var kicker = q1('.vb-copy .kicker', sec), Wv = words(q1('.vb-copy h2', sec)), punkteListe = q1('.vb-punkte', sec), punkte = qa('.vb-punkte li', sec);
+    var link = q1('.app-link', sec);
+    var portrait = env.portrait, reduced = env.reduced;
+    var PUNKT_AB = [30, 55, 72, 79];
+    // Netzroller und Volley Wanne in der Tabelle: Rang, Name, dann die Zahlen
+    var nr = qa('span', zeilen[2]), vw = qa('span', zeilen[0]);
+    // Was das Kapitel an Texten ändert, für den Neuaufbau (Drehen des Geräts)
+    var texte = qa('span', zeilen[0]).concat(qa('span', zeilen[2]), typers).map(function (el) { return { el: el, t: el.textContent }; });
+
+    // Die Spiele im Plan: oben die Felder, je Zeile vorne die Startzeit
+    raster.innerHTML = '';
+    ['Zeit', 'Feld 1', 'Feld 2', 'Feld 3'].forEach(function (t) {
+      var h = document.createElement('span');
+      h.className = 'vb-rk'; h.textContent = t;
+      raster.appendChild(h);
+    });
+    var R = mulberry(31), chips = [];
+    VB_PLAN.forEach(function (zeile, r) {
+      var z = document.createElement('span');
+      z.className = 'vb-zeit'; z.textContent = VB_ZEITEN[r];
+      raster.appendChild(z);
+      zeile.forEach(function (s, f) {
+        var el = document.createElement('i');
+        el.className = 'vb-spiel'; el.setAttribute('data-k', s[0]);
+        el.appendChild(document.createElement('b')).textContent = s[1];
+        el.appendChild(document.createElement('b')).textContent = s[2];
+        var mark = null;
+        if (s[3]) {
+          mark = el.appendChild(document.createElement('em'));
+          mark.className = 'vb-mark' + (s[3] === 'zaehlt' ? ' vb-mark--z' : '');
+        }
+        raster.appendChild(el);
+        chips.push({ el: el, r: r, f: f, art: s[3] || '', mark: mark, rot: (R() - .5) * 26, jx: (R() - .5) * .08, jy: (R() - .5) * .06 });
+      });
+    });
+    // Das Resultat, das im Handy eingetippt wird, erscheint auch im Plan
+    var score = document.createElement('em');
+    score.className = 'vb-score'; score.textContent = '21:17';
+    chips[7 * 3 + 1].el.appendChild(score);
+    var andere = chips.filter(function (c) { return !c.art; }).map(function (c) { return c.el; });
+    var meine = chips.filter(function (c) { return c.art === 'mein'; }).map(function (c) { return c.mark; });
+    var gezaehlt = chips.filter(function (c) { return c.art === 'zaehlt'; }).map(function (c) { return c.mark; });
+
+    /* Jedes Spiel beginnt dort auf dem Aushang, wo es gedruckt stand:
+       dieselbe Spalte, die Zeilen über das Blatt verteilt. Gemessen ohne
+       Transformationen (rel), die Drehung von Blatt und Plan stört nicht. */
+    var M = { W: 0, zeile: 0 };
+    function measure() {
+      M.W = stage.clientWidth;
+      var au = rel(aushang, stage);
+      chips.forEach(function (c) {
+        var b = rel(c.el, stage);
+        var ax = .18 + (c.f + .5) * .26 + c.jx, ay = .22 + (c.r + .5) / VB_PLAN.length * .62 + c.jy;
+        c.dx = au.x + au.w * ax - (b.x + b.w / 2);
+        c.dy = au.y + au.h * ay - (b.y + b.h / 2);
+      });
+      M.zeile = zeilen[1].offsetTop - zeilen[0].offsetTop;
+    }
+    // Eine Zahl in der Tabelle zählt auf ihren neuen Wert; das Verhältnis
+    // (die fünfte Spalte) mit zwei Stellen
+    function zahl(tl, el, werte, at, dur, stellen) {
+      var o = { v: werte[0] };
+      tl.fromTo(o, { v: werte[0] }, { v: werte[1], duration: dur, ease: 'power1.inOut', onUpdate: function () { el.textContent = o.v.toFixed(stellen); } }, at);
+    }
+
+    /* Zeitleiste:
+         0–6    Hintergrund blendet über den Fotoverkauf
+         3–10   der Aushang, 8–16 die Fragen dazu
+         5–18   Titel, Punkte, Link zur App
+         19–27  Fragen und Aushang gehen, der Plan kommt
+         21–35  die Spiele fliegen an ihren Platz
+         36–46  das Handy kommt, der Plan tritt zurück
+         45–53  ein Resultat wird eingetippt, es steht auch im Plan
+         54–63  die Tabelle rechnet nach, Netzroller steigt auf Platz 1
+         66–71  ins Dashboard des Teams
+         71–81  seine Spiele und die, bei denen es zählt; im Plan bleiben
+                genau diese stehen */
+    function buildMotion(tl) {
+      bgIn(tl, sec);
+      tl.fromTo(glow, { opacity: 0 }, { opacity: 1, duration: 10, ease: 'none' }, 2);
+      tl.fromTo(aushang, { opacity: 0, y: 40, rotation: -8 }, { opacity: 1, y: 0, rotation: -3, duration: 7, ease: 'aOut' }, 3);
+      tl.fromTo(kicker, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 5);
+      wordsIn(tl, Wv, 7);
+      tl.fromTo(punkteListe, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 6, ease: 'aOut' }, 12);
+      tl.fromTo(link, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 15);
+      tl.set(link, { pointerEvents: 'auto' }, 16);
+      fragen.forEach(function (q, k) {
+        tl.fromTo(q, { opacity: 0, scale: .6, y: 12 }, { opacity: 1, scale: 1, y: 0, duration: 2.4, ease: 'back.out(2.4)' }, 8 + k * 2);
+      });
+      tl.to(fragen, { opacity: 0, scale: .85, duration: 2.5, stagger: .4, ease: 'power2.in' }, 19);
+      tl.to(aushang, { opacity: 0, y: 30, rotation: -6, scale: .94, duration: 6, ease: 'power2.in' }, 21);
+      tl.fromTo(plan, { opacity: 0, scale: .97, rotationY: portrait ? 0 : -6, rotationX: portrait ? 0 : 3 },
+        { opacity: 1, scale: 1, duration: 6, ease: 'aOut' }, 20);
+      chips.forEach(function (c, i) {
+        tl.fromTo(c.el, {
+          x: function () { return c.dx; }, y: function () { return c.dy; }, rotation: c.rot, scale: .72, opacity: 0
+        }, { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1, duration: 6, ease: 'aInOut' }, 21 + i * .3);
+      });
+      // Das Handy kommt, der Plan tritt zurück
+      tl.to(plan, portrait
+        ? { opacity: .1, scale: .96, duration: 8, ease: 'power2.inOut' }
+        : { opacity: .5, x: function () { return -M.W * .085; }, scale: .88, duration: 10, ease: 'power2.inOut' }, 36);
+      tl.fromTo(phone, portrait
+        ? { opacity: 0, y: 140 }
+        : { opacity: 0, x: 200, rotationY: -26, transformPerspective: 1600 },
+      portrait
+        ? { opacity: 1, y: 0, duration: 10, ease: 'aOut' }
+        : { opacity: 1, x: 0, rotationY: -6, duration: 10, ease: 'aOut' }, 36);
+      // Ein Resultat eintippen – es steht sofort auch im Plan
+      tl.fromTo(caret, { opacity: 0 }, { opacity: 1, duration: .5, ease: 'none' }, 45.5);
+      type(tl, typers[0], 46, 2);
+      type(tl, typers[1], 49, 2);
+      tl.to(caret, { opacity: 0, duration: .5, ease: 'none' }, 51.5);
+      tl.fromTo(ok, { opacity: 0, scale: .4 }, { opacity: 1, scale: 1, duration: 1.8, ease: 'back.out(3)' }, 52);
+      tl.fromTo(sieger, { color: '#E7EAFB' }, { color: '#6EE7A1', duration: 2, ease: 'none' }, 52);
+      tl.fromTo(score, { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: 2, ease: 'back.out(2.4)' }, 53);
+      // Die Tabelle rechnet nach und ordnet neu
+      VB_NETZROLLER.forEach(function (w, k) { zahl(tl, nr[k + 2], w, 54, k < 2 ? 2.5 : 4, k === 4 ? 2 : 0); });
+      VB_WANNE.forEach(function (w, k) { if (w[0] !== w[1]) zahl(tl, vw[k + 2], w, 54, k < 2 ? 2.5 : 4, k === 4 ? 2 : 0); });
+      tl.fromTo(zeilen[2], { backgroundColor: '#11163A', boxShadow: 'inset 0px 0px 0px 0px rgba(139,155,255,0)' },
+        { backgroundColor: '#1F2767', boxShadow: 'inset 3px 0px 0px 0px rgba(139,155,255,1)', duration: 2.5, ease: 'none' }, 54);
+      tl.fromTo(plus, { opacity: 0, y: 6, scale: .6 }, { opacity: 1, y: 0, scale: 1, duration: 2, ease: 'back.out(3)' }, 54.5);
+      tl.to(plus, { opacity: 0, duration: 2, ease: 'none' }, 62);
+      tl.fromTo(zeilen[2], { y: 0 }, { y: function () { return -2 * M.zeile; }, duration: 5, ease: 'aInOut' }, 58);
+      tl.fromTo(zeilen[0], { y: 0 }, { y: function () { return 2 * M.zeile; }, duration: 5, ease: 'aInOut' }, 58);
+      // Ins Dashboard: Netzroller sieht seine Spiele
+      tl.fromTo(viewPlan, { xPercent: 0, opacity: 1 }, { xPercent: -100, opacity: 0, duration: 5, ease: 'aInOut' }, 66);
+      tl.fromTo(viewDash, { xPercent: 100, opacity: 0 }, { xPercent: 0, opacity: 1, duration: 5, ease: 'aInOut' }, 66);
+      tl.fromTo(eigene, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 3, stagger: .7, ease: 'aOut' }, 71);
+      tl.fromTo(zaehlen, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 3, stagger: .7, ease: 'aOut' }, 77.5);
+      // Im Plan bleiben genau diese Spiele stehen
+      if (!portrait) tl.to(plan, { opacity: 1, duration: 5, ease: 'none' }, 70);
+      tl.to(andere, { opacity: .2, duration: 5, ease: 'none' }, 71);
+      tl.fromTo(meine, { opacity: 0 }, { opacity: 1, duration: 3, stagger: .6, ease: 'none' }, 72);
+      tl.fromTo(gezaehlt, { opacity: 0 }, { opacity: 1, duration: 3, ease: 'none' }, 78.5);
+      tl.to({}, { duration: 12 }, 88);
+    }
+    function buildStill(tl) {
+      bgIn(tl, sec);
+      gsap.set([kicker, punkteListe, Wv, link, glow], { opacity: 1 });
+      gsap.set(chips.map(function (c) { return c.el; }), { opacity: 1 });
+      gsap.set(andere, { opacity: .2 });
+      gsap.set(meine.concat(gezaehlt, [score]), { opacity: 1 });
+      gsap.set(viewPlan, { opacity: 0 });
+      gsap.set(viewDash, { opacity: 1 });
+      gsap.set(eigene.concat(zaehlen), { opacity: 1 });
+      tabs[2].classList.remove('is-on'); tabs[3].classList.add('is-on');
+      punkte.forEach(function (li) { li.classList.add('on'); });
+      punkte[punkte.length - 1].classList.add('cur');
+      if (!portrait) gsap.set(plan, { x: -M.W * .085, scale: .88, rotationY: -6, rotationX: 3 });
+      if (!portrait) gsap.set(phone, { rotationY: -6, transformPerspective: 1600 });
+      tl.fromTo([q1('.vb-copy', sec), phone, glow], { opacity: 0 }, { opacity: 1, duration: 8, ease: 'none' }, 4);
+      tl.fromTo(plan, { opacity: 0 }, { opacity: portrait ? .1 : 1, duration: 8, ease: 'none' }, 4);
+      tl.set(link, { pointerEvents: 'auto' }, 8);
+      tl.to({}, { duration: 90 }, 10);
+    }
+
+    measure();
+    typers.forEach(function (el) { el.textContent = reduced ? el.getAttribute('data-tippe') : ''; });
+    var tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
+    if (reduced) buildStill(tl); else buildMotion(tl);
+    return {
+      tl: tl, tick: null, measure: measure,
+      onUpdate: function (p) {
+        if (reduced) return;
+        var u = p * 100, cur = -1;
+        punkte.forEach(function (li, k) { var on = u >= PUNKT_AB[k]; li.classList.toggle('on', on); if (on) cur = k; });
+        punkte.forEach(function (li, k) { li.classList.toggle('cur', k === cur); });
+        // Die Ränge wechseln, wenn die beiden Zeilen aneinander vorbei sind
+        var getauscht = u >= 60.5;
+        nr[0].textContent = getauscht ? '1' : '3';
+        vw[0].textContent = getauscht ? '3' : '1';
+        tabs[2].classList.toggle('is-on', u < 67);
+        tabs[3].classList.toggle('is-on', u >= 67);
+      },
+      cleanup: function () {
+        raster.innerHTML = '';
+        texte.forEach(function (x) { x.el.textContent = x.t; });
+        punkte.forEach(function (li) { li.classList.remove('on', 'cur'); });
+        tabs[2].classList.add('is-on'); tabs[3].classList.remove('is-on');
+      }
+    };
+  }
+
+
+  /* =========================================================================
      KAPITEL ABLAUF – vier Schritte
      Links die Schritte, rechts die Bau-Illustration. Der aktive Schritt
      zeigt seinen Text; Bild und Schritt wechseln an denselben Stellen der
@@ -2456,7 +2679,7 @@
      gsap.matchMedia baut alles ab und neu auf, wenn sich eine der drei
      Bedingungen ändert – etwa beim Drehen des Tablets.
      ========================================================================= */
-  var KAPITEL = { ordnung: ordnung, gripszug: gripszug, dreamteam: dreamteam, fotos: fotos, ablauf: ablauf, preise: preise, ueber: ueber, gespraech: gespraech };
+  var KAPITEL = { ordnung: ordnung, gripszug: gripszug, dreamteam: dreamteam, fotos: fotos, volleyball: volleyball, ablauf: ablauf, preise: preise, ueber: ueber, gespraech: gespraech };
   var sections = qa('[data-kapitel]');
 
   function buildAll(cond) {
@@ -2517,6 +2740,7 @@
     projekte: ['projekte', .065, .22],
     dreamteam: ['dreamteam', .065, .2],
     fotos: ['fotos', .065, .16],
+    volleyball: ['volleyball', .065, .16],
     ablauf: ['ablauf', .065, .22],
     preise: ['preise', .065, .25],
     motivation: ['motivation', .065, .2],
