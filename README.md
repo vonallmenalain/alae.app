@@ -361,11 +361,78 @@ der Rechtsseiten klären sollte.
 
 Die Datenschutzerklärung beschreibt den tatsächlichen Stand der Website:
 Cookies und externe Anfragen nur über den Google-Tag auf der Startseite
-(Ziffer 7), kein eigener Speicher im Browser, als Dienstleister Netlify,
-Resend, Cloudflare und Google.
+(Ziffer 7), kein eigener Speicher im Browser, Links mit Code und E-Mails von
+alae.app (Ziffer 8, siehe „Links mit Code"), als Dienstleister Netlify,
+Resend, Cloudflare und Google, auch Firebase als Datenbank der Verwaltung.
 **Kommt ein weiterer Dienst dazu – etwa Terminbuchung, Newsletter oder
 Statistik –, muss die Tabelle in Ziffer 6 ergänzt und Ziffer 2 „Cookies und
 fremde Dienste" überprüft werden.**
+
+## Links mit Code
+
+Links aus der Verwaltung (Repo `administration`, Marketing) tragen einen
+Code aus sieben Zeichen: in Werbemails, auf Instagram, in Google Ads, auf
+einem Flyer. Die Verwaltung bestimmt pro Link, welche Referenzapps die
+Startseite zeigt, in welcher Reihenfolge, und für welche Zielgruppe sie
+erzählt. Wer darüber kommt und auf der Seite scrollt, zählt dort als
+bestätigter Besuch.
+
+```
+alae.app/k/<code>                          (Werbemail, Flyer …)
+  └─ 302 administration.alae.app/k/<code>  hält den Klick fest
+       └─ 302 alae.app/?ref=<code>#kapitel
+alae.app/?ref=<code>                       (auch direkt, etwa Google Ads)
+  ├─ Rand: GET administration.alae.app/ref/<code>
+  │        → { "referenzen": ["dreamteam", "gripszug"], "zielgruppe": "verein" }
+  │        und die Seite geht zugeschnitten hinaus
+  └─ Browser, sobald jemand scrollt: POST /api/besuch
+       └─ POST administration.alae.app/ref/<code>/besuch  (mit Schlüssel)
+```
+
+| Datei | Aufgabe |
+| --- | --- |
+| `netlify/edge-functions/weiterleitung.js` | `/k/<code>` an die Verwaltung; ein falscher Code an den Anfang der Seite |
+| `netlify/edge-functions/zuschnitt/` | fragt die Verwaltung und schneidet die Startseite zu, bevor sie hinausgeht (`zuschneiden.js`); die Texte der Zielgruppen in `zielgruppen.js` |
+| `assets/besuch.js` | meldet einmal pro Aufruf mit Code, dass jemand scrollt, tippt oder klickt |
+| `netlify/functions/besuch.mjs` | gibt die Meldung an die Verwaltung weiter, mit dem gemeinsamen Schlüssel |
+| `netlify/tests/` | Tests zu allem davon, `npm test` |
+
+- **Am Rand, nicht im Browser:** Die Seite kommt schon richtig an, ohne
+  Umspringen und auch ohne Skript. Namen oder Adressen erfährt alae.app
+  nie, nur die Schlüssel der Referenzapps und der Zielgruppe. Ohne Code,
+  bei einem unbekannten Code oder wenn die Verwaltung nicht innert 1,5 s
+  antwortet, geht die Seite unverändert hinaus.
+- **Referenzapps:** Jedes Kapitel einer Referenzapp steht in `index.html`
+  zwischen `<!--referenz:schluessel-->` und `<!--/referenz-->` und trägt
+  `data-referenz`. Die Nummer der Überzeile („Referenzapp 2") steht
+  zwischen `<!--nr-->` und `<!--/nr-->`. Das Skript hält Leiste und
+  Sprungmarken passend: „Referenzprojekte" führt zur ersten gezeigten App,
+  und die Übergabe des Tablets an Gripszug gibt es nur, wenn Gripszug direkt
+  folgt. **Bekommt eine App ein Kapitel,** braucht es die Marken, einen
+  Eintrag in `LANDUNG` und denselben Schlüssel in der Verwaltung
+  (`gemeinsam/marketing.ts`, `REFERENZAPPS`).
+- **Zielgruppen:** Kapitel 1 und 2 erzählen ohne Code von einer Schreinerei
+  (`kmu`). Für `verein` und `schule` ersetzt der Rand die markierten Stellen
+  `<!--zg:schluessel-->…<!--/zg-->` durch die Texte aus `zielgruppen.js`,
+  den getippten Wunsch im Formular über `data-zg-tippe`. Ein Test prüft,
+  dass jede Zielgruppe jede Stelle füllt. Neue Texte am Handy prüfen:
+  Kacheln und Tabelle haben eine feste Breite.
+- **Besuch bestätigen:** Gezählt wird, was ein Mensch tut (Mausrad,
+  Wischen, Klicken, Tasten), frühestens nach 1,5 s, einmal pro Aufruf. Kein
+  Cookie, nichts im Browser gespeichert. Der Weg führt über `/api/besuch`,
+  weil die Content-Security-Policy nur Anfragen an alae.app erlaubt und die
+  Verwaltung eine Meldung nur mit dem gemeinsamen Schlüssel annimmt.
+- **Reihenfolge am Rand:** `besucher`, `schutz`, `weiterleitung`,
+  `zuschnitt` (alphabetisch, siehe „Schutz vor automatisierten Anfragen").
+  Die Statistik sieht so auch `/k/…` und die zugeschnittene Seite.
+- **Datenschutzerklärung:** Ziffer 8 beschreibt genau das. Wird an der
+  Erfassung etwas geändert, muss sie mit.
+
+**Nötige Umgebungsvariable in Netlify:**
+
+| Variable | Pflicht | Bedeutung |
+| --- | --- | --- |
+| `BESUCH_SCHLUESSEL` | für bestätigte Besuche | derselbe lange Zufallswert wie in der Verwaltung (dort `docs/marketing.md`, 1.4). Fehlt er, zählt die Verwaltung keine Besuche; alles andere läuft |
 
 ## Google Ads
 
@@ -425,7 +492,7 @@ Dagegen stehen drei Dinge, alle auf Netlify und ohne Zutun im Browser:
 | Massnahme | Wo | Wirkung |
 | --- | --- | --- |
 | Scanner-Pfade sperren | `netlify/edge-functions/schutz.js` | Typische Suchpfade bekommen sofort 404, die Seite wird gar nicht erst geladen |
-| Nur Lesen erlauben | dieselbe Datei | `POST`, `PUT` und Ähnliches gehen nur ans Kontaktformular, sonst 405 |
+| Nur Lesen erlauben | dieselbe Datei | `POST`, `PUT` und Ähnliches gehen nur ans Kontaktformular und an `/api/besuch`, sonst 405 |
 | Tempolimit | `config.rateLimit` in derselben Datei | 120 Seitenaufrufe pro Minute und Besucher, darüber antwortet Netlify mit 429 |
 | Tempolimit Formular | `netlify/functions/kontakt.mjs` | 5 Absendeversuche pro Minute und Besucher |
 | Sicherheits-Kopfzeilen | `netlify.toml` | Content-Security-Policy, HSTS und Verwandte |
@@ -517,5 +584,7 @@ Regeln, die überall gelten:
 - Semantisches HTML mit strukturierten Daten (`ProfessionalService`) für Suchmaschinen
 - Einziger fremder Dienst ist der Google-Tag für Google Ads auf der
   Startseite (Cookies, Anfragen an Google, siehe „Google Ads"). Sonst keine
-  Cookies, keine externen Anfragen. Die eigene Besucherstatistik
-  läuft auf dem Server und speichert keine IP-Adressen (siehe unten)
+  Cookies, keine externen Anfragen aus dem Browser. Die eigene
+  Besucherstatistik läuft auf dem Server und speichert keine IP-Adressen
+  (siehe unten); die Fragen an die Verwaltung zu Links mit Code stellt der
+  Rand, nicht der Browser (siehe „Links mit Code")

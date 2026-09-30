@@ -130,14 +130,27 @@
     var knopf = q1('.kp-knopf', nav), links = qa('.kp-liste a', nav), bar = q1('.bar');
     var ring = q1('.kp-ring-fort', nav), dunkel = q1('.kp-dunkel', nav);
     var schleier = q1('.kp-schleier'), sNr = q1('.kp-schleier-nr'), sTitel = q1('.kp-schleier-titel');
+    // Welche Referenzapps die Seite zeigt und in welcher Reihenfolge, kann ein
+    // Link bestimmen (netlify/edge-functions/zuschnitt). „Referenzprojekte"
+    // beginnt mit der ersten, die übrigen gehören dazu.
+    var referenzen = qa('[data-referenz]').map(function (sec) { return sec.id; });
+    var ersteReferenz = referenzen[0] || 'projekte';
+    links.forEach(function (a) { if (a.hasAttribute('data-referenzen')) a.setAttribute('href', '#' + ersteReferenz); });
     var ids = links.map(function (a) { return a.getAttribute('href').slice(1); });
     // Ziele ausserhalb der Leiste und das Kapitel, zu dem sie gehören
-    var GEHOERT = { dreamteam: 'projekte', fotos: 'projekte', kontakt: 'gespraech' };
+    var GEHOERT = { kontakt: 'gespraech' };
+    referenzen.slice(1).forEach(function (id) { GEHOERT[id] = ersteReferenz; });
     // Anker der früheren Startseite, damit alte Links an die passende Stelle führen
     var ALIAS = {
-      top: 'software', main: 'software', 'app-gripszug': 'projekte', 'app-jass': 'projekte', 'app-volleyball': 'projekte',
-      'app-sharing': 'projekte', 'app-buchhaltung': 'projekte', 'app-dreamteam': 'dreamteam', 'app-fotoverkauf': 'fotos'
+      top: 'software', main: 'software', 'app-gripszug': 'projekte', 'app-jass': ersteReferenz, 'app-volleyball': ersteReferenz,
+      'app-sharing': ersteReferenz, 'app-buchhaltung': ersteReferenz, 'app-dreamteam': 'dreamteam', 'app-fotoverkauf': 'fotos'
     };
+    // „#projekte" heisst: an den Anfang der Referenzprojekte, auch wenn dort
+    // eine andere App steht. Fehlt ein Ziel, weil der Link diese App nicht
+    // zeigt, geht es ebenfalls dorthin.
+    if (ersteReferenz !== 'projekte') ALIAS.projekte = ersteReferenz;
+    ['dreamteam', 'fotos'].forEach(function (id) { if (!document.getElementById(id)) ALIAS[id] = ersteReferenz; });
+    Object.keys(ALIAS).forEach(function (a) { if (!document.getElementById(ALIAS[a])) ALIAS[a] = ersteReferenz; });
     var ruhig = function () { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
     var oben = function (el) { return el.getBoundingClientRect().top + window.pageYOffset; };
     var hoehe = function () { return window.innerHeight; };
@@ -602,7 +615,10 @@
     var sendenEl = q1('.wn-senden', sec), gesendet = q1('.wn-gesendet', sec), tipper = qa('.wn-anfrage [data-tippe]', sec);
     var heroBox = q1('.wn-bild', sec), hero = new Leinwand(q1('.wn-faeden', sec), q1('.wn-faeden-glow', sec));
     // Das Bild der ersten Referenz für den Schluss von Kapitel 2 – nur mit
-    // Skript nötig, darum erst hier eingesetzt (und erst spät geladen)
+    // Skript nötig, darum erst hier eingesetzt (und erst spät geladen). Nur
+    // wenn Gripszug direkt folgt: Ein Link kann andere Referenzapps zeigen,
+    // dann blendet das nächste Kapitel einfach über.
+    var folgtGripszug = !!sec.nextElementSibling && sec.nextElementSibling.getAttribute('data-kapitel') === 'gripszug';
     var nextImg = q1('.screen-next', sec);
     if (!nextImg) {
       nextImg = document.createElement('img');
@@ -1079,7 +1095,7 @@
       wordsOut(tl, W7, 190);
       tl.to(wKicker, { opacity: 0, y: -8, duration: 4, ease: 'power1.in' }, 190.5);
       tl.to(S, { tilt: 0, duration: 6, ease: 'power1.inOut' }, 190);
-      tl.fromTo(nextImg, { opacity: 0 }, { opacity: 1, duration: 6, ease: 'power1.inOut' }, 192);
+      if (folgtGripszug) tl.fromTo(nextImg, { opacity: 0 }, { opacity: 1, duration: 6, ease: 'power1.inOut' }, 192);
       tl.to([glowEl, glare], { opacity: 0, duration: 6, ease: 'none' }, 192);
       tl.to({}, { duration: 6 }, 198);
     }
@@ -1161,7 +1177,7 @@
     // sofort, wenn jemand schon in Kapitel 2 ist
     function laden() {
       var quelle = q1('.gz-screen img');
-      if (!reduced && quelle && !nextImg.getAttribute('src')) nextImg.setAttribute('src', quelle.getAttribute('src'));
+      if (!reduced && folgtGripszug && quelle && !nextImg.getAttribute('src')) nextImg.setAttribute('src', quelle.getAttribute('src'));
     }
     if (document.readyState === 'complete') setTimeout(laden, 1200);
     else window.addEventListener('load', function () { setTimeout(laden, 1200); });
@@ -1223,7 +1239,9 @@
       G.x = W * (portrait ? .5 : .69);
       G.y = portrait ? H * .25 + G.b / 3.44 : H * .52;
     }
-    var U = function () { return env.uebergabe; };
+    // Das Tablet übernimmt Gripszug nur, wenn es direkt auf Kapitel 2 folgt
+    var uebergabe = !!vorher && vorher.getAttribute('data-kapitel') === 'ordnung';
+    var U = function () { return uebergabe ? env.uebergabe : null; };
 
     /* Zeitleiste:
          0–6    Hintergrund blendet über das Ende des neuen Webauftritts
@@ -2510,7 +2528,7 @@
   }
   navi.landung = function (id) {
     var l = LANDUNG[id];
-    return l ? { von: kapitelY(l[0], l[1]), y: kapitelY(l[0], l[2]) } : null;
+    return l && document.getElementById(l[0]) ? { von: kapitelY(l[0], l[1]), y: kapitelY(l[0], l[2]) } : null;
   };
   navi.anfang = function (id) {
     if (id === 'software') return 0;

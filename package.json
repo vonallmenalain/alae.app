@@ -1,8 +1,11 @@
 {
   "name": "alae-app",
   "private": true,
-  "description": "Landingpage alae.app. Die Seite selbst ist reines HTML ohne Build-Schritt – diese Datei existiert nur, damit Netlify die Abhängigkeit für die Besucherstatistik installiert (Netlify Blobs als Speicher).",
+  "description": "Landingpage alae.app. Die Seite selbst ist reines HTML ohne Build-Schritt – diese Datei existiert, damit Netlify die Abhängigkeit für die Besucherstatistik installiert (Netlify Blobs als Speicher), und für die Tests der Funktionen (npm test).",
   "type": "module",
+  "scripts": {
+    "test": "node --test netlify/tests/*.test.mjs"
+  },
   "dependencies": {
     "@netlify/blobs": "^8.2.0"
   }

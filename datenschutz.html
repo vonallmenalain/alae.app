@@ -58,8 +58,10 @@
         Tag keine Cookies. Darüber hinaus bindet die Website keine externen
         Schriften, Karten oder Skripte ein und verwendet keine weiteren
         Analyse- oder Werbewerkzeuge. Personendaten fallen sonst nur an, wenn
-        du das Kontaktformular benutzt oder eine E-Mail schreibst – und wenn
-        der Hosting-Anbieter den Aufruf technisch protokolliert.
+        du das Kontaktformular benutzt oder eine E-Mail schreibst, wenn du
+        über einen Link mit Code kommst, etwa aus einer E-Mail von alae.app
+        (Ziffer 8) – und wenn der Hosting-Anbieter den Aufruf technisch
+        protokolliert.
       </p>
     </div>
 
@@ -201,12 +203,13 @@
           <tr>
             <td>Netlify</td>
             <td>Hosting und Ausliefern der Website, Serverprotokolle, Speicher der
-                eigenen Zugriffsstatistik</td>
+                eigenen Zugriffsstatistik, Betrieb der eigenen Verwaltung</td>
             <td>USA, Ausliefern über weltweit verteilte Server</td>
           </tr>
           <tr>
             <td>Resend</td>
-            <td>Versand der Nachricht aus dem Kontaktformular</td>
+            <td>Versand der Nachricht aus dem Kontaktformular und der E-Mails von
+                alae.app (Ziffer 8)</td>
             <td>USA; die eingesetzte Versandinfrastruktur ist auf die Region EU konfiguriert</td>
           </tr>
           <tr>
@@ -218,6 +221,12 @@
             <td>Google</td>
             <td>E-Mail-Postfach, in dem Anfragen empfangen und beantwortet werden</td>
             <td>USA</td>
+          </tr>
+          <tr>
+            <td>Google (Firebase)</td>
+            <td>Datenbank der eigenen Verwaltung: Kontakte, E-Mails von alae.app und
+                Aufrufe von Links mit Code (Ziffer 8)</td>
+            <td>USA; die Daten liegen in Rechenzentren in der EU</td>
           </tr>
         </tbody>
       </table>
@@ -280,7 +289,61 @@
          Kommt ein Einwilligungsdialog dazu, hier Art. 6 Abs. 1 lit. a DSGVO
          nennen und den Absatz zum Verhindern anpassen. -->
 
-    <h2>8. Bekanntgabe von Daten ins Ausland</h2>
+    <!-- ===================================================================
+         Beschreibt die Links mit Code (?ref=, /k/) und die E-Mails aus der
+         eigenen Verwaltung (Repo administration, Marketing). Die Erfassung
+         steht dort in netlify/functions/link.ts und ref.ts, hier in
+         netlify/functions/besuch.mjs und assets/besuch.js. Ändert sich,
+         was erfasst wird, muss diese Ziffer mit.
+         =================================================================== -->
+    <h2 id="links-mit-code">8. E-Mails von alae.app und Links mit Code</h2>
+    <p>
+      An Personen, Vereine und Firmen, die eine Web-App brauchen könnten,
+      gehen gelegentlich E-Mails von alae.app, etwa nach einem Gespräch. Dafür
+      werden in der eigenen Verwaltung von alae.app aufbewahrt: Name, Firma
+      oder Verein, E-Mail-Adresse, falls bekannt die Postadresse und eine
+      Notiz, woher der Kontakt stammt, dazu die verschickten E-Mails.
+    </p>
+    <p>
+      Die Links in diesen E-Mails tragen einen kurzen Code, etwa
+      <code>alae.app/k/k7m2qdx</code>; er gehört zu genau einer E-Mail. Rufst
+      du einen solchen Link auf, wird festgehalten:
+    </p>
+    <ul class="liste">
+      <li>Zeitpunkt und welcher Link aufgerufen wurde</li>
+      <li>die Browserkennung und die erste Sprache deines Browsers</li>
+      <li>das Land des anfragenden Netzes</li>
+      <li>der Hostname einer verweisenden Seite, nie deren vollständige Adresse</li>
+    </ul>
+    <p>
+      Die IP-Adresse wird nicht gespeichert. Scrollst du danach auf der
+      Startseite, meldet sie einmal, dass sie angesehen wurde, mit denselben
+      Angaben. Dafür wird kein Cookie gesetzt und nichts in deinem Browser
+      gespeichert. So zeigt sich, ob eine E-Mail angekommen ist und ob ihr
+      Link genutzt wurde, getrennt von den Abrufen durch Programme wie
+      Virenscanner oder Vorschauen.
+    </p>
+    <p>
+      Mit dem Code zeigt die Startseite Inhalte, die für dich ausgewählt sind,
+      etwa bestimmte Referenzprojekte. Die Website erfährt dafür nur, welche
+      Inhalte gewählt sind, nie deinen Namen oder deine Adresse.
+    </p>
+    <p>
+      Links mit Code stehen auch in Anzeigen, auf Instagram oder auf Flyern.
+      Dort gehört ein Code zu keiner Person, sondern zu dem Ort, an dem der
+      Link steht; erfasst werden dieselben Angaben.
+    </p>
+    <p>
+      Rechtsgrundlage nach DSGVO ist das berechtigte Interesse, mögliche
+      Kundschaft auf die eigene Arbeit aufmerksam zu machen und zu sehen, ob
+      das ankommt (Art. 6 Abs. 1 lit. f). Jede solche E-Mail enthält einen
+      Link zum Abmelden; eine kurze Nachricht an die oben genannte Adresse
+      genügt ebenso. Danach geht keine E-Mail dieser Art mehr an deine
+      Adresse. Damit das so bleibt, steht sie danach als nicht umkehrbarer
+      Prüfwert in einer Sperrliste.
+    </p>
+
+    <h2>9. Bekanntgabe von Daten ins Ausland</h2>
     <p>
       Die oben genannten Unternehmen haben ihren Sitz in den USA oder gehören
       zu einem Konzern mit Sitz dort. Soweit sie nach dem Swiss-U.S.
@@ -291,7 +354,7 @@
       übermittelt, soweit es für die jeweilige Leistung erforderlich ist.
     </p>
 
-    <h2>9. Aufbewahrungsdauer</h2>
+    <h2>10. Aufbewahrungsdauer</h2>
     <ul class="liste">
       <li>
         <strong>Zugriffsdaten:</strong> werden vom Hosting-Anbieter nur für kurze
@@ -315,9 +378,16 @@
         Geschäftsunterlagen. Anfragen ohne Auftrag werden spätestens nach zwei
         Jahren gelöscht.
       </li>
+      <li>
+        <strong>Kontakte, E-Mails von alae.app und Aufrufe von Links mit
+        Code:</strong> werden aufbewahrt, solange der Kontakt sinnvoll ist, und
+        auf Wunsch gelöscht. Die Adresse bleibt dann als Prüfwert in der
+        Sperrliste, damit keine E-Mail dieser Art mehr an sie geht
+        (Ziffer 8).
+      </li>
     </ul>
 
-    <h2>10. Deine Rechte</h2>
+    <h2>11. Deine Rechte</h2>
     <p>Du hast im Rahmen des anwendbaren Rechts jederzeit das Recht:</p>
     <ul class="liste">
       <li>Auskunft über die bearbeiteten Personendaten zu verlangen</li>
@@ -339,7 +409,7 @@
       DSGVO an die für dich zuständige Datenschutzbehörde.
     </p>
 
-    <h2>11. Datensicherheit</h2>
+    <h2>12. Datensicherheit</h2>
     <p>
       Die Website wird ausschliesslich verschlüsselt über HTTPS ausgeliefert;
       Inhalte und Formulareingaben sind auf dem Übertragungsweg geschützt. Der
@@ -349,7 +419,7 @@
       Datenübertragungen im Internet naturgemäss nicht garantiert werden.
     </p>
 
-    <h2>12. Projekte und Kundendaten</h2>
+    <h2>13. Projekte und Kundendaten</h2>
     <p>
       Diese Erklärung betrifft die Website alae.app. Für Anwendungen, die im
       Auftrag von Kunden entwickelt und betrieben werden, gilt jeweils eine eigene
@@ -358,7 +428,7 @@
       wie lange sie aufbewahrt werden.
     </p>
 
-    <h2>13. Änderungen</h2>
+    <h2>14. Änderungen</h2>
     <p>
       Diese Erklärung kann angepasst werden, wenn sich die Website, die
       eingesetzten Dienstleister oder die Rechtslage ändern. Es gilt jeweils die
