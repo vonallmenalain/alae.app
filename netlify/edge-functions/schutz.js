@@ -14,7 +14,9 @@
  *                    existiert hier; jede Antwort darüber hinaus wäre nur
  *                    eine Auskunft an den Scanner.
  *   3. Methoden     – geschrieben wird auf dieser Seite nur beim
- *                    Kontaktformular. Alles andere ausser Lesen fällt raus.
+ *                    Kontaktformular und beim Bestätigen eines Besuchs über
+ *                    einen Link mit Code. Alles andere ausser Lesen fällt
+ *                    raus.
  *
  * Bewusst NICHT hier: Sperren nach Land oder IP. Die Muster unten treffen
  * das Verhalten, nicht die Herkunft – ein Schweizer Besucher mit Browser
@@ -49,10 +51,12 @@ const SCANNER_MUSTER = [
   /^\/(shell|cmd|eval-stdin|alfa|wso|c99|r57)(\.|\/|$)/i,
 ];
 
-/* Schreibende Anfragen sind nur an das Kontaktformular erlaubt. */
+/* Schreibende Anfragen sind nur an das Kontaktformular und an die
+   Bestätigung eines Besuchs erlaubt (netlify/functions/besuch.mjs). */
 const SCHREIB_PFADE = new Set([
   '/api/kontakt',
   '/.netlify/functions/kontakt',
+  '/api/besuch',
 ]);
 
 const LESE_METHODEN = new Set(['GET', 'HEAD', 'OPTIONS']);
