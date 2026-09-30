@@ -21,7 +21,7 @@ weiter, samt Sprungmarke.
 | --- | --- | --- | --- |
 | 01 | Massgeschneiderte Software | `software`, erste Hälfte | „Chaos, Zettel, Excel?": ein Knäuel aus Lichtfäden mit sechs Zetteln. Ordnung wandert durchs Knäuel, die Fäden legen sich um die Kacheln eines Dashboards, jeder Zettel landet als Kachel, das Signet erscheint auf Milchglas. Dann dreht sich das Tablet, eine Zahlung kommt herein, vier Hinweise zeigen auf die Stellen im Dashboard |
 | 02 | Neuer Webauftritt | `software`, zweite Hälfte (Sprungmarke `webauftritt`) | Das Tablet bleibt. Es lädt die Website einer Schreinerei von 2009 – Lauftext, Besucherzähler, Baustellen-GIF –, die sich Stück für Stück in eine moderne verwandelt. Ein Zeiger schickt darüber eine Offerten-Anfrage ab, und die Website wird zur App: Die Anfrage steht als neuer Auftrag im Dashboard. Titel: „Vorher: Webseite von 2009", „Nachher: Modern, schnell und lebendig.", „Und daraus wird deine App." Zum Schluss wechselt das Bild im Tablet zu Gripszug |
-| 03 | Referenzprojekte | `projekte`, `dreamteam`, `fotos`, `volleyball` | „Referenzapp 1: Gripszug" bis „Referenzapp 4: Volleyballturnier". Gripszug: Das Tablet aus 02 verschwindet nicht, es wandert an seinen neuen Platz und wird zum breiteren Gerät der App, dann fünf Wagen, fünf Bereiche. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf Stars werden gewählt, stellen sich auf, die Rangliste rechnet live. Fotoverkauf: eine E-Mail mit Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download. Volleyballturnier: Der ausgedruckte Spielplan in der Halle und die Fragen, die er offenlässt; er löst sich in seine Spiele auf, und jedes findet seinen Platz im Spielplan des Tages. Auf dem Handy wird ein Resultat eingetippt, die Tabelle rechnet nach und ordnet neu, und das Dashboard zeigt einem Team seine Spiele und wann es zählen muss – im Plan dahinter bleiben genau diese stehen. Unter Gripszug, DreamTeam und Volleyballturnier führt ein Link zur echten App (`kids.alae.app`, `dt.alae.app`, `pvt.alae.app`) |
+| 03 | Referenzprojekte | `projekte`, `dreamteam`, `fotos`, `volleyball`, `buchhaltung` | „Referenzapp 1: Gripszug" bis „Referenzapp 5: Buchhaltung". Gripszug: Das Tablet aus 02 verschwindet nicht, es wandert an seinen neuen Platz und wird zum breiteren Gerät der App, dann fünf Wagen, fünf Bereiche. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf Stars werden gewählt, stellen sich auf, die Rangliste rechnet live. Fotoverkauf: eine E-Mail mit Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download. Volleyballturnier: Der ausgedruckte Spielplan in der Halle und die Fragen, die er offenlässt; er löst sich in seine Spiele auf, und jedes findet seinen Platz im Spielplan des Tages. Auf dem Handy wird ein Resultat eingetippt, die Tabelle rechnet nach und ordnet neu, und das Dashboard zeigt einem Team seine Spiele und wann es zählen muss – im Plan dahinter bleiben genau diese stehen. Buchhaltung: ein Kassenbuch in Excel, das den Gewinn nicht kennt, und zwei Belege. Im Fenster der App werden sie gebucht, darunter rechnen Erfolgsrechnung und Bilanz mit; die Bilanz ist eine Waage, die nach jeder Buchung wieder gerade steht. Zum Schluss der Abschluss auf Knopfdruck. Unter Gripszug, DreamTeam und Volleyballturnier führt ein Link zur echten App (`kids.alae.app`, `dt.alae.app`, `pvt.alae.app`); Fotoverkauf und Buchhaltung sind nur mit Login erreichbar |
 | 04 | 4 Schritte zur Web-App | `ablauf` | Links die vier Schritte, rechts ein Haus, das entsteht: Gespräch auf dem Bauplatz, Plan und Offerte, Rohbau mit Kran und Checkliste, das fertige Haus am Abend |
 | 05 | Preis | `preise` | Ein Preisschild pendelt sich ein, drei Etappen werden nacheinander verrechnet. Dann die zwei Wege nach dem Go-live: Die App wandert samt Schlüssel und Quellcode in eine Kiste – oder die Dienste kreisen um sie |
 | 06 | Über mich | `motivation` | Das Porträt, aus dem die acht Stationen herausfliegen: Studium, Finanzexperte, Controller, Familie, Vibe Coder, Volleyball, Skifahren, Wohnort Oberburg mit Karte der Schweiz |
@@ -29,8 +29,8 @@ weiter, samt Sprungmarke.
 | 08 | FAQ | `faq` | Kein Akkordeon, sondern ein Gespräch mit Alain: Eine Frage antippen, sie erscheint als Nachricht, kurz „tippt …", dann die Antwort |
 
 Die Anker der früheren Startseite (`#top`, `#main`, `#app-gripszug`,
-`#app-dreamteam`, `#app-fotoverkauf`, `#app-volleyball` und die der
-entfernten Apps) führen an
+`#app-dreamteam`, `#app-fotoverkauf`, `#app-volleyball`, `#app-buchhaltung`
+und die der entfernten Apps) führen an
 die passende Stelle, damit alte Links und Anzeigen nicht ins Leere zeigen.
 
 ### Kapitel-Navigation
@@ -144,6 +144,13 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   ändert, rechnet Punkte, Plus, Minus und Verhältnis nach (`VB_NETZROLLER`,
   `VB_WANNE`). Hoch ist das Handy kein Gerät im Bild, sondern eine Karte
   über die ganze Breite, damit die Tabelle lesbar bleibt.
+- **Die Buchhaltung zeigt keinen Firmennamen**, auch nicht im Quelltext:
+  Die App gehört einer Firma und ist nur mit Login erreichbar, darum gibt es
+  keinen Link. Objekte (Ferienhaus, Fotostudio, Schreinerei), Buchungen und
+  Beträge sind erfunden wie im Kurzfilm der App und passen zueinander: Im
+  HTML stehen die Zahlen nach beiden Buchungen, die davor setzt das Skript
+  (`BH_STAND`). Gewinn 17'780 → 20'180 → 18'830, die Bilanz bleibt dabei
+  ausgeglichen.
 - **Der Fotoverkauf zeigt überall dasselbe gezeichnete Kind** – als Porträt,
   ganz, beim Spielen weiter weg, auf dem Klassen- und dem Gruppenfoto. Adresse
   und Code sind erfunden (`eltern@example.ch`), wie im Kurzfilm der App.
@@ -193,7 +200,7 @@ Stellschrauben:
 
 - **Tempo:** `--len` an jedem Kapitel ist sein Scrollweg in vh (`software`
   959, `projekte` 300, `dreamteam` 480, `fotos` 420, `volleyball` 460,
-  `ablauf` 400, `preise`
+  `buchhaltung` 480, `ablauf` 400, `preise`
   380, `motivation` 380, `gespraech` 260). Mehr heisst langsamer, die Abfolge
   bleibt dieselbe. Wer ihn ändert, prüft die Landepunkte in `LANDUNG`.
 - **Abfolge:** Der Zeitplan steht als Tabelle über jeder `buildMotion` im
@@ -215,8 +222,9 @@ Stellschrauben:
       `EMPFAENGER` in `assets/story.js` und in den strukturierten Daten am Ende
       von `index.html`)
 - [ ] **Texte gegenlesen** – alle acht Kapitel, besonders die neuen: Neuer
-      Webauftritt, das Volleyballturnier, die vier Schritte, Preis, die
-      Stationen unter „Über mich" und die Antworten im FAQ-Gespräch
+      Webauftritt, Volleyballturnier und Buchhaltung, die vier Schritte,
+      Preis, die Stationen unter „Über mich" und die Antworten im
+      FAQ-Gespräch
 - [ ] **DreamTeam-Bilder** – die Karten zeigen echte Spielerfotos und
       Klubwappen von api-sports (siehe „Die Scroll-Geschichte"). Bei der
       rechtlichen Prüfung mit abklären

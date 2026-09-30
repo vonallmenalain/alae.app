@@ -447,7 +447,7 @@
      ===================================================================== -->
 <section class="story" id="projekte" data-kapitel="gripszug" data-referenz="gripszug" aria-labelledby="gz-h">
   <!-- Anker der früheren Startseite: Karten des App-Karussells -->
-  <span class="anker-alt" id="app-gripszug"></span><span class="anker-alt" id="app-jass"></span><span class="anker-alt" id="app-sharing"></span><span class="anker-alt" id="app-buchhaltung"></span>
+  <span class="anker-alt" id="app-gripszug"></span><span class="anker-alt" id="app-jass"></span><span class="anker-alt" id="app-sharing"></span>
   <div class="stage">
     <div class="stage-bg" aria-hidden="true"></div>
     <div class="gz-sky" aria-hidden="true"></div>
@@ -686,6 +686,104 @@
         <li>Und wann es zählen muss</li>
       </ul>
       <a class="app-link" href="https://pvt.alae.app" target="_blank" rel="noopener" aria-label="App öffnen: pvt.alae.app – öffnet in einem neuen Tab"><span class="app-link-text">App öffnen</span><span class="app-link-url">pvt.alae.app</span><svg class="app-link-pfeil" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 16.5 16.5 7.5M9.5 7.5h7v7"/></svg></a>
+    </div>
+  </div>
+</section>
+<!--/referenz-->
+
+<!--referenz:buchhaltung-->
+<!-- =====================================================================
+     REFERENZ 5 – BUCHHALTUNG
+     Die App ist nur mit Login erreichbar und zeigt die Zahlen einer Firma.
+     Hier steht darum kein Firmenname und kein Link; Objekte, Buchungen und
+     Beträge sind erfunden, wie im Kurzfilm der App. Journal,
+     Erfolgsrechnung und Bilanz passen zueinander: Die Zahlen im HTML sind
+     die nach beiden Buchungen, die davor setzt das Skript (BH_VORHER).
+     ===================================================================== -->
+<section class="story" id="buchhaltung" data-kapitel="buchhaltung" data-referenz="buchhaltung" aria-labelledby="bh-h">
+  <span class="anker-alt" id="app-buchhaltung"></span>
+  <div class="stage">
+    <div class="stage-bg" aria-hidden="true"></div>
+    <div class="bh-glow" aria-hidden="true"></div>
+    <div class="bh-vorher" aria-hidden="true">
+      <div class="bh-xls">
+        <p class="bh-xls-bar"><b>X</b>Kassenbuch_2026_v7.xlsx</p>
+        <div class="bh-xls-raster">
+          <span class="h"></span><span class="h">A</span><span class="h">B</span><span class="h">C</span><span class="h">D</span>
+          <span class="h">1</span><span>Datum</span><span>Text</span><span>Einnahmen</span><span>Ausgaben</span>
+          <span class="h">2</span><span>11.09.</span><span>Strom Q3</span><span></span><span>790.00</span>
+          <span class="h">3</span><span>15.09.</span><span>Druck</span><span></span><span>730.00</span>
+          <span class="h">4</span><span>18.09.</span><span>Miete Ferienhaus</span><span>2'450.00</span><span></span>
+          <span class="h">5</span><span>22.09.</span><span>Gartenbank</span><span class="warn">3350</span><span></span>
+          <span class="h">6</span><span>24.09.</span><span>Fotokurs</span><span>480.00</span><span></span>
+          <span class="h">7</span><span></span><span>Gewinn?</span><span class="err">#BEZUG!</span><span></span>
+        </div>
+      </div>
+      <p class="bh-zettel">Gewinn<br>bis jetzt??</p>
+    </div>
+    <div class="bh-beleg bh-beleg--bank" aria-hidden="true">
+      <p class="bh-beleg-kopf">Gutschrift</p>
+      <p class="bh-beleg-text">Wochenmiete September<small>Ferienhaus · 29.09.2026</small></p>
+      <p class="bh-beleg-betrag">CHF 2'400.00</p>
+    </div>
+    <div class="bh-beleg bh-beleg--kasse" aria-hidden="true">
+      <p class="bh-beleg-kopf">Holzhandel Emme</p>
+      <p class="bh-beleg-text">Holz und Beschläge<small>Schreinerei · 30.09.2026</small></p>
+      <p class="bh-beleg-betrag">Total CHF 1'350.00</p>
+    </div>
+    <div class="bh-fenster" aria-hidden="true">
+      <p class="bh-leiste"><i></i><i></i><i></i><span>Buchhaltung</span></p>
+      <div class="bh-app">
+        <div class="bh-kopf"><b>Buchhaltung 2026 <em>▾</em></b><span class="bh-abschluss">Abschluss 2026</span></div>
+        <p class="bh-tabs"><span class="is-on">Erfassen &amp; Journal</span><span>Erfolgsrechnung</span><span>Bilanz</span><span>Kontenplan</span></p>
+        <div class="bh-form">
+          <p class="bh-form-h">Neue Buchung erfassen</p>
+          <div class="bh-felder">
+            <p class="bh-feld"><small>Datum</small><span><b class="b1" data-tippe="29.09.2026"></b><b class="b2" data-tippe="30.09.2026"></b></span></p>
+            <p class="bh-feld bh-feld--wahl"><small>Objekt</small><span><b class="b1" data-tippe="Ferienhaus"></b><b class="b2" data-tippe="Schreinerei"></b></span></p>
+            <p class="bh-feld bh-feld--text"><small>Text</small><span><b class="b1" data-tippe="Wochenmiete September"></b><b class="b2" data-tippe="Holz und Beschläge"></b></span></p>
+            <p class="bh-feld bh-feld--wahl"><small>Soll</small><span><b class="b1" data-tippe="1020 Bankkonto"></b><b class="b2" data-tippe="4000 Materialaufwand"></b></span></p>
+            <p class="bh-feld bh-feld--wahl"><small>Haben</small><span><b class="b1" data-tippe="3000 Mieteinnahmen"></b><b class="b2" data-tippe="1020 Bankkonto"></b></span></p>
+            <p class="bh-feld bh-feld--zahl"><small>Betrag (CHF)</small><span><b class="b1" data-tippe="2'400.00"></b><b class="b2" data-tippe="1'350.00"></b></span></p>
+          </div>
+          <p class="bh-speichern">Buchung speichern</p>
+        </div>
+        <p class="bh-objekte"><span>Zeige Objekte:</span><i>Ferienhaus</i><i>Fotostudio</i><i>Schreinerei</i></p>
+        <div class="bh-journal">
+          <p class="bh-jz bh-jz--kopf"><span>Datum</span><span>Objekt</span><span>Text</span><span>Soll</span><span>Haben</span><span>Betrag</span></p>
+          <p class="bh-jz bh-jz--neu"><span>30.09.2026</span><span><i data-o="s">Schreinerei</i></span><span>Holz und Beschläge</span><span>4000</span><span>1020</span><span>1'350.00</span></p>
+          <p class="bh-jz bh-jz--neu"><span>29.09.2026</span><span><i data-o="f">Ferienhaus</i></span><span>Wochenmiete September</span><span>1020</span><span>3000</span><span>2'400.00</span></p>
+          <p class="bh-jz"><span>24.09.2026</span><span><i data-o="p">Fotostudio</i></span><span>Fotokurs Oktober</span><span>1020</span><span>3200</span><span>480.00</span></p>
+          <p class="bh-jz"><span>22.09.2026</span><span><i data-o="s">Schreinerei</i></span><span>Gartenbank, Serie</span><span>1100</span><span>3200</span><span>3'350.00</span></p>
+          <p class="bh-jz"><span>18.09.2026</span><span><i data-o="f">Ferienhaus</i></span><span>Wochenmiete Mitte September</span><span>1020</span><span>3000</span><span>2'450.00</span></p>
+          <p class="bh-jz"><span>15.09.2026</span><span><i data-o="p">Fotostudio</i></span><span>Druck und Passepartouts</span><span>4000</span><span>1020</span><span>730.00</span></p>
+          <p class="bh-jz"><span>11.09.2026</span><span><i data-o="f">Ferienhaus</i></span><span>Strom und Heizung Q3</span><span>6400</span><span>1020</span><span>790.00</span></p>
+        </div>
+        <p class="bh-meldung"><i></i>Jahresabschluss 2026 erstellt</p>
+      </div>
+    </div>
+    <div class="bh-karten" aria-hidden="true">
+      <div class="bh-er">
+        <p class="bh-karte-h"><span>Erfolgsrechnung 2026</span><em class="bh-stempel">Abgeschlossen</em></p>
+        <p class="bh-zeile"><span>Ertrag</span><span data-bh="ertrag">36'070.00</span></p>
+        <p class="bh-zeile"><span>Aufwand</span><span data-bh="aufwand">17'240.00</span></p>
+        <p class="bh-gewinn"><span>Gewinn</span><b>CHF <span data-bh="gewinn">18'830.00</span></b><em class="bh-delta bh-delta--plus">+ 2'400</em><em class="bh-delta bh-delta--minus">− 1'350</em></p>
+      </div>
+      <div class="bh-bilanz">
+        <p class="bh-karte-h"><span>Bilanz</span><em class="bh-stempel">Abgeschlossen</em></p>
+        <svg class="bh-waage" viewBox="0 0 200 104"><path class="bh-fuss" d="M76 100h48l-8-7H84z"/><path class="bh-saeule" d="M100 30v64"/><g class="bh-schale bh-schale--l"><path class="bh-seil" d="M40 30 26 62M40 30l14 32"/><path class="bh-pfanne" d="M20 62h40q-4 10-20 10T20 62z"/></g><g class="bh-schale bh-schale--r"><path class="bh-seil" d="M160 30l-14 32M160 30l14 32"/><path class="bh-pfanne" d="M140 62h40q-4 10-20 10t-20-10z"/></g><g class="bh-balken"><path d="M36 30h128"/><circle cx="100" cy="30" r="4.5"/></g></svg>
+        <p class="bh-seiten"><span><small>Aktiven</small><b data-bh="aktiven">71'380.00</b></span><em>=</em><span><small>Passiven</small><b data-bh="passiven">71'380.00</b></span></p>
+      </div>
+    </div>
+    <div class="bh-copy">
+      <p class="kicker">Referenzapp <!--nr-->5<!--/nr-->: Buchhaltung</p>
+      <h2 class="headline" id="bh-h">Buchhaltung, die <span class="hl">mitrechnet</span>.</h2>
+      <ul class="bh-punkte">
+        <li>Buchen in zehn Sekunden</li>
+        <li>Gewinn und Bilanz immer aktuell</li>
+        <li>Drei Objekte, eine Buchhaltung</li>
+        <li>Abschluss auf Knopfdruck</li>
+      </ul>
     </div>
   </div>
 </section>

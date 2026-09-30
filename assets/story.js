@@ -3,7 +3,8 @@
    Aufbau: Heute → Kontaktformular → Kapitel-Navigation → (ab hier nur mit
    GSAP) Werkzeuge → Leinwand → Schleife → Kapitel (Ordnung mit Neuer
    Webauftritt, Gripszug, DreamTeam, Fotoverkauf, Volleyballturnier,
-   Ablauf, Preise, Über mich, Erstgespräch) → Kontakt und FAQ → Aufbau
+   Buchhaltung, Ablauf, Preise, Über mich, Erstgespräch) → Kontakt und FAQ →
+   Aufbau
 
    Jedes Kapitel ist eine Funktion, die eine Zeitleiste von 0 bis 100 baut
    (Ordnung: bis 204, es trägt die Szenen 1 bis 3 und den neuen
@@ -143,13 +144,13 @@
     // Anker der früheren Startseite, damit alte Links an die passende Stelle führen
     var ALIAS = {
       top: 'software', main: 'software', 'app-gripszug': 'projekte', 'app-jass': ersteReferenz, 'app-volleyball': 'volleyball',
-      'app-sharing': ersteReferenz, 'app-buchhaltung': ersteReferenz, 'app-dreamteam': 'dreamteam', 'app-fotoverkauf': 'fotos'
+      'app-sharing': ersteReferenz, 'app-buchhaltung': 'buchhaltung', 'app-dreamteam': 'dreamteam', 'app-fotoverkauf': 'fotos'
     };
     // „#projekte" heisst: an den Anfang der Referenzprojekte, auch wenn dort
     // eine andere App steht. Fehlt ein Ziel, weil der Link diese App nicht
     // zeigt, geht es ebenfalls dorthin.
     if (ersteReferenz !== 'projekte') ALIAS.projekte = ersteReferenz;
-    ['dreamteam', 'fotos', 'volleyball'].forEach(function (id) { if (!document.getElementById(id)) ALIAS[id] = ersteReferenz; });
+    ['dreamteam', 'fotos', 'volleyball', 'buchhaltung'].forEach(function (id) { if (!document.getElementById(id)) ALIAS[id] = ersteReferenz; });
     Object.keys(ALIAS).forEach(function (a) { if (!document.getElementById(ALIAS[a])) ALIAS[a] = ersteReferenz; });
     var ruhig = function () { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
     var oben = function (el) { return el.getBoundingClientRect().top + window.pageYOffset; };
@@ -2140,6 +2141,180 @@
 
 
   /* =========================================================================
+     KAPITEL BUCHHALTUNG – Referenzprojekt
+     Erst das Alte: ein Kassenbuch in Excel, das den Gewinn nicht kennt, und
+     die Belege dazu. Dann die App: Jeder Beleg wird in Sekunden gebucht,
+     steht im Journal, und Erfolgsrechnung und Bilanz rechnen sofort mit.
+     Die Bilanz ist eine Waage: Eine Buchung bringt sie kurz aus dem Lot,
+     die Gegenbuchung stellt sie wieder gerade. Zum Schluss der Abschluss
+     auf Knopfdruck. Wie im Kurzfilm der App: kein Firmenname, erfundene
+     Objekte und Beträge.
+     ========================================================================= */
+  // Die Zahlen vor der ersten Buchung, nach der ersten (Wochenmiete, +2'400
+  // Ertrag, Bankkonto +2'400) und nach der zweiten (Material, +1'350 Aufwand,
+  // Bankkonto −1'350). Im HTML stehen die letzten.
+  var BH_STAND = {
+    ertrag: [33670, 36070, 36070], aufwand: [15890, 15890, 17240], gewinn: [17780, 20180, 18830],
+    aktiven: [70330, 72730, 71380], passiven: [70330, 72730, 71380]
+  };
+  function buchhaltung(sec, env) {
+    var stage = q1('.stage', sec), glow = q1('.bh-glow', sec), xls = q1('.bh-xls', sec), zettel = q1('.bh-zettel', sec);
+    var belege = qa('.bh-beleg', sec), fenster = q1('.bh-fenster', sec), form = q1('.bh-form', sec);
+    var b1 = qa('.bh-feld .b1', sec), b2 = qa('.bh-feld .b2', sec), speichern = q1('.bh-speichern', sec);
+    var neu = qa('.bh-jz--neu', sec), schreinerei = qa('.bh-objekte i', sec)[2];
+    var abschluss = q1('.bh-abschluss', sec), meldung = q1('.bh-meldung', sec), stempel = qa('.bh-stempel', sec);
+    var karten = qa('.bh-karten > *', sec), plus = q1('.bh-delta--plus', sec), minus = q1('.bh-delta--minus', sec);
+    var balken = q1('.bh-balken', sec), schalen = qa('.bh-schale', sec);
+    var kicker = q1('.bh-copy .kicker', sec), Wb = words(q1('.bh-copy h2', sec)), punkteListe = q1('.bh-punkte', sec), punkte = qa('.bh-punkte li', sec);
+    var portrait = env.portrait, reduced = env.reduced;
+    var PUNKT_AB = [37, 44, 57, 77];
+    var zahlen = {};
+    qa('[data-bh]', sec).forEach(function (el) { zahlen[el.getAttribute('data-bh')] = el; });
+    var texte = qa('[data-bh]', sec).concat(b1, b2).map(function (el) { return { el: el, t: el.textContent }; });
+    var chf = function (v) { return group(v) + '.00'; };
+
+    /* Die Belege fliegen in das Formular: von ihrem Platz in die Mitte der
+       Felder. Gemessen ohne Transformationen (rel). */
+    var M = { zeile: 0, ziel: [] };
+    function measure() {
+      M.zeile = q1('.bh-jz:not(.bh-jz--neu):not(.bh-jz--kopf)', sec).offsetHeight;
+      var f = rel(form, stage);
+      M.ziel = belege.map(function (b) {
+        var r = rel(b, stage);
+        return { x: f.x + f.w / 2 - (r.x + r.w / 2), y: f.y + f.h * .45 - (r.y + r.h / 2) };
+      });
+    }
+    // Die Waage: Der Balken dreht sich um die Säule, die Schalen hängen
+    // senkrecht darunter und gehen mit seinen Enden auf und ab
+    var W = { a: 0 };
+    function waage() {
+      var d = Math.sin(W.a * Math.PI / 180) * 60;
+      balken.setAttribute('transform', 'rotate(' + W.a.toFixed(2) + ' 100 30)');
+      schalen[0].setAttribute('transform', 'translate(0 ' + (-d).toFixed(2) + ')');
+      schalen[1].setAttribute('transform', 'translate(0 ' + d.toFixed(2) + ')');
+    }
+    // Eine Zahl zählt von einem Stand zum nächsten. Nicht sofort gesetzt:
+    // Zählt dieselbe Zahl später nochmals, schriebe sonst schon beim Aufbau
+    // der spätere Anfang in die Karte.
+    function zaehlen(tl, name, stufe, at, dur) {
+      var von = BH_STAND[name][stufe - 1], bis = BH_STAND[name][stufe], o = { v: von };
+      if (von === bis) return;
+      tl.fromTo(o, { v: von }, { v: bis, duration: dur, ease: 'power1.inOut', immediateRender: false, onUpdate: function () { zahlen[name].textContent = chf(o.v); } }, at);
+    }
+    // Eine Buchung: Beleg ins Formular, Felder tippen, speichern, ins Journal
+    function buchen(tl, k, felder, zeile, at) {
+      tl.to(belege[k], {
+        x: function () { return M.ziel[k].x; }, y: function () { return M.ziel[k].y; },
+        rotation: 0, scale: .35, opacity: 0, duration: 3, ease: 'power2.in'
+      }, at);
+      var t = at + 2.2;
+      [.8, .8, 1.6, 1.4, 1.4, 1].forEach(function (dauer, i) { type(tl, felder[i], t, dauer); t += dauer + .15; });
+      tl.to(speichern, { keyframes: [{ scale: .92, duration: .4, ease: 'power2.out' }, { scale: 1, duration: .8, ease: 'back.out(3)' }] }, t + .2);
+      tl.to(felder, { opacity: 0, duration: .8, ease: 'none' }, t + .9);
+      tl.fromTo(zeile, { height: 0, opacity: 0, borderTopWidth: 0 },
+        { height: function () { return M.zeile; }, opacity: 1, borderTopWidth: 1, duration: 2.4, ease: 'aOut' }, t + .7);
+      tl.fromTo(zeile, { backgroundColor: '#C9F0D6' }, { backgroundColor: '#F2FBF5', duration: 4, ease: 'none' }, t + 1.5);
+      return t + 1;
+    }
+    // Die Waage kippt zur Seite, die sich zuerst ändert, und kommt zurück.
+    // Drei einzelne Schritte statt Keyframes: Springt die Seite über alle
+    // hinweg, zeichnet so jeder seinen Endstand, auch der letzte.
+    function kippen(tl, richtung, at) {
+      tl.to(W, { a: 7 * richtung, duration: 1.4, ease: 'power2.out', onUpdate: waage }, at);
+      tl.to(W, { a: -2.5 * richtung, duration: 1.6, ease: 'power2.inOut', onUpdate: waage }, at + 1.4);
+      tl.to(W, { a: 0, duration: 1.4, ease: 'power2.out', onUpdate: waage }, at + 3);
+    }
+
+    /* Zeitleiste:
+         0–6    Hintergrund blendet über das Volleyballturnier
+         3–13   Kassenbuch, Zettel und Belege
+         5–18   Titel und Punkte
+         17–24  Kassenbuch und Zettel gehen, das Fenster kommt
+         22–30  Erfolgsrechnung und Bilanz darunter
+         27–39  die erste Buchung: Wochenmiete, Ferienhaus
+         40–46  Ertrag und Gewinn steigen, die Waage kippt und steht wieder
+         50–62  die zweite Buchung: Material, Schreinerei
+         63–69  Aufwand steigt, Gewinn sinkt, die Waage wieder im Lot
+         74–82  Abschluss auf Knopfdruck */
+    function buildMotion(tl) {
+      bgIn(tl, sec);
+      tl.fromTo(glow, { opacity: 0 }, { opacity: 1, duration: 10, ease: 'none' }, 2);
+      tl.fromTo(xls, { opacity: 0, y: 30, rotation: -4 }, { opacity: 1, y: 0, rotation: -2, duration: 7, ease: 'aOut' }, 3);
+      tl.fromTo(zettel, { opacity: 0, y: -20, rotation: 10, scale: 1.1 }, { opacity: 1, y: 0, rotation: 5, scale: 1, duration: 4, ease: 'back.out(1.8)' }, 9);
+      tl.fromTo(belege[0], { opacity: 0, y: 50, rotation: 12 }, { opacity: 1, y: 0, rotation: 6, duration: 5, ease: 'aOut' }, 6);
+      tl.fromTo(belege[1], { opacity: 0, y: 50, rotation: -10 }, { opacity: 1, y: 0, rotation: -5, duration: 5, ease: 'aOut' }, 7.5);
+      tl.fromTo(kicker, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 5, ease: 'aOut' }, 5);
+      wordsIn(tl, Wb, 7);
+      tl.fromTo(punkteListe, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 6, ease: 'aOut' }, 12);
+      tl.to([xls, zettel], { opacity: 0, y: 30, scale: .95, duration: 5, stagger: .6, ease: 'power2.in' }, 17);
+      // Der zweite Beleg wartet ausserhalb, bis er an der Reihe ist
+      tl.to(belege[1], { opacity: 0, x: 70, duration: 4, ease: 'power2.in' }, 17.5);
+      tl.to(belege[1], { opacity: 1, x: 0, duration: 3.5, ease: 'aOut' }, 46);
+      tl.fromTo(fenster, { opacity: 0, y: 24, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: 7, ease: 'aOut' }, 19);
+      tl.fromTo(karten, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 6, stagger: 1.2, ease: 'aOut' }, 23);
+      // Erste Buchung: Wochenmiete Ferienhaus, 2'400 auf das Bankkonto
+      var t1 = buchen(tl, 0, b1, neu[1], 27);
+      zaehlen(tl, 'aktiven', 1, t1, 2.5);
+      kippen(tl, -1, t1);
+      zaehlen(tl, 'ertrag', 1, t1 + 1.4, 2.5);
+      zaehlen(tl, 'gewinn', 1, t1 + 1.4, 2.8);
+      zaehlen(tl, 'passiven', 1, t1 + 1.4, 2.5);
+      tl.fromTo(plus, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 1.5, ease: 'aOut' }, t1 + 1.4);
+      tl.to(plus, { opacity: 0, duration: 2, ease: 'none' }, t1 + 7);
+      // Zweite Buchung: Material für die Schreinerei, 1'350 vom Bankkonto
+      tl.to(schreinerei, { keyframes: [{ backgroundColor: '#BFE8CE', scale: 1.08, duration: 1.2 }, { backgroundColor: '#E7EFE9', scale: 1, duration: 2.4 }] }, 53.5);
+      var t2 = buchen(tl, 1, b2, neu[0], 50);
+      zaehlen(tl, 'aktiven', 2, t2, 2.5);
+      kippen(tl, 1, t2);
+      zaehlen(tl, 'aufwand', 2, t2 + 1.4, 2.5);
+      zaehlen(tl, 'gewinn', 2, t2 + 1.4, 2.8);
+      zaehlen(tl, 'passiven', 2, t2 + 1.4, 2.5);
+      tl.fromTo(minus, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 1.5, ease: 'aOut' }, t2 + 1.4);
+      tl.to(minus, { opacity: 0, duration: 2, ease: 'none' }, t2 + 7);
+      // Abschluss auf Knopfdruck
+      tl.to(abschluss, { keyframes: [{ scale: .92, duration: .5, ease: 'power2.out' }, { scale: 1, duration: .9, ease: 'back.out(3)' }] }, 74.5);
+      tl.fromTo(abschluss, { backgroundColor: '#FFFFFF', color: '#157A42' }, { backgroundColor: '#1F9D55', color: '#FFFFFF', duration: .8, ease: 'none' }, 74.7);
+      tl.fromTo(meldung, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 2.5, ease: 'aOut' }, 75.5);
+      tl.fromTo(stempel, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 1.8, stagger: .6, ease: 'back.out(2.2)' }, 77);
+      tl.to({}, { duration: 14 }, 86);
+    }
+    function buildStill(tl) {
+      bgIn(tl, sec);
+      gsap.set([kicker, punkteListe, Wb, glow, karten, meldung], { opacity: 1 });
+      gsap.set(stempel, { opacity: 1 });
+      gsap.set(abschluss, { backgroundColor: '#1F9D55', color: '#FFFFFF' });
+      gsap.set(neu, { height: M.zeile, opacity: 1, borderTopWidth: 1 });
+      punkte.forEach(function (li) { li.classList.add('on'); });
+      punkte[punkte.length - 1].classList.add('cur');
+      tl.fromTo([q1('.bh-copy', sec), fenster, q1('.bh-karten', sec), glow], { opacity: 0 }, { opacity: 1, duration: 8, ease: 'none' }, 4);
+      tl.to({}, { duration: 90 }, 10);
+    }
+
+    measure();
+    // Mit Bewegung beginnt alles beim Stand vor der ersten Buchung, das
+    // Formular ist leer; ohne steht der Schluss da, das Formular ebenso leer
+    b1.concat(b2).forEach(function (el) { el.textContent = ''; });
+    if (!reduced) Object.keys(zahlen).forEach(function (name) { zahlen[name].textContent = chf(BH_STAND[name][0]); });
+    var tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
+    if (reduced) buildStill(tl); else buildMotion(tl);
+    return {
+      tl: tl, tick: null, measure: measure,
+      onUpdate: function (p) {
+        if (reduced) return;
+        var u = p * 100, cur = -1;
+        punkte.forEach(function (li, k) { var on = u >= PUNKT_AB[k]; li.classList.toggle('on', on); if (on) cur = k; });
+        punkte.forEach(function (li, k) { li.classList.toggle('cur', k === cur); });
+      },
+      cleanup: function () {
+        texte.forEach(function (x) { x.el.textContent = x.t; });
+        punkte.forEach(function (li) { li.classList.remove('on', 'cur'); });
+        W.a = 0; waage();
+      }
+    };
+  }
+
+
+  /* =========================================================================
      KAPITEL ABLAUF – vier Schritte
      Links die Schritte, rechts die Bau-Illustration. Der aktive Schritt
      zeigt seinen Text; Bild und Schritt wechseln an denselben Stellen der
@@ -2679,7 +2854,7 @@
      gsap.matchMedia baut alles ab und neu auf, wenn sich eine der drei
      Bedingungen ändert – etwa beim Drehen des Tablets.
      ========================================================================= */
-  var KAPITEL = { ordnung: ordnung, gripszug: gripszug, dreamteam: dreamteam, fotos: fotos, volleyball: volleyball, ablauf: ablauf, preise: preise, ueber: ueber, gespraech: gespraech };
+  var KAPITEL = { ordnung: ordnung, gripszug: gripszug, dreamteam: dreamteam, fotos: fotos, volleyball: volleyball, buchhaltung: buchhaltung, ablauf: ablauf, preise: preise, ueber: ueber, gespraech: gespraech };
   var sections = qa('[data-kapitel]');
 
   function buildAll(cond) {
@@ -2741,6 +2916,7 @@
     dreamteam: ['dreamteam', .065, .2],
     fotos: ['fotos', .065, .16],
     volleyball: ['volleyball', .065, .16],
+    buchhaltung: ['buchhaltung', .065, .18],
     ablauf: ['ablauf', .065, .22],
     preise: ['preise', .065, .25],
     motivation: ['motivation', .065, .2],
