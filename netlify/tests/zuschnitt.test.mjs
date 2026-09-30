@@ -35,14 +35,14 @@ test('Ohne brauchbare Angaben bleibt die Seite, wie sie ist', () => {
   assert.equal(zuschneiden(HTML, { referenzen: ['creart', 'gibt-es-nicht'], zielgruppe: 'kmu' }), HTML);
 });
 
-test('Die vier Referenzapps stehen als Blöcke in index.html, je mit einem Kapitel', () => {
+test('Die fünf Referenzapps stehen als Blöcke in index.html, je mit einem Kapitel', () => {
   const bloecke = referenzBloecke(HTML);
-  assert.deepEqual(bloecke.map((b) => b.schluessel), ['gripszug', 'dreamteam', 'fotoverkauf', 'volleyball']);
+  assert.deepEqual(bloecke.map((b) => b.schluessel), ['gripszug', 'dreamteam', 'fotoverkauf', 'volleyball', 'buchhaltung']);
   for (const b of bloecke) {
     assert.equal((b.text.match(/<section\b/g) || []).length, 1, b.schluessel);
     assert.match(b.text, new RegExp(`data-referenz="${b.schluessel}"`));
   }
-  assert.deepEqual(nummern(HTML), ['1 Gripszug', '2 DreamTeam', '3 Fotoverkauf', '4 Volleyballturnier']);
+  assert.deepEqual(nummern(HTML), ['1 Gripszug', '2 DreamTeam', '3 Fotoverkauf', '4 Volleyballturnier', '5 Buchhaltung']);
 });
 
 test('Ein Link zeigt genau seine Referenzapps, in seiner Reihenfolge', () => {
@@ -84,8 +84,11 @@ test('Für einen Verein erzählt die Seite vom Verein, im Rest bleibt sie gleich
   assert.match(html, /<b class="wa-titel"><!--zg:wa-titel-->Sportclub Talbach<!--\/zg--><\/b>/);
   assert.match(html, /© 2009 <!--zg:wa-titel-->Sportclub Talbach<!--\/zg--> \|/);
   assert.match(html, /data-tippe="Grümpeli, 2 Kinder" data-zg-tippe="wn-wunsch"/);
-  assert.equal(html.includes('Schreinerei'), false);
-  assert.equal(html.includes('Garderobe'), false);
+  // In Kapitel 1 und 2 bleibt nichts von der Schreinerei; die Buchhaltung
+  // weiter unten hat ihre eigene, als eines ihrer drei Objekte
+  const erzaehlt = (h) => h.slice(h.indexOf('<section class="story" id="software"'), h.indexOf('<!--referenz:'));
+  assert.equal(erzaehlt(html).includes('Schreinerei'), false);
+  assert.equal(erzaehlt(html).includes('Garderobe'), false);
   // Ausserhalb der markierten Stellen ändert sich nichts
   const ohneMarken = (h) => h.replace(/<!--zg:[\w-]+-->[\s\S]*?<!--\/zg-->/g, '').replace(/data-tippe="[^"]*"/g, '').replace(/ data-zielgruppe="\w+"/, '');
   assert.equal(ohneMarken(html), ohneMarken(HTML));
@@ -108,4 +111,14 @@ test('Das Volleyballturnier lässt sich wählen wie die anderen, auch als erstes
   // Der Anker der früheren Karte kommt mit seinem Kapitel
   assert.equal((html.match(/id="app-volleyball"/g) || []).length, 1);
   assert.equal(html.includes('id="projekte"'), false);
+});
+
+test('Die Buchhaltung zeigt keinen Firmennamen und keinen Link zur App', () => {
+  const block = referenzBloecke(HTML).find((b) => b.schluessel === 'buchhaltung').text;
+  assert.equal(/creart/i.test(block), false);
+  assert.equal(block.includes('app-link'), false);
+  const html = zuschneiden(HTML, { referenzen: ['buchhaltung'], zielgruppe: 'kmu' });
+  assert.deepEqual(nummern(html), ['1 Buchhaltung']);
+  assert.match(html, /<a href="#buchhaltung" data-referenzen>/);
+  assert.equal((html.match(/id="app-buchhaltung"/g) || []).length, 1);
 });
