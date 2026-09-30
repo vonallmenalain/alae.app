@@ -20,8 +20,8 @@ weiter, samt Sprungmarke.
 | Nr. | Kapitel in der Leiste | Abschnitt (`id`) | Was man sieht |
 | --- | --- | --- | --- |
 | 01 | Massgeschneiderte Software | `software`, erste Hälfte | „Chaos, Zettel, Excel?": ein Knäuel aus Lichtfäden mit sechs Zetteln. Ordnung wandert durchs Knäuel, die Fäden legen sich um die Kacheln eines Dashboards, jeder Zettel landet als Kachel, das Signet erscheint auf Milchglas. Dann dreht sich das Tablet, eine Zahlung kommt herein, vier Hinweise zeigen auf die Stellen im Dashboard |
-| 02 | Neuer Webauftritt | `software`, zweite Hälfte (Sprungmarke `webauftritt`) | Das Tablet bleibt. Es lädt die Website einer Schreinerei von 2009 – Lauftext, Besucherzähler, Baustellen-GIF –, die sich Stück für Stück in eine moderne verwandelt. Ein Zeiger schickt darüber eine Offerten-Anfrage ab, und die Website wird zur App: Die Anfrage steht als neuer Auftrag im Dashboard. Titel: „Vorher: Webseite von 2009", „Nachher: Modern, schnell und lebendig.", „Und daraus wird deine App." Zum Schluss wechselt das Bild im Tablet zu Gripszug |
-| 03 | Referenzprojekte | `projekte`, `dreamteam`, `fotos`, `volleyball`, `buchhaltung` | „Referenzapp 1: Gripszug" bis „Referenzapp 5: Buchhaltung". Gripszug: Das Tablet aus 02 verschwindet nicht, es wandert an seinen neuen Platz und wird zum breiteren Gerät der App, dann fünf Wagen, fünf Bereiche. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf Stars werden gewählt, stellen sich auf, die Rangliste rechnet live. Fotoverkauf: eine E-Mail mit Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download. Volleyballturnier: Der ausgedruckte Spielplan in der Halle und die Fragen, die er offenlässt; er löst sich in seine Spiele auf, und jedes findet seinen Platz im Spielplan des Tages. Auf dem Handy wird ein Resultat eingetippt, die Tabelle rechnet nach und ordnet neu, und das Dashboard zeigt einem Team seine Spiele und wann es zählen muss – im Plan dahinter bleiben genau diese stehen. Buchhaltung: ein Kassenbuch in Excel, das den Gewinn nicht kennt, und zwei Belege. Im Fenster der App werden sie gebucht, darunter rechnen Erfolgsrechnung und Bilanz mit; die Bilanz ist eine Waage, die nach jeder Buchung wieder gerade steht. Zum Schluss der Abschluss auf Knopfdruck. Unter Gripszug, DreamTeam und Volleyballturnier führt ein Link zur echten App (`kids.alae.app`, `dt.alae.app`, `pvt.alae.app`); Fotoverkauf und Buchhaltung sind nur mit Login erreichbar |
+| 02 | Neuer Webauftritt | `software`, zweite Hälfte (Sprungmarke `webauftritt`) | Das Tablet bleibt. Es lädt die Website einer Schreinerei von 2009 – Lauftext, Besucherzähler, Baustellen-GIF –, die sich Stück für Stück in eine moderne verwandelt. Ein Zeiger schickt darüber eine Offerten-Anfrage ab, und die Website wird zur App: Die Anfrage steht als neuer Auftrag im Dashboard. Titel: „Vorher: Webseite von 2009", „Nachher: Modern, schnell und lebendig.", „Und daraus wird deine App." Folgt Gripszug direkt (nur mit einem Link, der es an erste Stelle setzt), wechselt zum Schluss das Bild im Tablet zu Gripszug |
+| 03 | Referenzprojekte | `volleyball`, `buchhaltung`, `fotos`, `projekte` (Gripszug), `dreamteam` | „Referenzapp 1: Volleyballturnier" bis „Referenzapp 5: DreamTeam". Volleyballturnier: Der ausgedruckte Spielplan in der Halle und die Fragen, die er offenlässt; er löst sich in seine Spiele auf, und jedes findet seinen Platz im Spielplan des Tages. Auf dem Handy wird ein Resultat eingetippt, die Tabelle rechnet nach und ordnet neu, und das Dashboard zeigt einem Team seine Spiele und wann es zählen muss – im Plan dahinter bleiben genau diese stehen. Buchhaltung: ein Kassenbuch in Excel, das den Gewinn nicht kennt, und zwei Belege. Im Fenster der App werden sie gebucht, darunter rechnen Erfolgsrechnung und Bilanz mit; die Bilanz ist eine Waage, die nach jeder Buchung wieder gerade steht. Zum Schluss der Abschluss auf Knopfdruck. Fotoverkauf: eine E-Mail mit Anhängen löst sich auf, auf dem Telefon der Weg der Eltern bis zum Download. Gripszug: das Gerät der App, fünf Wagen, fünf Bereiche; folgt es direkt auf 02, wandert das Tablet von dort an seinen neuen Platz und wird zu diesem Gerät. DreamTeam: Flug durch ein Feld aus Spielerkarten, elf Stars werden gewählt, stellen sich auf, die Rangliste rechnet live. Unter Volleyballturnier, Gripszug und DreamTeam führt ein Link zur echten App (`pvt.alae.app`, `kids.alae.app`, `dt.alae.app`); Buchhaltung und Fotoverkauf sind nur mit Login erreichbar. Die Reihenfolge ist die ohne Link; ein Link mit Code wählt Apps und Reihenfolge selbst |
 | 04 | 4 Schritte zur Web-App | `ablauf` | Links die vier Schritte, rechts ein Haus, das entsteht: Gespräch auf dem Bauplatz, Plan und Offerte, Rohbau mit Kran und Checkliste, das fertige Haus am Abend |
 | 05 | Preis | `preise` | Ein Preisschild pendelt sich ein, drei Etappen werden nacheinander verrechnet. Dann die zwei Wege nach dem Go-live: Die App wandert samt Schlüssel und Quellcode in eine Kiste – oder die Dienste kreisen um sie |
 | 06 | Über mich | `motivation` | Das Porträt, aus dem die acht Stationen herausfliegen: Studium, Finanzexperte, Controller, Familie, Vibe Coder, Volleyball, Skifahren, Wohnort Oberburg mit Karte der Schweiz |
@@ -36,7 +36,10 @@ die passende Stelle, damit alte Links und Anzeigen nicht ins Leere zeigen.
 ### Kapitel-Navigation
 
 Statt eines Menüs gibt es eine Leiste mit den acht Kapiteln (Block
-„Kapitel-Navigation" in CSS und Skript):
+„Kapitel-Navigation" in CSS und Skript). Unter „Referenzprojekte" steht jede
+gezeigte Referenzapp als eigener Eintrag, in der Reihenfolge ihrer Kapitel;
+ein Link mit Code zeigt dort nur seine (Zuschnitt am Rand, „Links mit
+Code"):
 
 - **Am Computer** ist sie eine schmale Reihe von Strichen am linken Rand. Der
   Strich des aktuellen Kapitels ist länger, in Koralle und so weit gefüllt, wie
@@ -104,7 +107,9 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   nur ihre Bühne, sobald sie da ist – sonst läge sie unsichtbar über den
   Links am Ende des vorigen Kapitels, etwa „App öffnen" bei Gripszug.
   Kontakt, FAQ und Fusszeile sind danach gewöhnliche Abschnitte.
-- **Ein Tablet über drei Kapitel:** Von 01 bis zu Gripszug ist es für das
+- **Ein Tablet über drei Kapitel,** wenn Gripszug direkt auf 02 folgt (nur
+  über einen Link, der es an erste Stelle setzt; ohne Link beginnt das
+  Volleyballturnier): Von 01 bis zu Gripszug ist es für das
   Auge dasselbe Gerät. Am Ende von `ordnung` zeigt es schon das Bild von
   Gripszug (`.screen-next`, erst nach dem Laden der Seite geholt), steht still
   und meldet seine Lage (`env.uebergabe`: Mitte, Breite, Format, Drehung). Das
@@ -210,11 +215,15 @@ braucht es keine Änderung an der Sicherheitsrichtlinie in `netlify.toml`.
 
 Stellschrauben:
 
-- **Tempo:** `--len` an jedem Kapitel ist sein Scrollweg in vh (`software`
+- **Tempo:** `--len` an jedem Kapitel ist sein Scrollweg (`software`
   959, `projekte` 300, `dreamteam` 480, `fotos` 420, `volleyball` 460,
   `buchhaltung` 480, `ablauf` 400, `preise`
   380, `motivation` 380, `gespraech` 260). Mehr heisst langsamer, die Abfolge
-  bleibt dieselbe. Wer ihn ändert, prüft die Landepunkte in `LANDUNG`.
+  bleibt dieselbe. `--tempo` (heute 2) teilt alle Scrollwege: Ein Kapitel
+  braucht `--len / --tempo` vh. Wer das ganze Tempo ändert, ändert nur
+  `--tempo`, auf Wunsch auch nur für ein Format (etwa
+  `@media (pointer: coarse)` fürs Handy). Wer `--len` ändert, prüft die
+  Landepunkte in `LANDUNG`.
 - **Abfolge:** Der Zeitplan steht als Tabelle über jeder `buildMotion` im
   Skript. Wer in `ordnung` Zahlen ändert, prüft auch `TILE_DELAY` (die Zettel
   landen erst, wenn ihr Rahmen steht) und die Sprungmarke `.anker` im CSS.
@@ -437,10 +446,14 @@ alae.app/?ref=<code>                       (auch direkt, etwa Google Ads)
 - **Referenzapps:** Jedes Kapitel einer Referenzapp steht in `index.html`
   zwischen `<!--referenz:schluessel-->` und `<!--/referenz-->` und trägt
   `data-referenz`. Die Nummer der Überzeile („Referenzapp 2") steht
-  zwischen `<!--nr-->` und `<!--/nr-->`. Das Skript hält Leiste und
-  Sprungmarken passend: „Referenzprojekte" führt zur ersten gezeigten App,
-  und die Übergabe des Tablets an Gripszug gibt es nur, wenn Gripszug direkt
-  folgt. **Bekommt eine App ein Kapitel,** braucht es die Marken, einen
+  zwischen `<!--nr-->` und `<!--/nr-->`. Ihr Eintrag unter
+  „Referenzprojekte" in der Leiste steht zwischen `<!--leiste:schluessel-->`
+  und `<!--/leiste-->`; der Rand ordnet ihn wie das Kapitel. Das Skript hält
+  Leiste und Sprungmarken passend: „Referenzprojekte" führt zur ersten
+  gezeigten App, der Eintrag von Gripszug über `#app-gripszug` (denn
+  `#projekte` heisst „Referenzprojekte"), und die Übergabe des Tablets an
+  Gripszug gibt es nur, wenn Gripszug direkt folgt. **Bekommt eine App ein
+  Kapitel,** braucht es die Marken, ihren Eintrag in der Leiste, einen
   Eintrag in `LANDUNG`, ihre `id` in der Liste der Kapitel, die ein Link
   weglassen kann (Skript, „Kapitel-Navigation"), und denselben Schlüssel
   in der Verwaltung (`gemeinsam/marketing.ts`, `REFERENZAPPS`).
