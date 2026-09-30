@@ -284,6 +284,15 @@ img,svg{display:block}
 .kp-schleier.is-an :is(.kp-schleier-nr, .kp-schleier-titel){opacity:1; transform:none; transition:opacity .35s ease .06s, transform .6s var(--ease-out) .06s}
 .kp-schleier.is-an .kp-schleier-titel{transition-delay:.11s}
 .kp-schleier.is-an .kp-schleier-linie{transform:scaleX(1); transition:transform .9s var(--ease-out) .12s}
+/* Mit Sprungmarke geöffnet (Link mit Code, /#preise): Der Schleier deckt ab
+   dem ersten Bild, ohne Titel, bis das Skript die Seite an den Landepunkt
+   gestellt hat (is-anflug, Skript „Ankunft"). Dann geht er schneller als
+   nach einem Sprung (is-gelandet): Man soll gleich sehen, wofür man
+   gekommen ist. Kommt das Skript nicht, geht er nach vier Sekunden von
+   selbst. */
+.is-anflug .kp-schleier{opacity:1; visibility:visible; transition:none; animation:anflug-aus .45s var(--ease-in-out) 4s forwards}
+.is-gelandet .kp-schleier{transition:opacity .35s var(--ease-out), visibility 0s linear .35s}
+@keyframes anflug-aus{to{opacity:0; visibility:hidden}}
 [tabindex="-1"]:focus{outline:none}
 
 /* --- Bühne ---------------------------------------------------------------

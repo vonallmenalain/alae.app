@@ -81,8 +81,12 @@
 <!-- Die Klasse steht, bevor irgendetwas gezeichnet wird: Die Bühne braucht
      ihr Layout ab dem ersten Bild, sonst springt die Seite, sobald das
      Skript am Ende läuft. Fehlt GSAP, nimmt das Skript sie wieder weg, und
-     es bleibt die ruhige Fassung ohne Bühne (Block „Ohne Skript"). -->
-<script>document.documentElement.classList.add('js');</script>
+     es bleibt die ruhige Fassung ohne Bühne (Block „Ohne Skript").
+     Mit Sprungmarke (etwa ein Link mit Code auf #projekte) kommt is-anflug
+     dazu: Der Schleier deckt, bis die Seite am Landepunkt steht, sonst sähe
+     man zuerst den Anfang der Seite (Skript, „Ankunft"). -->
+<script>document.documentElement.classList.add('js');
+if (location.hash.length > 1 && !/^#(top|main|software)$/.test(location.hash)) document.documentElement.classList.add('is-anflug');</script>
 <link rel="stylesheet" href="assets/story.css">
 </head>
 <body id="top">
