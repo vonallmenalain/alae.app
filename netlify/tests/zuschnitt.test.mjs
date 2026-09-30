@@ -32,17 +32,17 @@ test('Ohne brauchbare Angaben bleibt die Seite, wie sie ist', () => {
   assert.equal(zuschneiden(HTML, {}), HTML);
   assert.equal(zuschneiden(HTML, { referenzen: [], zielgruppe: 'kmu' }), HTML);
   // Referenzapps, die die Seite (noch) nicht kennt, ändern nichts
-  assert.equal(zuschneiden(HTML, { referenzen: ['volleyball', 'creart'], zielgruppe: 'kmu' }), HTML);
+  assert.equal(zuschneiden(HTML, { referenzen: ['creart', 'gibt-es-nicht'], zielgruppe: 'kmu' }), HTML);
 });
 
-test('Die drei Referenzapps stehen als Blöcke in index.html, je mit einem Kapitel', () => {
+test('Die vier Referenzapps stehen als Blöcke in index.html, je mit einem Kapitel', () => {
   const bloecke = referenzBloecke(HTML);
-  assert.deepEqual(bloecke.map((b) => b.schluessel), ['gripszug', 'dreamteam', 'fotoverkauf']);
+  assert.deepEqual(bloecke.map((b) => b.schluessel), ['gripszug', 'dreamteam', 'fotoverkauf', 'volleyball']);
   for (const b of bloecke) {
     assert.equal((b.text.match(/<section\b/g) || []).length, 1, b.schluessel);
     assert.match(b.text, new RegExp(`data-referenz="${b.schluessel}"`));
   }
-  assert.deepEqual(nummern(HTML), ['1 Gripszug', '2 DreamTeam', '3 Fotoverkauf']);
+  assert.deepEqual(nummern(HTML), ['1 Gripszug', '2 DreamTeam', '3 Fotoverkauf', '4 Volleyballturnier']);
 });
 
 test('Ein Link zeigt genau seine Referenzapps, in seiner Reihenfolge', () => {
@@ -98,4 +98,14 @@ test('Referenzapps und Zielgruppe zusammen, und eine unbekannte Zielgruppe ände
   assert.match(html, /<a href="#dreamteam" data-referenzen>/);
   assert.equal(zuschneiden(HTML, { referenzen: [], zielgruppe: '__proto__' }), HTML);
   assert.equal(zuschneiden(HTML, { referenzen: [], zielgruppe: 'rentner' }), HTML);
+});
+
+test('Das Volleyballturnier lässt sich wählen wie die anderen, auch als erstes', () => {
+  const html = zuschneiden(HTML, { referenzen: ['volleyball', 'dreamteam'], zielgruppe: 'verein' });
+  assert.deepEqual(sektionen(html), ['software', 'volleyball', 'dreamteam', 'ablauf', 'preise', 'motivation', 'gespraech']);
+  assert.deepEqual(nummern(html), ['1 Volleyballturnier', '2 DreamTeam']);
+  assert.match(html, /<a href="#volleyball" data-referenzen>/);
+  // Der Anker der früheren Karte kommt mit seinem Kapitel
+  assert.equal((html.match(/id="app-volleyball"/g) || []).length, 1);
+  assert.equal(html.includes('id="projekte"'), false);
 });
