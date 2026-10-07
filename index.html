@@ -87,7 +87,10 @@
      man zuerst den Anfang der Seite (Skript, „Ankunft"). -->
 <script>document.documentElement.classList.add('js');
 if (location.hash.length > 1 && !/^#(top|main|software)$/.test(location.hash)) document.documentElement.classList.add('is-anflug');</script>
-<link rel="stylesheet" href="assets/story.css">
+<!-- ?v= ist der Anfang der Prüfsumme der Datei, wie unten bei den Skripten:
+     Nach jeder Änderung an story.css oder einem Skript setzt
+     „npm run versionen" sie neu (README, „Prüfsumme in der Adresse"). -->
+<link rel="stylesheet" href="assets/story.css?v=8b0bc7fc">
 </head>
 <body id="top">
 <a class="skip" href="#kontakt">Direkt zum Kontakt</a>
@@ -1427,10 +1430,10 @@ if (location.hash.length > 1 && !/^#(top|main|software)$/.test(location.hash)) d
 }
 </script>
 
-<script src="assets/besuch.js"></script>
-<script src="assets/vendor/gsap.min.js"></script>
-<script src="assets/vendor/ScrollTrigger.min.js"></script>
-<script src="assets/vendor/CustomEase.min.js"></script>
-<script src="assets/story.js"></script>
+<script src="assets/besuch.js?v=0548c49a"></script>
+<script src="assets/vendor/gsap.min.js?v=92bb9a96"></script>
+<script src="assets/vendor/ScrollTrigger.min.js?v=b0b14d67"></script>
+<script src="assets/vendor/CustomEase.min.js?v=466e426a"></script>
+<script src="assets/story.js?v=7ba56519"></script>
 </body>
 </html>

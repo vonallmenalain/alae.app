@@ -2929,6 +2929,15 @@
      ========================================================================= */
   var KAPITEL = { ordnung: ordnung, gripszug: gripszug, dreamteam: dreamteam, fotos: fotos, volleyball: volleyball, buchhaltung: buchhaltung, ablauf: ablauf, preise: preise, ueber: ueber, gespraech: gespraech };
   var sections = qa('[data-kapitel]');
+  // Ein Kapitel, das dieses Skript nicht kennt, bliebe eine schwarze Bühne –
+  // etwa wenn zu einer neueren Seite ein älteres Skript kommt (README,
+  // „Prüfsumme in der Adresse"). Dann steht die ruhige Fassung da wie ohne
+  // GSAP, mit allen Kapiteln.
+  if (sections.some(function (sec) { return !KAPITEL[sec.getAttribute('data-kapitel')]; })) {
+    root.classList.remove('js');
+    if (navi.ankommen) navi.ankommen();
+    return;
+  }
 
   function buildAll(cond) {
     var env = { portrait: !!cond.hoch, reduced: !!cond.ruhig };
