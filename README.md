@@ -7,10 +7,13 @@ Die Startseite ist **`index.html`**: eine Geschichte im Vollbild, bei der beim
 Scrollen ein Bild ins nächste übergeht, in acht Kapiteln. Die Gestaltung steht
 in `assets/story.css`, die Bewegung in `assets/story.js` (eine Funktion pro
 Kapitel). Es gibt keinen Build-Schritt: Dateien auf einen Webserver kopieren,
-fertig. Ausser dem Google-Tag für Google Ads (siehe „Google Ads" unten) kommt
-alles von alae.app selbst, auch die Bibliothek GSAP und die Schrift. Die
-einzige Abhängigkeit in `package.json` gehört nicht zur Seite, sondern zu den
-Netlify-Funktionen (Speicher der Besucherstatistik).
+fertig. Nur nach einer Änderung an einem Skript oder Stylesheet braucht es
+`npm run versionen` (siehe „Prüfsumme in der Adresse"), sonst bekommen
+Besucher zur neuen Seite das alte Skript aus dem Cache. Ausser dem Google-Tag
+für Google Ads (siehe „Google Ads" unten) kommt alles von alae.app selbst,
+auch die Bibliothek GSAP und die Schrift. Die einzige Abhängigkeit in
+`package.json` gehört nicht zur Seite, sondern zu den Netlify-Funktionen
+(Speicher der Besucherstatistik).
 
 `story.html` war die Adresse des Entwurfs und leitet jetzt auf die Startseite
 weiter, samt Sprungmarke.
@@ -207,6 +210,8 @@ Entscheide, die man beim Weiterbauen kennen sollte:
   Text und Endbild untereinander – das eingeschaltete Tablet, die Apps,
   alle vier Schritte offen mit dem fertigen Haus, Preisschild und Etappen, die
   Stationen als Karten, die Einladung, das Formular und die Fragen als Liste.
+  Dieselbe Fassung erscheint, wenn das Skript ein Kapitel der Seite nicht
+  kennt – statt einer schwarzen Bühne (siehe „Prüfsumme in der Adresse").
 
 Die Bibliothek ist **GSAP 3.15** (`gsap`, `ScrollTrigger`, `CustomEase`) in
 `assets/vendor/`, die Handschrift der Zettel **Caveat** in `assets/fonts/`
@@ -455,8 +460,9 @@ alae.app/?ref=<code>                       (auch direkt, etwa Google Ads)
   Gripszug gibt es nur, wenn Gripszug direkt folgt. **Bekommt eine App ein
   Kapitel,** braucht es die Marken, ihren Eintrag in der Leiste, einen
   Eintrag in `LANDUNG`, ihre `id` in der Liste der Kapitel, die ein Link
-  weglassen kann (Skript, „Kapitel-Navigation"), und denselben Schlüssel
-  in der Verwaltung (`gemeinsam/marketing.ts`, `REFERENZAPPS`).
+  weglassen kann (Skript, „Kapitel-Navigation"), denselben Schlüssel
+  in der Verwaltung (`gemeinsam/marketing.ts`, `REFERENZAPPS`) und zum
+  Schluss `npm run versionen`.
 - **Zielgruppen:** Kapitel 1 und 2 erzählen ohne Code von einer Schreinerei
   (`kmu`). Für `verein` und `schule` ersetzt der Rand die markierten Stellen
   `<!--zg:schluessel-->…<!--/zg-->` durch die Texte aus `zielgruppen.js`,
@@ -565,6 +571,33 @@ nichts von fremden Servern lädt; die Google-Adressen stehen einzeln in
 `netlify.toml`. **Wird später weiteres Externes eingebunden** – eine Schrift,
 ein Analysewerkzeug, ein eingebettetes Video –, muss es in `netlify.toml`
 freigegeben werden, sonst blockiert der Browser es kommentarlos.
+
+## Prüfsumme in der Adresse
+
+Netlify gibt alles unter `/assets/` mit einer Woche Cache aus
+(`netlify.toml`), die Seiten selbst holt der Browser jedes Mal neu. Stünde
+`story.js` immer unter derselben Adresse, bekäme, wer die Seite in den
+letzten sieben Tagen schon geöffnet hatte, zur neuen `index.html` das alte
+Skript und das alte Stylesheet. So geschehen nach #58: Volleyballturnier und
+Buchhaltung blieben schwarz, weil das alte Skript diese Kapitel nicht kannte,
+und am Ende von „Neuer Webauftritt" erschien noch das Bild von Gripszug.
+
+Darum steht in jeder Seite hinter jedem Skript und Stylesheet aus `assets/`
+der Anfang seiner Prüfsumme (SHA-256), etwa `assets/story.js?v=1a2b3c4d`.
+Ändert sich die Datei, ändert sich die Adresse, und jeder Browser holt sie
+neu; bleibt sie gleich, kommt sie weiter aus dem Cache.
+
+- **Nach jeder Änderung** an `story.css`, `story.js` oder einem anderen
+  Skript oder Stylesheet in `assets/`: `npm run versionen`. Das setzt die
+  Prüfsummen in allen Seiten neu (`netlify/tests/versionen.mjs`).
+- `npm test` schlägt fehl, solange eine nicht stimmt oder ein Verweis nicht
+  als `src="assets/…"` oder `href="assets/…"` dasteht. Netlify baut ohne
+  diese Prüfung – vor dem Commit also `npm test`.
+- Bilder, Videos und die Schrift tragen keine Prüfsumme. Ein altes Bild aus
+  dem Cache stört nicht; wird eines unter demselben Namen ersetzt, sieht es
+  jeder spätestens nach einer Woche.
+- Kennt das Skript ein Kapitel der Seite trotzdem nicht, steht die ruhige
+  Fassung da wie ohne GSAP (Skript, „Aufbau"), keine schwarze Bühne.
 
 ## Deployment
 
